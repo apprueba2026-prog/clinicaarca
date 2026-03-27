@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#ffdad6",
+              "on-surface": "#191c1e",
+              "tertiary": "#006387",
+              "on-background": "#191c1e",
+              "primary-container": "#007bb9",
+              "secondary-fixed": "#dae2fd",
+              "on-tertiary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "primary-fixed": "#cce5ff",
+              "on-secondary-fixed": "#131b2e",
+              "tertiary-fixed-dim": "#7bd0ff",
+              "primary": "#006194",
+              "surface-dim": "#d8dadc",
+              "on-error": "#ffffff",
+              "surface": "#f7f9fb",
+              "on-tertiary-fixed": "#001e2c",
+              "surface-bright": "#f7f9fb",
+              "inverse-on-surface": "#eff1f3",
+              "tertiary-container": "#007da9",
+              "surface-container-highest": "#e0e3e5",
+              "secondary-container": "#dae2fd",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#001d31",
+              "primary-fixed-dim": "#93ccff",
+              "outline-variant": "#bfc7d2",
+              "on-error-container": "#93000a",
+              "outline": "#707881",
+              "tertiary-fixed": "#c4e7ff",
+              "on-primary-container": "#fdfcff",
+              "surface-variant": "#e0e3e5",
+              "secondary-fixed-dim": "#bec6e0",
+              "surface-container-low": "#f2f4f6",
+              "on-secondary-container": "#5c647a",
+              "surface-tint": "#006398",
+              "surface-container": "#eceef0",
+              "surface-container-high": "#e6e8ea",
+              "secondary": "#565e74",
+              "on-primary-fixed-variant": "#004b73",
+              "on-secondary-fixed-variant": "#3f465c",
+              "inverse-surface": "#2d3133",
+              "inverse-primary": "#93ccff",
+              "error": "#ba1a1a",
+              "on-tertiary-fixed-variant": "#004c69",
+              "on-surface-variant": "#3f4850",
+              "on-tertiary-container": "#fcfcff",
+              "on-primary": "#ffffff",
+              "background": "#f7f9fb"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-nav {
+            background: rgba(247, 249, 251, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-surface dark:bg-slate-950 font-body text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col py-6 z-50">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-slate-900 dark:text-white font-headline leading-tight">Clínica Arca</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">Admin Panel</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active Navigation: Resumen -->
+<a class="flex items-center gap-3 px-6 py-3 text-sky-700 dark:text-sky-400 font-semibold bg-sky-50/50 dark:bg-sky-900/20 border-r-2 border-sky-600 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Resumen</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span>Agenda</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Pacientes</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">content_copy</span>
+<span>Contenidos (CMS)</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Facturación (SUNAT)</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Configuración</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 px-4 bg-primary hover:bg-primary-container text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">add</span>
+                Nueva Cita
+            </button>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 glass-nav border-b border-slate-200 dark:border-slate-800 z-40">
+<div class="flex justify-between items-center px-8 h-full">
+<div class="flex items-center bg-surface-container-low dark:bg-slate-900 rounded-full px-4 py-1.5 w-96">
+<span class="material-symbols-outlined text-slate-400 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-slate-600 dark:text-slate-300" placeholder="Buscar pacientes, citas..." type="text"/>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 border-r border-slate-200 dark:border-slate-800 pr-6">
+<button class="text-slate-500 hover:text-sky-600 transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="text-slate-500 hover:text-sky-600 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full border-2 border-white dark:border-slate-950"></span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Dra. Sonia</p>
+<p class="text-[10px] text-slate-500">Cirujano Dentista</p>
+</div>
+<img alt="Dra. Sonia Profile" class="w-10 h-10 rounded-full object-cover border-2 border-primary/20" data-alt="professional portrait of a female dentist in white clinical coat with a warm confident smile in a bright medical office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA68YSUd6WVN-aNJdgKXD3FjRIGsCm4LvYAhwMgRRsxZ1I47tE5r_Alxg7ma5WefnI-ulDUgjSRSZHw_3GZtGp4pnpEK0uhWdN4dRpDFZk0n-_MQcZjcgRt4NS5ZrKWQvnoQHnVvkfErPp7wbB7iqZnB6ZzhtVCKbmbZeHSR8NkD4Fo26KpL0sPy-3zSiPtM4HHkt18R3NRuROTWDpnUDgmwat45JH4jCOZO9hSkN0kDTbquHz1l_rFGNCRGGk7cQ8V4q5GLznglo0"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 p-8 min-h-screen">
+<!-- Welcome Heading -->
+<header class="mb-10">
+<h2 class="text-3xl font-extrabold text-slate-900 dark:text-white font-headline tracking-tight">Hola, Dra. Sonia. Este es el estado de hoy.</h2>
+<p class="text-slate-500 mt-1">Lunes, 14 de Agosto de 2023 • 08:45 AM</p>
+</header>
+<!-- Row 1: KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<!-- KPI 1 -->
+<div class="bg-surface-container-lowest dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-transparent hover:border-sky-200 dark:hover:border-sky-900 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-sky-50 dark:bg-sky-900/30 rounded-lg">
+<span class="material-symbols-outlined text-sky-600 dark:text-sky-400">calendar_today</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded">+2 hoy</span>
+</div>
+<h3 class="text-slate-500 text-sm font-medium mb-1">Citas Hoy</h3>
+<p class="text-3xl font-extrabold text-slate-900 dark:text-white">12</p>
+</div>
+<!-- KPI 2 -->
+<div class="bg-surface-container-lowest dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-transparent hover:border-sky-200 dark:hover:border-sky-900 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
+<span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400">person_add</span>
+</div>
+<span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Meta: 8</span>
+</div>
+<h3 class="text-slate-500 text-sm font-medium mb-1">Nuevos Pacientes (Mes)</h3>
+<p class="text-3xl font-extrabold text-slate-900 dark:text-white">5</p>
+</div>
+<!-- KPI 3 -->
+<div class="bg-surface-container-lowest dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-transparent hover:border-sky-200 dark:hover:border-sky-900 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg">
+<span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">payments</span>
+</div>
+<span class="text-xs font-bold text-slate-400">Proyectado</span>
+</div>
+<h3 class="text-slate-500 text-sm font-medium mb-1">Ingresos Estimados</h3>
+<p class="text-3xl font-extrabold text-slate-900 dark:text-white">S/ 1,500</p>
+</div>
+<!-- KPI 4: Warning status -->
+<div class="bg-surface-container-lowest dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-transparent border-l-4 border-l-amber-500">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+<span class="material-symbols-outlined text-amber-600 dark:text-amber-400">smart_toy</span>
+</div>
+<span class="animate-pulse flex h-2 w-2 rounded-full bg-amber-400"></span>
+</div>
+<h3 class="text-slate-500 text-sm font-medium mb-1">Alertas IA</h3>
+<p class="text-lg font-bold text-amber-700 dark:text-amber-400 leading-tight">1 Reprogramación pendiente</p>
+</div>
+</div>
+<!-- Row 2: Data Table -->
+<section class="bg-surface-container-lowest dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden border border-slate-100 dark:border-slate-800">
+<div class="px-8 py-6 border-b border-slate-50 dark:border-slate-900 flex justify-between items-center">
+<div>
+<h3 class="text-lg font-extrabold text-slate-900 dark:text-white font-headline">Próximas Citas de la Mañana</h3>
+<p class="text-sm text-slate-500">Mostrando pacientes programados antes de las 12:00 PM</p>
+</div>
+<button class="text-sky-600 hover:text-sky-700 text-sm font-bold flex items-center gap-1 transition-colors">
+                    Ver agenda completa
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-900/50">
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Hora</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Paciente</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Doctor</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Especialidad</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Estado</th>
+<th class="px-8 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50 dark:divide-slate-900">
+<!-- Row 1 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+<td class="px-8 py-5 text-sm font-bold text-slate-900 dark:text-white">09:00 AM</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-400 flex items-center justify-center text-xs font-bold">CM</div>
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Carlos M.</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-slate-600 dark:text-slate-400">Dra. Sonia</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-[10px] font-bold uppercase tracking-tight">Implantes</span>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    Confirmado
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-slate-400 hover:text-sky-600 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+<td class="px-8 py-5 text-sm font-bold text-slate-900 dark:text-white">10:15 AM</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 flex items-center justify-center text-xs font-bold">AR</div>
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Ana R.</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-slate-600 dark:text-slate-400">Dra. Sonia</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-[10px] font-bold uppercase tracking-tight">Ortodoncia</span>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 rounded-full text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                    Pendiente
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-slate-400 hover:text-sky-600 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-900/20 transition-colors">
+<td class="px-8 py-5 text-sm font-bold text-slate-900 dark:text-white">11:30 AM</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 flex items-center justify-center text-xs font-bold">JP</div>
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Jorge P.</span>
+</div>
+</td>
+<td class="px-8 py-5 text-sm text-slate-600 dark:text-slate-400">Dr. Ruiz</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-full text-[10px] font-bold uppercase tracking-tight">Limpieza</span>
+</td>
+<td class="px-8 py-5">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                    Confirmado
+                                </span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-slate-400 hover:text-sky-600 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Placeholder -->
+<div class="px-8 py-4 bg-slate-50 dark:bg-slate-900/30 text-center">
+<p class="text-[11px] font-mono text-slate-400 tracking-wider">
+<!-- TODO: Fetch from Supabase real-time stream -->
+                    Sincronización en tiempo real activa.
+                </p>
+</div>
+</section>
+<!-- Signature Component: Treatment Overview (Bento Style) -->
+<section class="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-surface-container-high dark:bg-slate-900 p-8 rounded-xl flex flex-col justify-between">
+<div>
+<h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Desempeño de la Clínica</h3>
+<p class="text-slate-500 mb-8 max-w-md">Análisis predictivo basado en el flujo de pacientes de los últimos 7 días. La IA sugiere abrir una ventana adicional de atención el jueves.</p>
+</div>
+<div class="h-48 w-full flex items-end justify-between gap-4">
+<div class="w-full bg-sky-200 dark:bg-sky-800 rounded-t-lg h-[60%] transition-all hover:h-[70%] cursor-help"></div>
+<div class="w-full bg-sky-300 dark:bg-sky-700 rounded-t-lg h-[45%] transition-all hover:h-[55%] cursor-help"></div>
+<div class="w-full bg-sky-400 dark:bg-sky-600 rounded-t-lg h-[80%] transition-all hover:h-[90%] cursor-help"></div>
+<div class="w-full bg-sky-500 dark:bg-sky-500 rounded-t-lg h-[65%] transition-all hover:h-[75%] cursor-help"></div>
+<div class="w-full bg-primary dark:bg-primary-container rounded-t-lg h-[95%] transition-all hover:h-[100%] cursor-help"></div>
+<div class="w-full bg-sky-300 dark:bg-sky-700 rounded-t-lg h-[40%] transition-all hover:h-[50%] cursor-help"></div>
+<div class="w-full bg-sky-200 dark:bg-sky-800 rounded-t-lg h-[30%] transition-all hover:h-[40%] cursor-help"></div>
+</div>
+</div>
+<div class="bg-primary dark:bg-primary-container p-8 rounded-xl text-white flex flex-col">
+<span class="material-symbols-outlined text-4xl mb-4" style="font-variation-settings: 'FILL' 1;">stars</span>
+<h3 class="text-2xl font-bold font-headline leading-tight mb-4">Suscripción Dental Pro</h3>
+<p class="text-sky-100 text-sm mb-8 leading-relaxed">Accede a las herramientas de análisis radiográfico por IA y firma digital ilimitada para tus pacientes.</p>
+<button class="mt-auto w-full py-3 bg-white text-primary font-bold rounded-xl hover:bg-sky-50 transition-colors shadow-xl">Actualizar Plan</button>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Only for Home/Dashboard) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-3xl">chat_bubble</span>
+</button>
+</body></html>

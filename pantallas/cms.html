@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clínica Arca Admin - Gestión de Contenidos</title>
+<!-- Google Fonts: Manrope & Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#ffffff",
+              "surface-container-highest": "#e0e3e5",
+              "tertiary": "#006387",
+              "inverse-surface": "#2d3133",
+              "tertiary-fixed": "#c4e7ff",
+              "on-primary-fixed": "#001d31",
+              "on-tertiary": "#ffffff",
+              "on-surface": "#191c1e",
+              "primary-fixed-dim": "#93ccff",
+              "on-tertiary-fixed": "#001e2c",
+              "on-background": "#191c1e",
+              "error-container": "#ffdad6",
+              "secondary": "#565e74",
+              "on-surface-variant": "#3f4850",
+              "inverse-primary": "#93ccff",
+              "secondary-fixed": "#dae2fd",
+              "on-primary": "#ffffff",
+              "surface-variant": "#e0e3e5",
+              "secondary-container": "#dae2fd",
+              "tertiary-container": "#007da9",
+              "surface-bright": "#f7f9fb",
+              "outline": "#707881",
+              "inverse-on-surface": "#eff1f3",
+              "on-primary-container": "#fdfcff",
+              "primary-fixed": "#cce5ff",
+              "on-error": "#ffffff",
+              "background": "#f7f9fb",
+              "tertiary-fixed-dim": "#7bd0ff",
+              "surface-tint": "#006398",
+              "primary-container": "#007bb9",
+              "surface-container-low": "#f2f4f6",
+              "on-error-container": "#93000a",
+              "surface-dim": "#d8dadc",
+              "error": "#ba1a1a",
+              "secondary-fixed-dim": "#bec6e0",
+              "on-secondary-fixed": "#131b2e",
+              "outline-variant": "#bfc7d2",
+              "primary": "#006194",
+              "on-tertiary-container": "#fcfcff",
+              "surface-container-lowest": "#ffffff",
+              "on-tertiary-fixed-variant": "#004c69",
+              "on-primary-fixed-variant": "#004b73",
+              "surface-container-high": "#e6e8ea",
+              "surface-container": "#eceef0",
+              "surface": "#f7f9fb",
+              "on-secondary-fixed-variant": "#3f465c",
+              "on-secondary-container": "#5c647a"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body { font-family: 'Inter', sans-serif; }
+      h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface transition-colors duration-300">
+<!-- Toast Notification -->
+<div class="fixed top-6 right-6 z-[100] flex items-center gap-3 px-4 py-3 bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 rounded-xl shadow-lg">
+<span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400">check_circle</span>
+<p class="text-sm font-medium text-emerald-800 dark:text-emerald-200">El video ya está visible en la web oficial.</p>
+<button class="ml-2 text-emerald-500 hover:text-emerald-700">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-slate-50 dark:bg-slate-900 flex flex-col p-4 gap-2 font-manrope text-sm font-medium">
+<div class="flex items-center gap-3 px-2 py-4 mb-6">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<h1 class="text-lg font-extrabold text-sky-800 dark:text-sky-200 leading-tight">Clínica Arca</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Admin Panel</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span> Pacientes
+            </a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 text-sky-700 dark:text-sky-400 shadow-sm rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="tactic" style="font-variation-settings: 'FILL' 1;">tactic</span> Contenidos (CMS)
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span> Citas
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span> Tratamientos
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span> Analítica
+            </a>
+</nav>
+<button class="mt-4 w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary text-white rounded-xl font-bold transition-all active:scale-95 shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span> Nuevo Contenido
+        </button>
+<div class="mt-auto border-t border-slate-200 dark:border-slate-800 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-error transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span> Cerrar Sesión
+            </a>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-full z-40 flex items-center justify-between px-6 py-3 ml-64 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl shadow-sm dark:shadow-none font-manrope antialiased">
+<div class="flex items-center flex-1 max-w-xl ml-64">
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400">search</span>
+<input class="w-full bg-slate-100 dark:bg-slate-900 border-none rounded-full pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Buscar contenidos, doctores o reseñas..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 dark:bg-slate-800 mx-2"></div>
+<div class="flex items-center gap-3 px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-900 rounded-lg transition-colors cursor-pointer">
+<span class="text-sm font-semibold text-sky-900 dark:text-sky-100">Dra. Sonia</span>
+<div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white dark:ring-slate-800">
+<img alt="Dra. Sonia Profile" class="w-full h-full object-cover" data-alt="professional portrait of a female dentist with glasses smiling warmly in a clinical setting high-end lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6JUPXMF2A0eg1meC3qxyO8xuotLEw2lxE9c4dGLh-JPF_Mvx5EZsGYDuACmL8oicvZpdsokGK3NEMf5s8BIOd1bVuSuzdlNCbTX6t8qCaLnMr_zHYYYXy8dQ5GmBDPkwLg-t6NJLoMJPRQ7xqg3Oy87FjgzfG18hmXoqHU9e_7TbVw635QTCvjhUwRmK5FG2ZOTE1-skI3Mq-eF0IbpLTXrYYbI1rzym-qWUrBKG83cwUVaDIIdWRKadrCBKl10vL47oJNzktJOA"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-8 pb-12 min-h-screen bg-surface dark:bg-slate-950">
+<!-- Header Section -->
+<header class="mb-10 flex justify-between items-end">
+<div class="max-w-2xl">
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface dark:text-white mb-2">Gestor de Contenidos Web</h2>
+<p class="text-lg text-slate-500 dark:text-slate-400 font-medium">Actualiza la página principal en tiempo real y gestiona la reputación digital de la clínica.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-container-low dark:bg-slate-900 text-primary dark:text-sky-400 font-semibold rounded-xl text-sm transition-all hover:bg-white dark:hover:bg-slate-800 shadow-sm">Vista Previa Web</button>
+</div>
+</header>
+<!-- Tabs Navigation -->
+<nav class="flex gap-8 mb-8 border-b border-outline-variant/30">
+<button class="pb-4 text-sm font-bold text-primary dark:text-sky-400 border-b-2 border-primary dark:border-sky-400 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">video_library</span>
+                Testimonios (Videos)
+            </button>
+<button class="pb-4 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">clinical_notes</span>
+                Staff Médico
+            </button>
+<button class="pb-4 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">newspaper</span>
+                Noticias y Promos
+            </button>
+</nav>
+<div class="grid grid-cols-12 gap-8">
+<!-- Upload Zone & Form -->
+<section class="col-span-12 lg:col-span-5 space-y-6">
+<div class="bg-surface-container-lowest dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-transparent hover:border-primary/10 transition-all">
+<h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">upload_file</span>
+                        Nuevo Testimonio
+                    </h3>
+<!-- Drag & Drop Area -->
+<div class="w-full aspect-video rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-8 text-center group cursor-pointer transition-colors hover:bg-slate-100 dark:hover:bg-slate-900 mb-6">
+<div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">movie</span>
+</div>
+<p class="text-sm font-bold text-slate-700 dark:text-slate-200">Arrastra tu video aquí</p>
+<p class="text-xs text-slate-500 mt-1">Formato MP4, MOV. Max 15 segundos.</p>
+<button class="mt-4 px-4 py-2 bg-white dark:bg-slate-800 text-xs font-bold rounded-lg shadow-sm border border-slate-200 dark:border-slate-700">Explorar archivos</button>
+</div>
+<!-- Form -->
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">Nombre del Paciente</label>
+<input class="w-full bg-slate-50 dark:bg-slate-950 border-outline-variant/20 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Ej. Javier Montes" type="text"/>
+</div>
+<div class="flex gap-4">
+<div class="flex-1">
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">Calificación</label>
+<div class="flex gap-1 py-3 px-4 bg-slate-50 dark:bg-slate-950 rounded-xl border border-outline-variant/20">
+<span class="material-symbols-outlined text-amber-400" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">Reseña corta</label>
+<textarea class="w-full bg-slate-50 dark:bg-slate-950 border-outline-variant/20 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none" placeholder="Describe la experiencia del paciente..." rows="3"></textarea>
+</div>
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white font-bold rounded-xl shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                            Subir y Publicar
+                        </button>
+</div>
+</div>
+</section>
+<!-- Video List Section -->
+<section class="col-span-12 lg:col-span-7 space-y-4">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">play_circle</span>
+                        Testimonios Publicados
+                    </h3>
+<div class="flex gap-2">
+<button class="p-2 bg-white dark:bg-slate-900 rounded-lg shadow-sm text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Testimonial Item 1 -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+<div class="w-32 aspect-video bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden relative">
+<img alt="Video Thumbnail Patient 1" class="w-full h-full object-cover" data-alt="close up of a smiling patient in a dental chair with bright natural lighting and clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwvwfHSE_aE1osyX6VIc3MDAYO7UrSQpNU-kaEtzhpAJO4BQdNTP7-UqN_LjRVzQhHTh0-TYllbGQzJrQxrrPBQPLK19cNO-hRkO42HXCN8dfJPCIxImYippiEi1B-ghqyzppymudZeCBQ2FeHM5jxvV6BoVHMkBfar-_AKxovgZ755GOmo_iG2g9ZNTJOZxEz8QYWNsyUw4PUe6z9O_PLrGp_C-JsoI5NiRrbSnngu8uKAC_KccMNViOS3t1EHVssGXEzwfDmBGw"/>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface dark:text-white leading-none">María García</h4>
+<div class="flex items-center gap-2 mt-1 mb-2">
+<div class="flex text-[14px]">
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[10px] text-slate-400 font-medium">Hace 2 días</span>
+</div>
+<p class="text-xs text-slate-500 line-clamp-1">"La atención de la Dra. Sonia fue impecable, mi tratamiento de carillas quedó..."</p>
+</div>
+<div class="flex items-center gap-6 pr-4">
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Visible</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+</label>
+</div>
+<button class="p-2 text-slate-300 hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Testimonial Item 2 -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+<div class="w-32 aspect-video bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden relative">
+<img alt="Video Thumbnail Patient 2" class="w-full h-full object-cover" data-alt="candid shot of a young man laughing in a dentist reception area soft natural light high-end aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkXevHrfN59nsEvQL9QY4504maeaws1ciDgsQ2dDyZ4O0cBJVbscAmSiR9-mGjy_2TPxAGPDMfW3kWGAohSs-SqL775KgFubQ9jLKLQLz_5SCiIsVejpwjXxqWTix6LPY7zDv8zsZok0uz7YrA4jO9zYuHNJH_pYhLWvKTIkxoojpsxjoLR17uiVqGmpLtNpV-LauZZZUcHPvfR0UVIIdQqlAzc30HmyUwWRlc14bOzgu-ywe6b-iLm3oDDYeiVissbuZYPFPf1GY"/>
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+</div>
+</div>
+<div class="flex-1">
+<h4 class="font-bold text-on-surface dark:text-white leading-none">Roberto Sánchez</h4>
+<div class="flex items-center gap-2 mt-1 mb-2">
+<div class="flex text-[14px]">
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-amber-400 text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-slate-300 dark:text-slate-700 text-sm">star</span>
+</div>
+<span class="text-[10px] text-slate-400 font-medium">Hace 1 semana</span>
+</div>
+<p class="text-xs text-slate-500 line-clamp-1">"Muy puntuales y profesionales. El video muestra mi progreso tras 6 meses..."</p>
+</div>
+<div class="flex items-center gap-6 pr-4">
+<div class="flex flex-col items-center gap-1">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Visible</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+</label>
+</div>
+<button class="p-2 text-slate-300 hover:text-error transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<!-- Staff Médico Mockup Section -->
+<div class="mt-12 p-8 bg-surface-container-low dark:bg-slate-900/50 rounded-3xl">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="text-xl font-extrabold text-on-surface dark:text-white">Staff Médico</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400">Gestiona los perfiles que aparecen en la web.</p>
+</div>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-800 text-primary dark:text-sky-400 font-bold rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 text-sm hover:bg-primary hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                            Añadir Doctor
+                        </button>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest border-b border-outline-variant/20">
+<th class="pb-3 px-2">Doctor/Especialidad</th>
+<th class="pb-3 px-2">Estado</th>
+<th class="pb-3 px-2 text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="group">
+<td class="py-4 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-200 overflow-hidden">
+<img alt="Dr. Ricardo Profile" class="w-full h-full object-cover" data-alt="professional portrait of a male orthodontist smiling with white background medical office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHlX5XA_J0fqdgRUK2hAdslNbSyieq8V8g6hD7PBNX7bVD7XUp4-KX1Mq7sDwUni3irYgcD-FrxfDgx1ZCGYaxFDsgp036SIq3Cb5A1UgV5yFgPHkvMWPxu_MfJy2kTjPEknryLTzI_HsBy-FbEPMtYfyCxaf4LPWJ54ftb7idIHkocDZFjdy5nci0pUXb-ZP7iK1zyTbeEClZMlAtvkM3pFzzPkoXq_sxNPj9psN0E2gn32lsakq3X-ECyaCfcXIAUDBSXV3x600"/>
+</div>
+<div>
+<p class="font-bold text-sm text-on-surface dark:text-white leading-tight">Dr. Ricardo Arcas</p>
+<p class="text-xs text-slate-500">Ortodoncia Avanzada</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Público</span>
+</td>
+<td class="py-4 px-2 text-right">
+<button class="p-1.5 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</td>
+</tr>
+<tr class="group">
+<td class="py-4 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-200 overflow-hidden">
+<img alt="Dra. Elena Profile" class="w-full h-full object-cover" data-alt="confident female dental surgeon in blue scrubs looking at the camera professional medical portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhpklwWchVBGcIXdDXqErwYw1oq8Z2v6hfcwtyu-mJ5g7Lo0A3sjSHlu2g_FagXFUbnx-fIr4Dd2btU-2cD1U0lAfPZ6wMRIzPMEQhQL-OLWjZKztCiHlRmpHCY1iOXmIROz6_QOuVo_7AAdy8U7ZWqVVT8-tDI5at_lX58W7ZyRCPIzCNwakqOcYExUF4IHTX5AcZVNdLY5DA4LM_oRzlSpV1bBQDrFpLk-0uqon5WGGJOmntpxpF7XQUJCEFmwMbuCAbgQVB5AY"/>
+</div>
+<div>
+<p class="font-bold text-sm text-on-surface dark:text-white leading-tight">Dra. Elena Ruiz</p>
+<p class="text-xs text-slate-500">Odontopediatría</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-2">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400">Borrador</span>
+</td>
+<td class="py-4 px-2 text-right">
+<button class="p-1.5 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</body></html>

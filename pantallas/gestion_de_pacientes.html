@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clínica Arca - Gestión de Pacientes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#f7f9fb",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#3f465c",
+              "on-primary": "#ffffff",
+              "on-error-container": "#93000a",
+              "surface-variant": "#e0e3e5",
+              "surface-tint": "#006398",
+              "surface-dim": "#d8dadc",
+              "outline": "#707881",
+              "on-secondary-fixed": "#131b2e",
+              "on-background": "#191c1e",
+              "primary-container": "#007bb9",
+              "inverse-on-surface": "#eff1f3",
+              "surface-container-low": "#f2f4f6",
+              "surface-container-highest": "#e0e3e5",
+              "inverse-surface": "#2d3133",
+              "surface-container": "#eceef0",
+              "on-tertiary-fixed-variant": "#004c69",
+              "on-surface": "#191c1e",
+              "error-container": "#ffdad6",
+              "tertiary-fixed": "#c4e7ff",
+              "on-tertiary-fixed": "#001e2c",
+              "on-tertiary-container": "#fcfcff",
+              "secondary-container": "#dae2fd",
+              "on-secondary-container": "#5c647a",
+              "primary": "#006194",
+              "secondary-fixed": "#dae2fd",
+              "secondary": "#565e74",
+              "tertiary": "#006387",
+              "on-surface-variant": "#3f4850",
+              "surface": "#f7f9fb",
+              "tertiary-container": "#007da9",
+              "surface-bright": "#f7f9fb",
+              "outline-variant": "#bfc7d2",
+              "on-error": "#ffffff",
+              "on-secondary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e6e8ea",
+              "on-primary-fixed": "#001d31",
+              "on-primary-fixed-variant": "#004b73",
+              "inverse-primary": "#93ccff",
+              "error": "#ba1a1a",
+              "tertiary-fixed-dim": "#7bd0ff",
+              "secondary-fixed-dim": "#bec6e0",
+              "primary-fixed-dim": "#93ccff",
+              "primary-fixed": "#cce5ff",
+              "on-primary-container": "#fdfcff"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-on-surface antialiased">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r-0 bg-slate-50 dark:bg-slate-900 flex flex-col p-4 gap-2 font-manrope antialiased tracking-tight">
+<div class="mb-8 px-4 py-2">
+<h1 class="text-xl font-bold tracking-tighter text-sky-900 dark:text-sky-100">Clínica Arca</h1>
+<p class="text-xs text-slate-500 uppercase tracking-widest mt-1">Panel Administrativo</p>
+</div>
+<nav class="space-y-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Resumen</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span>Agenda</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-sky-700 dark:text-sky-400 font-semibold bg-white dark:bg-slate-800 rounded-lg shadow-sm" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Pacientes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined">content_copy</span>
+<span>Contenidos (CMS)</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span>Facturación (SUNAT)</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Configuración</span>
+</a>
+</nav>
+<button class="mt-auto w-full bg-primary text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+            Nuevo Paciente
+        </button>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl flex justify-between items-center px-8">
+<div class="flex-1 max-w-xl">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm focus:ring-2 focus:ring-sky-500/20 transition-all outline-none" placeholder="Buscar por DNI, Nombre o Teléfono..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6 ml-8">
+<button class="text-slate-500 hover:text-sky-600 transition-colors">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="text-slate-500 hover:text-sky-600 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full ring-2 ring-white"></span>
+</button>
+<div class="flex items-center gap-3 border-l pl-6 border-slate-200 dark:border-slate-800">
+<div class="text-right">
+<p class="text-xs font-bold text-on-surface">Dra. Sonia</p>
+<p class="text-[10px] text-slate-500">Ortodoncista</p>
+</div>
+<img alt="Dra. Sonia" class="w-10 h-10 rounded-full object-cover" data-alt="professional headshot of a female doctor in white coat with friendly expression and clean medical office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBknrGJQ_tqQH5xY_Eet-UAd-UKAt8MBow-T-23isiLundtnMdXN_2Ps0a5hYv6sSR9FChiLuC92yzCXbiZW-XMiE64grhurony0ull-T6EL09DrNuLmwVqAWSYPD-qxYCRcxSVii19QTpVseSMCpV7-4OwgIjDjbU042nZFNEhBNxRY91Z2S1wCQ19acqOWUKUTcqUT2ik7DQYeu5LWPali5-U-RQURNzUYpvNTD4BpwdQFAxg4YInZJt-cwWx8Et4FyhPs2FFLEQ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-24 px-8 pb-12">
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-8">
+<div>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface-variant">Directorio de Pacientes</h2>
+<p class="text-slate-500 mt-1">Gestión centralizada de expedientes y estados de cuenta.</p>
+</div>
+<div class="flex gap-4">
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest border-none px-6 py-3 pr-10 rounded-xl text-sm font-medium shadow-sm focus:ring-2 focus:ring-sky-500/20 cursor-pointer text-slate-600">
+<option>Todos los pacientes</option>
+<option>Deudores</option>
+<option>Atendidos este mes</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+</div>
+<button class="px-6 py-3 bg-primary text-on-primary rounded-xl font-bold flex items-center gap-2 hover:opacity-90 shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined">person_add</span>
+                    Nuevo Registro
+                </button>
+</div>
+</div>
+<!-- Data Table / Bento Layout -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Paciente</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Contacto</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Última Visita</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Estado de Cuenta</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold">RM</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Ricardo Mendoza</p>
+<p class="text-xs text-slate-500">DNI: 45892011</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm text-slate-600">+51 987 654 321</p>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm text-slate-600">12 Oct, 2023</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-tight rounded-full">Al día</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-sky-50 text-sky-700 rounded-lg"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-2 hover:bg-sky-50 text-sky-700 rounded-lg"><span class="material-symbols-outlined text-xl">payments</span></button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer bg-slate-50/30">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img alt="Ana Lucía" class="w-10 h-10 rounded-full object-cover" data-alt="close-up portrait of a woman smiling softly, neutral background, professional dental patient profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhKWfx_c0ATjaHL-m0IGAY2SfaCYoc7areEk1UK3UMiE6nR1r5kJWeVGtLw0gPfGN0PbVP4JqrfTL3Nqzejj1qfh_avjXfz3XiRFnjJcsmin3kcYU74rLKOgFW-0L4ePkdNvHJHw7987ZZJClVbwvOzYOl3XtiiOntcg2RPV7ndJZmioG0RyUfeBzSU5Tai7BEupEVc9t1heE7BZeeRpC6RCLOTaUvR-jSVaCVUQxvtH9fQgzX4fof2RmEK7alNQ6uTJq2MX8s5YM"/>
+<div>
+<p class="text-sm font-bold text-on-surface">Ana Lucía Torres</p>
+<p class="text-xs text-slate-500">DNI: 70221455</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm text-slate-600">+51 944 212 888</p>
+</td>
+<td class="px-6 py-4">
+<p class="text-sm text-slate-600">Hoy, 09:30 AM</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-tight rounded-full">Saldo Pendiente</span>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-sky-50 text-sky-700 rounded-lg"><span class="material-symbols-outlined text-xl">visibility</span></button>
+<button class="p-2 hover:bg-sky-50 text-sky-700 rounded-lg"><span class="material-symbols-outlined text-xl">payments</span></button>
+</div>
+</td>
+</tr>
+<!-- More rows... -->
+</tbody>
+</table>
+</div>
+</main>
+<!-- Visual Overlay - Patient Slide-over (Right Panel) -->
+<div class="fixed inset-0 z-50 pointer-events-none">
+<div class="absolute inset-0 bg-slate-900/20 backdrop-blur-sm pointer-events-auto"></div>
+<div class="absolute right-0 top-0 h-full w-[450px] bg-white dark:bg-slate-900 shadow-2xl pointer-events-auto flex flex-col">
+<!-- Header Profile -->
+<div class="p-8 border-b border-slate-100 dark:border-slate-800">
+<div class="flex justify-between items-start mb-6">
+<button class="p-2 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined">close</span></button>
+<button class="px-4 py-2 border border-slate-200 text-slate-600 text-sm font-bold rounded-lg hover:bg-slate-50">Editar Perfil</button>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="relative mb-4">
+<img alt="Ana Lucía" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" data-alt="high quality portrait of a young woman with a warm smile, soft lighting, professional healthcare context" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ2GJSyO1-pAILaluJQumRKbIYi_wBaU_D1b5C-51OQkO__o2_KzAeqIR4qV4NCnc5xfFH76bblbRNITfpnqWmOBDKMYlaqZLzVV0vpKzb5uspmOkXgqW8w39WjBC_oz-iPIngljRFekdvJE_OYLoFC30ttobf0gwZ8kfcgLRkkTEP5XgIoPoJAjJ1fDIoWJpY99GpvZsVPwgln67EOAQ0Fwziy7csNYXta4_SRzxpbRY1otttDwiescBpoBvHxgiXvBGM95j7K-g"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
+</div>
+<h3 class="text-xl font-extrabold text-on-surface">Ana Lucía Torres</h3>
+<p class="text-sm text-slate-500">DNI: 70221455 • Paciente Premium</p>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="flex border-b border-slate-100 dark:border-slate-800 px-8">
+<button class="px-4 py-4 text-sm font-bold text-slate-400 border-b-2 border-transparent hover:text-sky-600">Historial</button>
+<button class="px-4 py-4 text-sm font-bold text-slate-400 border-b-2 border-transparent hover:text-sky-600">Citas</button>
+<button class="px-4 py-4 text-sm font-bold text-sky-700 border-b-2 border-sky-600">Facturación</button>
+</div>
+<!-- Billing Content -->
+<div class="flex-1 overflow-y-auto p-8">
+<div class="flex justify-between items-center mb-6">
+<h4 class="text-sm font-extrabold text-slate-500 uppercase tracking-widest">Comprobantes Emitidos</h4>
+<button class="text-xs font-bold text-sky-700 hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                        Generar Nuevo
+                    </button>
+</div>
+<div class="space-y-4">
+<!-- Invoice Card -->
+<div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-sky-600">description</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Boleta B001-00045</p>
+<p class="text-xs text-slate-500">12 Oct, 2023 • Profilaxis</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-extrabold text-on-surface">S/ 150.00</p>
+<div class="flex gap-2 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-slate-400 hover:text-sky-600"><span class="material-symbols-outlined text-sm">picture_as_pdf</span></button>
+<button class="text-slate-400 hover:text-sky-600"><span class="material-symbols-outlined text-sm">code</span></button>
+</div>
+</div>
+</div>
+<div class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl flex items-center justify-between group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-sky-600">description</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Boleta B001-00021</p>
+<p class="text-xs text-slate-500">05 Sep, 2023 • Consulta Gral.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-sm font-extrabold text-on-surface">S/ 80.00</p>
+<div class="flex gap-2 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-slate-400 hover:text-sky-600"><span class="material-symbols-outlined text-sm">picture_as_pdf</span></button>
+<button class="text-slate-400 hover:text-sky-600"><span class="material-symbols-outlined text-sm">code</span></button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 p-6 rounded-2xl bg-primary text-on-primary flex flex-col gap-4 shadow-xl shadow-primary/20">
+<div>
+<p class="text-xs font-medium opacity-80 uppercase">Saldo Pendiente</p>
+<p class="text-3xl font-extrabold tracking-tight">S/ 420.00</p>
+</div>
+<button class="w-full py-3 bg-white text-primary font-extrabold rounded-xl hover:bg-slate-50 transition-colors">Cobrar Ahora</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Overlay - Invoice Modal (Centered) -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"></div>
+<div class="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-[2rem] overflow-hidden shadow-2xl">
+<div class="p-8 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div>
+<h3 class="text-2xl font-extrabold text-on-surface tracking-tight">Emitir Comprobante</h3>
+<p class="text-slate-500 text-sm">Envío directo a SUNAT y WhatsApp del paciente.</p>
+</div>
+<button class="p-2 hover:bg-slate-100 rounded-full"><span class="material-symbols-outlined">close</span></button>
+</div>
+<div class="p-8 space-y-6">
+<!-- Type Selection -->
+<div class="grid grid-cols-2 gap-4">
+<label class="cursor-pointer group">
+<input checked="" class="hidden peer" name="doc_type" type="radio"/>
+<div class="p-4 border-2 border-slate-100 peer-checked:border-primary peer-checked:bg-sky-50 rounded-2xl transition-all">
+<p class="text-center font-bold text-slate-500 peer-checked:text-sky-700">Boleta de Venta</p>
+</div>
+</label>
+<label class="cursor-pointer group">
+<input class="hidden peer" name="doc_type" type="radio"/>
+<div class="p-4 border-2 border-slate-100 peer-checked:border-primary peer-checked:bg-sky-50 rounded-2xl transition-all">
+<p class="text-center font-bold text-slate-500 peer-checked:text-sky-700">Factura RUC</p>
+</div>
+</label>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase ml-1">DNI / RUC</label>
+<input class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-sky-500/20" type="text" value="70221455"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase ml-1">Monto (S/)</label>
+<input class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl text-sm font-extrabold focus:ring-2 focus:ring-sky-500/20" type="number" value="150.00"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase ml-1">Nombre / Razón Social</label>
+<input class="w-full px-4 py-3 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-sky-500/20" type="text" value="Ana Lucía Torres"/>
+</div>
+<div class="space-y-2">
+<label class="text-xs font-bold text-slate-500 uppercase ml-1">Procedimiento / Concepto</label>
+<div class="relative">
+<select class="w-full appearance-none px-4 py-3 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-sky-500/20 cursor-pointer">
+<option>Profilaxis Dental Completa</option>
+<option>Curación Simple</option>
+<option>Ortodoncia - Mensualidad</option>
+<option>Extracción Muela del Juicio</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-on-primary font-extrabold rounded-2xl flex items-center justify-center gap-3 hover:opacity-90 shadow-xl shadow-primary/20 active:scale-[0.98] transition-all mt-4">
+<span class="material-symbols-outlined">send</span>
+                    Emitir a SUNAT y Enviar por WhatsApp
+                </button>
+</div>
+</div>
+</div>
+</body></html>

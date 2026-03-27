@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clínica Arca - Agenda General</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#7bd0ff",
+                        "outline-variant": "#bfc7d2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#004c69",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "outline": "#707881",
+                        "on-surface-variant": "#3f4850",
+                        "surface-container": "#eceef0",
+                        "primary-fixed-dim": "#93ccff",
+                        "primary-container": "#007bb9",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f7f9fb",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e0e3e5",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#006398",
+                        "on-primary-fixed": "#001d31",
+                        "inverse-primary": "#93ccff",
+                        "primary-fixed": "#cce5ff",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-bright": "#f7f9fb",
+                        "on-secondary-fixed": "#131b2e",
+                        "secondary": "#565e74",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "tertiary": "#006387",
+                        "on-secondary-container": "#5c647a",
+                        "inverse-surface": "#2d3133",
+                        "primary": "#006194",
+                        "secondary-fixed": "#dae2fd",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-primary-fixed-variant": "#004b73",
+                        "secondary-container": "#dae2fd",
+                        "tertiary-container": "#007da9",
+                        "surface": "#f7f9fb",
+                        "on-tertiary-container": "#fcfcff",
+                        "tertiary-fixed": "#c4e7ff",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#fdfcff",
+                        "on-tertiary-fixed": "#001e2c"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 flex flex-col py-6 px-4 z-50">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div>
+<h1 class="text-xl font-bold tracking-tighter text-slate-900 dark:text-white">Clínica Arca</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Admin Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors duration-200 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span>Resumen</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300 font-semibold border-r-4 border-sky-600 font-manrope text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">calendar_today</span>
+<span>Agenda</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors duration-200 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span>Pacientes</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors duration-200 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl">edit_note</span>
+<span>Contenidos (CMS)</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors duration-200 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl">receipt_long</span>
+<span>Facturación (SUNAT)</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors duration-200 font-manrope text-sm font-medium tracking-tight" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span>Configuración</span>
+</a>
+</nav>
+<div class="mt-auto">
+<button class="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary text-on-primary rounded-xl font-bold shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg">add</span>
+                Nueva Cita
+            </button>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur-lg flex items-center justify-between ml-64 px-8 h-16 w-[calc(100%-16rem)] shadow-sm dark:shadow-none font-inter text-sm">
+<div class="flex items-center gap-4 w-1/3">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full focus:ring-2 focus:ring-sky-500/20 text-xs" placeholder="Buscar paciente, cita o historial..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-500 dark:text-slate-400">
+<button class="hover:text-sky-600 dark:hover:text-sky-300 transition-all p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="relative hover:text-sky-600 dark:hover:text-sky-300 transition-all p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full border-2 border-white dark:border-slate-900"></span>
+</button>
+</div>
+<div class="h-8 w-px bg-slate-200 dark:bg-slate-700"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Dra. Sonia</p>
+<p class="text-[10px] text-slate-500">Odontopediatría</p>
+</div>
+<img alt="Avatar de Dra. Sonia" class="w-10 h-10 rounded-full border-2 border-primary/20 object-cover" data-alt="professional portrait of a female dentist in a white lab coat with a warm friendly smile and modern clinic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0axMZbPVvzR7vFOXidaZzKRJQ7NFgPp21V7nx_GieHkCPCIO_ntQO4bun06-BPWe-KjVGWb7bNFJNi40NKnYgRUgugVqi6CPu0W3y6lVZ1GWNf_y3b3iDk_2zwu40U__rpGBGX1CRu6IYvYnL6XOx2QL5w_htsivFaifK-Dms5O7juinOqVH8mNIt2e8fv8n3GUV_mKeCB1jPH2QALAo1poCiEW36LfgOGCmn3qZxseeK9_2oT5r_ag9G3WkNuz5GwoXjw6C0LhE"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 p-8 min-h-screen">
+<!-- Content Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+<div class="space-y-4">
+<h2 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Agenda General</h2>
+<div class="flex items-center gap-4">
+<div class="flex items-center bg-surface-container-low p-1 rounded-lg">
+<button class="px-4 py-1.5 text-xs font-bold bg-white dark:bg-slate-800 rounded shadow-sm text-primary">Hoy</button>
+<div class="flex items-center gap-1 px-2 border-l border-slate-300 ml-2">
+<button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"><span class="material-symbols-outlined text-lg">chevron_left</span></button>
+<span class="text-xs font-semibold px-2">Mayo 22 - 27, 2024</span>
+<button class="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"><span class="material-symbols-outlined text-lg">chevron_right</span></button>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low p-1 rounded-lg">
+<button class="px-4 py-1.5 text-xs font-medium text-slate-500">Día</button>
+<button class="px-4 py-1.5 text-xs font-bold bg-white dark:bg-slate-800 rounded shadow-sm text-primary">Semana</button>
+<button class="px-4 py-1.5 text-xs font-medium text-slate-500">Mes</button>
+</div>
+<div class="relative">
+<select class="pl-3 pr-8 py-2 text-xs font-semibold bg-surface-container-low border-none rounded-lg focus:ring-primary appearance-none cursor-pointer">
+<option>Todos los Doctores</option>
+<option>Dr. Silva</option>
+<option>Dra. Sonia</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-lg">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-5 py-2.5 bg-error/10 text-error hover:bg-error/20 transition-colors rounded-xl text-xs font-bold border border-error/20">
+<span class="material-symbols-outlined text-lg">bolt</span>
+                    ⚡ IA: Reprogramar Día
+                </button>
+<button class="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary hover:bg-primary-container transition-colors rounded-xl text-xs font-bold shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">add</span>
+                    + Nueva Cita
+                </button>
+</div>
+</div>
+<!-- Weekly Calendar Grid -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
+<div class="grid grid-cols-7 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 flex items-center justify-center">
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hora</span>
+</div>
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 text-center">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Lun 22</p>
+</div>
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 text-center">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Mar 23</p>
+</div>
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 text-center bg-primary/5">
+<p class="text-xs font-bold text-primary">Mié 24</p>
+<div class="w-1.5 h-1.5 bg-primary rounded-full mx-auto mt-1"></div>
+</div>
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 text-center">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Jue 25</p>
+</div>
+<div class="p-4 border-r border-slate-200 dark:border-slate-800 text-center">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Vie 26</p>
+</div>
+<div class="p-4 text-center">
+<p class="text-xs font-bold text-slate-900 dark:text-white">Sáb 27</p>
+</div>
+</div>
+<div class="relative flex">
+<!-- Y-Axis Time Labels -->
+<div class="w-[calc(100%/7)] flex flex-col border-r border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/20">
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">08:00 AM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">09:00 AM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">10:00 AM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">11:00 AM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">12:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">01:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">02:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">03:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">04:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">05:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">06:00 PM</span>
+</div>
+<div class="h-24 p-2 text-right border-b border-slate-100 dark:border-slate-800/50">
+<span class="text-[10px] font-medium text-slate-400">07:00 PM</span>
+</div>
+</div>
+<!-- Days Grids -->
+<div class="flex-1 grid grid-cols-6 relative">
+<!-- Column Grid Lines -->
+<div class="absolute inset-0 grid grid-cols-6 pointer-events-none">
+<div class="border-r border-slate-200 dark:border-slate-800/40"></div>
+<div class="border-r border-slate-200 dark:border-slate-800/40"></div>
+<div class="border-r border-slate-200 dark:border-slate-800/40"></div>
+<div class="border-r border-slate-200 dark:border-slate-800/40"></div>
+<div class="border-r border-slate-200 dark:border-slate-800/40"></div>
+<div></div>
+</div>
+<!-- Day content columns with horizontal grid lines -->
+<div class="relative h-full">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<!-- Appointment 1: Mon 09:00 - 10:30 -->
+<div class="absolute top-[96px] left-1 right-1 h-[144px] bg-sky-50 dark:bg-sky-900/40 border-l-4 border-sky-600 rounded p-3 shadow-sm z-10 cursor-pointer hover:shadow-md transition-shadow group">
+<div class="flex justify-between items-start">
+<span class="text-[9px] font-bold text-sky-700 dark:text-sky-300 uppercase">Confirmado</span>
+<span class="material-symbols-outlined text-xs text-sky-400 opacity-0 group-hover:opacity-100">open_in_new</span>
+</div>
+<h4 class="text-xs font-bold text-slate-900 dark:text-white mt-1">Juan P. | Dr. Silva</h4>
+<p class="text-[10px] text-slate-500 font-medium">Implantes Dentales</p>
+<div class="mt-3 flex items-center gap-1.5 text-[9px] text-sky-700 dark:text-sky-300">
+<span class="material-symbols-outlined text-[12px]">schedule</span>
+                                09:00 - 10:30
+                            </div>
+</div>
+</div>
+<div class="relative">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<!-- Appointment 2: Tue 11:00 - 11:30 -->
+<div class="absolute top-[288px] left-1 right-1 h-[48px] bg-amber-50 dark:bg-amber-900/40 border-l-4 border-amber-400 rounded p-2 shadow-sm z-10 cursor-pointer hover:shadow-md transition-shadow">
+<h4 class="text-[10px] font-bold text-slate-900 dark:text-white leading-tight">Niño: Mateo R. | Dra. Sonia</h4>
+<div class="flex items-center gap-2 mt-0.5">
+<p class="text-[9px] text-slate-500 font-medium truncate">Odontopediatría (Pendiente)</p>
+</div>
+</div>
+</div>
+<div class="relative bg-primary/5">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<!-- Appointment 3: Wed 14:00 - 15:00 -->
+<div class="absolute top-[576px] left-1 right-1 h-[96px] bg-red-50 dark:bg-red-900/40 border-l-4 border-red-500 rounded p-3 shadow-sm z-10 cursor-pointer hover:shadow-md transition-shadow">
+<div class="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">error</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Emergencia</span>
+</div>
+<h4 class="text-xs font-bold text-slate-900 dark:text-white mt-1">Sra. Carmen | Infección</h4>
+<p class="text-[10px] text-slate-500 mt-1">Sala 02 - Inmediato</p>
+</div>
+</div>
+<div class="relative">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+</div>
+<div class="relative">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+</div>
+<div class="relative">
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+<div class="h-24 border-b border-slate-100 dark:border-slate-800/30"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal: New Appointment (Simulated) -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<!-- Backdrop -->
+<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md"></div>
+<!-- Modal Content -->
+<div class="relative bg-white dark:bg-slate-900 w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div>
+<h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Agendar Nueva Cita</h3>
+<p class="text-xs text-slate-500">Complete los detalles para confirmar el espacio.</p>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="p-6 space-y-5">
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1.5 col-span-2">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Paciente</label>
+<div class="relative">
+<select class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 pl-4 pr-10 focus:ring-2 focus:ring-primary/20 text-sm">
+<option>Seleccionar Paciente...</option>
+<option>Juan Pérez</option>
+<option>Ana García</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Doctor(a)</label>
+<select class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20 text-sm">
+<option>Dra. Sonia</option>
+<option>Dr. Silva</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Procedimiento</label>
+<select class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20 text-sm">
+<option>Limpieza General</option>
+<option>Ortodoncia</option>
+<option>Implante</option>
+</select>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Fecha</label>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20 text-sm" type="date" value="2024-05-24"/>
+</div>
+<div class="space-y-1.5">
+<label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Hora</label>
+<input class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-primary/20 text-sm" type="time" value="09:00"/>
+</div>
+</div>
+<div class="p-4 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex gap-3">
+<span class="material-symbols-outlined text-sky-600 dark:text-sky-400">info</span>
+<p class="text-[11px] text-sky-700 dark:text-sky-300 leading-relaxed font-medium">Se enviará un mensaje automático de confirmación al paciente vía WhatsApp al guardar la cita.</p>
+</div>
+<div class="pt-4 flex items-center justify-end gap-3">
+<button class="px-5 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" type="button">Cancelar</button>
+<button class="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary hover:bg-primary-container rounded-xl text-xs font-bold shadow-xl shadow-primary/30 transition-all active:scale-95" type="submit">
+<span class="material-symbols-outlined text-lg">chat</span>
+                        Guardar y Notificar
+                    </button>
+</div>
+</form>
+</div>
+</div>
+</body></html>

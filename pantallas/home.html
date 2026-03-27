@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clínica Arca | Odontología de Vanguardia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#c4e7ff",
+              "on-error-container": "#93000a",
+              "surface-tint": "#006398",
+              "inverse-primary": "#93ccff",
+              "error-container": "#ffdad6",
+              "on-tertiary-container": "#fcfcff",
+              "on-secondary-fixed-variant": "#3f465c",
+              "primary-fixed-dim": "#93ccff",
+              "surface-variant": "#e0e3e5",
+              "error": "#ba1a1a",
+              "inverse-surface": "#2d3133",
+              "surface-bright": "#f7f9fb",
+              "on-surface": "#191c1e",
+              "surface": "#f7f9fb",
+              "secondary-container": "#dae2fd",
+              "on-tertiary-fixed": "#001e2c",
+              "surface-container-highest": "#e0e3e5",
+              "surface-container": "#eceef0",
+              "surface-container-low": "#f2f4f6",
+              "on-primary-fixed-variant": "#004b73",
+              "tertiary": "#006387",
+              "on-surface-variant": "#3f4850",
+              "outline-variant": "#bfc7d2",
+              "surface-dim": "#d8dadc",
+              "on-primary-container": "#fdfcff",
+              "secondary-fixed-dim": "#bec6e0",
+              "on-primary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-secondary-container": "#5c647a",
+              "primary-container": "#007bb9",
+              "on-tertiary-fixed-variant": "#004c69",
+              "secondary-fixed": "#dae2fd",
+              "on-background": "#191c1e",
+              "on-error": "#ffffff",
+              "outline": "#707881",
+              "primary-fixed": "#cce5ff",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed": "#001d31",
+              "background": "#f7f9fb",
+              "primary": "#006194",
+              "tertiary-fixed-dim": "#7bd0ff",
+              "secondary": "#565e74",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#e6e8ea",
+              "on-secondary-fixed": "#131b2e",
+              "tertiary-container": "#007da9",
+              "inverse-on-surface": "#eff1f3"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-nav {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- 1. TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl shadow-sm dark:shadow-none font-headline antialiased tracking-tight">
+<div class="flex justify-between items-center h-20 px-8 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-sky-900 dark:text-sky-50">Clínica Arca</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-sky-700 dark:text-sky-400 font-semibold border-b-2 border-sky-700 dark:border-sky-400 pb-1" href="#">Inicio</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors" href="#">Odontopediatría</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors" href="#">Implantes</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-300 transition-colors" href="#">Anestesiología</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 rounded-full hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300 text-slate-600 dark:text-slate-400" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="hidden lg:block px-5 py-2 text-primary font-semibold hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg transition-all">Portal Paciente</button>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-6 py-2.5 rounded-lg font-bold shadow-md active:scale-95 duration-150 ease-in-out">Agendar Cita</button>
+</div>
+</div>
+</nav>
+<main>
+<!-- 2. Hero Section -->
+<section class="relative py-24 lg:py-32 overflow-hidden">
+<div class="max-w-screen-2xl mx-auto px-8 grid lg:grid-cols-2 gap-16 items-center">
+<div class="z-10">
+<span class="inline-block px-4 py-1.5 mb-6 text-sm font-bold tracking-widest text-primary uppercase bg-primary-fixed rounded-full">Tecnología de Punta</span>
+<h1 class="text-5xl lg:text-7xl font-headline font-extrabold tracking-tighter text-on-surface leading-[1.1] mb-8">
+                        Odontología de Vanguardia. <span class="text-primary italic">Sin dolor</span>, con precisión absoluta
+                    </h1>
+<p class="text-xl text-on-surface-variant max-w-xl mb-10 leading-relaxed">
+                        Redefinimos la experiencia dental combinando calidez humana con tecnología robótica y sedación consciente para tu total tranquilidad.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">Primera Consulta Gratis</button>
+<button class="bg-surface-container-high text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+                            Ver Instalaciones <span class="material-symbols-outlined">play_circle</span>
+</button>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -top-12 -right-12 w-64 h-64 bg-tertiary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+<div class="absolute -bottom-8 -left-8 w-72 h-72 bg-secondary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+<div class="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800">
+<img class="w-full h-[500px] object-cover" data-alt="Modern high-tech dental clinic interior with robotic arm and professional dentist in clinical blue uniform smiling in bright minimalist environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVJfhsUp5w-iE8mFMVivTnwk3-jH0D3uV1y_QuLkTky5T1oJFYSLWATIFIVyKkGcIZrg__8dQvvx3aNE8bLxGQSwgoYNtyAUoq_j3_3ja2qWkzVxeln9rZtWh7wNyX9SqVxqWo1BnyNrm2HpRVEL7bDkTzt0ddQozHgz-jtbKMrsdpvY21XarUEOZN3QRBWo6ap0LO3EFGhHby8VVWqyLoqi1OTAm5CWKRdqISd_4m9GBFBYXVNjSebw_GPT0pge4ULZqgknGNq7I"/>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Sección de Especialidades -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+<div class="max-w-2xl">
+<h2 class="text-4xl font-headline font-bold mb-4 tracking-tight">Especialidades Avanzadas</h2>
+<p class="text-on-surface-variant text-lg">Tratamientos diseñados bajo estándares internacionales de excelencia y bioseguridad.</p>
+</div>
+<a class="text-primary font-bold flex items-center gap-2 hover:underline" href="#">Ver todas las especialidades <span class="material-symbols-outlined">arrow_forward</span></a>
+</div>
+<div class="grid md:grid-cols-3 gap-8">
+<!-- Odontopediatría -->
+<div class="group bg-surface-container-lowest p-8 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+<div class="w-14 h-14 bg-secondary-container text-secondary flex items-center justify-center rounded-2xl mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">child_care</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Odontopediatría</h3>
+<p class="text-on-surface-variant mb-6 leading-relaxed">Creamos experiencias positivas para los más pequeños en un ambiente lúdico y seguro.</p>
+<div class="h-48 rounded-2xl overflow-hidden mb-6">
+<img class="w-full h-full object-cover" data-alt="Pediatric dental room with colorful murals and friendly dentist showing tools to a curious child" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLiQTMHIM-7sYVIOIkii-qSR5SrPHRqojHK5PZeM89RqJ82pz17EgnSj7IS8a5OGhHoCBUiPTwC1BlQt60wd8zRXirztLK3Dm_QSBV1Eb5ARYtRb1J7IA029r1182ONrCAu8qR7uRQixcAWZ7cifmP_SiDcDIGty7ovK4gPwHzPCbEPhWowWnuiRyNCN5z8dDiqmvF36FWxrEn6ozShUPPHUkMrb1jYQkrEwK1CwVLb59vgQ-z8TOpJucGkbW0L9-V6bd_6aGZ6FA"/>
+</div>
+<button class="w-full py-3 rounded-xl border-2 border-outline-variant text-on-surface-variant font-semibold group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">Saber más</button>
+</div>
+<!-- Implantes -->
+<div class="group bg-surface-container-lowest p-8 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+<div class="w-14 h-14 bg-secondary-container text-secondary flex items-center justify-center rounded-2xl mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">dentistry</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Implantes</h3>
+<p class="text-on-surface-variant mb-6 leading-relaxed">Recupera tu sonrisa con tecnología de carga inmediata y materiales biocompatibles de alta gama.</p>
+<div class="h-48 rounded-2xl overflow-hidden mb-6">
+<img class="w-full h-full object-cover" data-alt="Close up of high quality dental implant prototype and 3D digital oral scan on screen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJe-YHkVbcvgkBKOwwFXEeyMSGtOGLZUYGC2jCLmPTtJtk_YOMd__bJ9Dn_vFv_Z_0XBKE2vJv0UINuXsy7L_MV52ODpwtU93kR2n_ET5gUBywzjCO-vj7OPMwJuzpMnvCmjkiCZNdtcuVMJ_FJXHZAWqn2mXCf7bS9Vtx3Mmb5_F0WQpx1vvYMdw2Qq0ew7rqLLazN8lrvZ8DUOb9dMwWAF2dVErnwFbZr_OXtJYZy1V3C2jp6fcY0A3qBzBLnoGrwM_NuprZg0Q"/>
+</div>
+<button class="w-full py-3 rounded-xl border-2 border-outline-variant text-on-surface-variant font-semibold group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">Saber más</button>
+</div>
+<!-- Sedación -->
+<div class="group bg-surface-container-lowest p-8 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+<div class="w-14 h-14 bg-secondary-container text-secondary flex items-center justify-center rounded-2xl mb-6 group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">medical_services</span>
+</div>
+<h3 class="text-2xl font-headline font-bold mb-3">Sedación Consciente</h3>
+<p class="text-on-surface-variant mb-6 leading-relaxed">Elimina la ansiedad por completo con nuestro equipo de anestesiología especializado.</p>
+<div class="h-48 rounded-2xl overflow-hidden mb-6">
+<img class="w-full h-full object-cover" data-alt="Patient in dental chair looking relaxed with pulse oximeter monitoring during a painless procedure" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnv9TCjja1q7r5HcP3P2xKgdkTT_L3iZ3dtvGTQeGTIpuB63ajCKnMYW7uxcVqYXlMEDbOmw94xYWngaWsDGxxCaQWbOLksz0JyDOsoxEYXXZ9MVMllZqeqhjO-OAPG78Flu2mZVt1DcgZp4wdim-fFZTglM88aqvuQ8a1bomPl9jfeRv_CSJtkRk6mTALBUYn_StVc5I95JlYbIvYSszZkIs5di_mNT7lQaOrbzgPc-3xN52uQ3C8HmHU_OqDSI5I97Diruqsmkk"/>
+</div>
+<button class="w-full py-3 rounded-xl border-2 border-outline-variant text-on-surface-variant font-semibold group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all">Saber más</button>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. SECCIÓN TESTIMONIOS (SOCIAL PROOF) -->
+<section class="py-24 bg-surface">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="text-center mb-16">
+<h2 class="text-4xl font-headline font-bold mb-4">Experiencias Reales</h2>
+<p class="text-on-surface-variant max-w-xl mx-auto">Más de 5,000 pacientes han transformado su vida con nosotros. Escucha sus historias.</p>
+</div>
+<!-- Grid horizontal de testimonios tipo Reel -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Comentario: Conectar mediante Supabase 'SELECT * FROM patient_testimonials WHERE featured = true' -->
+<!-- Tarjeta 1 -->
+<div class="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Smiling young man in a casual shirt showing his perfect white smile in a natural outdoor setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjZ9IjUkAC7A5Q7GD29dcXj6gbdIWOAzBsXsd7HfwJhmjk_0ui0xKzfm5sAOzIgBeuAOh4SBDptSJfdIPMap2T3QWaEMMcFThR5TEgaRkuXdJjmHP-PgZYYYFtjQNLzW3qTs9c3u-j43IEyPtyo1dLLjPquYkgRjYQLqvkB6EI4Zt0sr89NG8MCiaZigrH5BzHw7gGZecVljfhuKxZGgm6lk0hiEmgmvKcRTmaar-q0QNYhEnHNA326fBgva19UsgHV3G1G2WNLQk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex gap-1 mb-2 text-yellow-400">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="text-white font-bold text-lg">Carlos M.</h4>
+<p class="text-white/80 text-sm line-clamp-2">"Increíble trato, no sentí absolutamente nada durante mi implante."</p>
+</div>
+</div>
+<!-- Tarjeta 2 -->
+<div class="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="A professional woman smiling warmly after a cosmetic dental treatment in a stylish office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCKSTwoG_YbfGFLREKcMyypn1d6MbOYl9xaPOsQ49QEUHAN8aKQmKvdkLfEtsdXaLZ8x1YXzQWzxExpRkN6IrXwaxA61NOo5vteqnonwnQGucJa_fGukDszpwUcWzdm99MZi3Q0i1bRjxjyNeVNBQl1dd8Gb4PgQn5iMVOdMhbTCT_bGkdCov2inQHkNHgeu2Ji5Jj_Z2EoEUNYpmJhB-Xc88pTXckAeh725s1Wq03hi_G26oSQ9S1GAcXw46VyzPin30SN3qc3T0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex gap-1 mb-2 text-yellow-400">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="text-white font-bold text-lg">Elena R.</h4>
+<p class="text-white/80 text-sm line-clamp-2">"Mis hijos aman venir aquí. El área de niños es fantástica."</p>
+</div>
+</div>
+<!-- Tarjeta 3 -->
+<div class="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Senior gentleman laughing heartily showing a healthy set of teeth in a bright sunlit studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZICe4z22n5DmCVIoa3X1bT4JwkAmG3uqm9nFvp02m2bUmyYadTom0kxu69vF2ZiPnZbROaLZhVUlmMUDxGY4XRGgWJmCIQmb3Tv2f0-OHKuJ7qjT7GoOclUJNP191xTVCECfJuOzNCdxkb3_9aY6-X7LN86Whme_yUC8xy-9n9h110SDBpW3OyvMo_FBfdYYrFlE66J_XNamlRP63Cxfi4mEO8ZpYywpy2tyfCVLdzjXOOSmpA9c9PFD1k5Ra6sE-SLz5SVc30S4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex gap-1 mb-2 text-yellow-400">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="text-white font-bold text-lg">Roberto F.</h4>
+<p class="text-white/80 text-sm line-clamp-2">"La tecnología que usan es de otro nivel. Súper recomendado."</p>
+</div>
+</div>
+<!-- Tarjeta 4 -->
+<div class="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer shadow-lg">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" data-alt="Young artist smiling confidently at the camera highlighting her orthodontic results in a creative loft space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNkZKyY3u5UqQrZqz3LO19NGUdPjUHoa5oyQfDIIOUD1XQca5S8lhdJU5p0V02MsUZTKDLOc_ECDyD1o1kXU2z76ySsXkUCtrBsJmLzUbH4l1JF13kCjMJl7RHr8gEYXEua9dzv0p_3HqOSztuFDIrOXgSoEv_aCbBcS9UrBEEgQbCV7_DEA4VoZ7evdqK3pV_xV0QzeySLrA34HzHmHIoeu_IiNbIjX-YI_Yz_Yu0W0WaNUQCcmQVqHXFIQQ-955zTdmyyIq2wb4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-125 transition-transform">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex gap-1 mb-2 text-yellow-400">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<h4 class="text-white font-bold text-lg">Lucía S.</h4>
+<p class="text-white/80 text-sm line-clamp-2">"La sedación fue la clave para perder mi miedo al dentista."</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Sección de Noticias y Convenios -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="grid lg:grid-cols-2 gap-16">
+<!-- Noticias (Bento Style) -->
+<div>
+<h2 class="text-3xl font-headline font-bold mb-8">Actualidad Clínica</h2>
+<div class="grid gap-6">
+<div class="flex gap-6 items-center bg-surface-container-lowest p-4 rounded-2xl hover:bg-white transition-all shadow-sm">
+<img class="w-32 h-32 rounded-xl object-cover shrink-0" data-alt="Professional dentist teaching a workshop about digital dentistry with tablets and advanced equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLr9jVntVbJPKlBOX6fgm3HvuxlHp-O3m5DxGUlzTzgSRo4gRUR38WJKb7TRAdYSfHh-6YqHE1NdGfDEDy1vSgDrADFYBecrHQT67Mo7Ifo2MdJgZ8J92xx8SS1Ohh5CyykNzIeU5PZ5LVcF6Cor9oPI0D7_tH3ORcgXxslQ4JsKtUpsERDqGztZGI1TGbG2ciVaxMFj1pwiy2-WnK2YoKr3ZLaAXDaVpfYjaB1tba65WUdi6-uALS5kBpRLPsjxXRssr7jSkeBnk"/>
+<div>
+<span class="text-primary text-xs font-bold uppercase tracking-wider">Innovación</span>
+<h4 class="font-headline font-bold text-lg mt-1">Inauguramos nuestra nueva unidad de escaneo 3D facial</h4>
+<p class="text-sm text-on-surface-variant mt-2 line-clamp-1">Precisión milimétrica para cirugías maxilofaciales más seguras.</p>
+</div>
+</div>
+<div class="flex gap-6 items-center bg-surface-container-lowest p-4 rounded-2xl hover:bg-white transition-all shadow-sm">
+<img class="w-32 h-32 rounded-xl object-cover shrink-0" data-alt="Award plaque with Arca Clinic logo representing medical excellence in a modern frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPa5R703_i_0-3ipN53zcNGb5yxcEk4cnLcBky3OA9XF759ghYjVUKy5uzBfWwxi7X68WSY6cG7Vd3Iy85d2L8zlzHsHpFWoaEBK0nUVgLebCkXhdAjMiq8n2xYR-ryVWPx-puqRplnjS3mhWMp-KPL8Xo5BF-VdQd2STFvtep7WQtipIs0dbfoQsBkrQS7q6eQWoX4Pj292Gl8fTyda9vRj37fJPG2OZB6eJeT-EYQw1wio9dteptZ-zktVEGKjkQR1leV8GNxJ0"/>
+<div>
+<span class="text-primary text-xs font-bold uppercase tracking-wider">Premios</span>
+<h4 class="font-headline font-bold text-lg mt-1">Reconocidos como clínica líder en excelencia médica 2024</h4>
+<p class="text-sm text-on-surface-variant mt-2 line-clamp-1">Un logro compartido con toda nuestra comunidad de pacientes.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Convenios -->
+<div>
+<h2 class="text-3xl font-headline font-bold mb-8">Convenios y Aseguradoras</h2>
+<div class="bg-surface-container-lowest p-10 rounded-3xl">
+<p class="text-on-surface-variant mb-8">Trabajamos con las principales instituciones para que tu salud sea siempre la prioridad.</p>
+<div class="grid grid-cols-3 gap-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">HEALTH+</div>
+</div>
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">MEDICARE</div>
+</div>
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">GLOBALCARE</div>
+</div>
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">SANTÉ</div>
+</div>
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">SECURELIFE</div>
+</div>
+<div class="flex items-center justify-center p-4">
+<div class="font-bold text-slate-400">PRIMEINSURE</div>
+</div>
+</div>
+<div class="mt-10 pt-8 border-t border-surface-variant text-center">
+<p class="text-sm text-on-surface-variant italic">¿No ves tu seguro? Contáctanos para consultar convenios específicos.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- 6. Botón flotante del Agente IA (SideNavBar Hybrid) -->
+<div class="fixed bottom-8 right-8 z-[100]">
+<div class="relative group">
+<!-- Pulsating indicator -->
+<div class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 animate-pulse z-10"></div>
+<button class="bg-white dark:bg-slate-900 h-16 w-16 rounded-full flex items-center justify-center shadow-2xl shadow-emerald-500/20 ring-4 ring-emerald-500/30 hover:scale-110 transition-transform cursor-pointer overflow-hidden border border-emerald-100 dark:border-emerald-900">
+<span class="material-symbols-outlined text-emerald-500 text-3xl">smart_toy</span>
+</button>
+<!-- Tooltip / Label -->
+<div class="absolute bottom-20 right-0 bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-xl whitespace-nowrap border border-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+<p class="text-sm font-bold text-on-surface">Arca Assistant</p>
+<p class="text-xs text-on-surface-variant">Consultas rápidas</p>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-highest py-20 border-t border-surface-variant">
+<div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-4 gap-12">
+<div class="col-span-2">
+<div class="text-3xl font-bold tracking-tighter text-sky-900 mb-6">Clínica Arca</div>
+<p class="text-on-surface-variant max-w-sm mb-8 leading-relaxed">Excelencia odontológica basada en tecnología, transparencia y trato humano. Tu sonrisa es nuestro mayor compromiso.</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#"><span class="material-symbols-outlined text-sm">public</span></a>
+<a class="w-10 h-10 bg-surface-container-high rounded-full flex items-center justify-center hover:bg-primary hover:text-white transition-colors" href="#"><span class="material-symbols-outlined text-sm">alternate_email</span></a>
+</div>
+</div>
+<div>
+<h5 class="font-bold mb-6 text-on-surface">Servicios</h5>
+<ul class="space-y-4 text-on-surface-variant">
+<li><a class="hover:text-primary transition-colors" href="#">Odontopediatría</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Implantes Dentales</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Ortodoncia Invisible</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sedación Consciente</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold mb-6 text-on-surface">Contacto</h5>
+<p class="text-on-surface-variant mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">location_on</span> Av. Vanguardia 450, Ciudad</p>
+<p class="text-on-surface-variant mb-4 flex items-center gap-2"><span class="material-symbols-outlined text-primary">call</span> +56 2 2345 6789</p>
+<button class="mt-4 w-full bg-primary text-on-primary py-3 rounded-xl font-bold">Escríbenos</button>
+</div>
+</div>
+<div class="max-w-screen-2xl mx-auto px-8 mt-20 pt-8 border-t border-surface-variant flex flex-col md:flex-row justify-between gap-6 text-sm text-on-surface-variant">
+<p>© 2024 Clínica Arca. Todos los derechos reservados.</p>
+<div class="flex gap-8">
+<a class="hover:underline" href="#">Políticas de Privacidad</a>
+<a class="hover:underline" href="#">Términos de Servicio</a>
+</div>
+</div>
+</footer>
+</body></html>
