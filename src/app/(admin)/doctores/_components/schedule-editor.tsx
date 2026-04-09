@@ -41,6 +41,9 @@ export function ScheduleEditor({ doctorId }: ScheduleEditorProps) {
   const upsertMutation = useUpsertSchedules();
   const [schedules, setSchedules] = useState<DaySchedule[]>(DEFAULT_SCHEDULE);
 
+  // Sincroniza el estado editable con los horarios cargados del servidor.
+  // Patrón "hydrate local state from server data": el effect dispara solo al
+  // resolver la query (1 vez), el cascading render extra es negligible.
   useEffect(() => {
     if (existingSchedules && existingSchedules.length > 0) {
       const merged = DAYS.map((d) => {
@@ -61,6 +64,7 @@ export function ScheduleEditor({ doctorId }: ScheduleEditorProps) {
               is_active: false,
             };
       });
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSchedules(merged);
     }
   }, [existingSchedules]);

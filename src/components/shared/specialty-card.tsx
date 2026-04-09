@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 
@@ -8,6 +9,7 @@ interface SpecialtyCardProps {
   description: string;
   imageUrl: string;
   imageAlt: string;
+  href?: string;
 }
 
 export function SpecialtyCard({
@@ -16,6 +18,7 @@ export function SpecialtyCard({
   description,
   imageUrl,
   imageAlt,
+  href,
 }: SpecialtyCardProps) {
   return (
     <div className="group bg-surface-container-lowest p-8 rounded-3xl transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -43,9 +46,17 @@ export function SpecialtyCard({
       </div>
 
       {/* Botón */}
-      <Button variant="outline" className="w-full py-3">
-        Saber más
-      </Button>
+      {href ? (
+        <Link href={href} className="block">
+          <Button variant="outline" tabIndex={-1} className="w-full py-3">
+            Saber más
+          </Button>
+        </Link>
+      ) : (
+        <Button variant="outline" className="w-full py-3">
+          Saber más
+        </Button>
+      )}
     </div>
   );
 }

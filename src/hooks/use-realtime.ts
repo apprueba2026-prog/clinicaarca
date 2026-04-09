@@ -12,7 +12,11 @@ export function useRealtime(table: string, queryKey: string[]) {
   const supabase = useSupabase();
   const queryClient = useQueryClient();
   const queryKeyRef = useRef(queryKey);
-  queryKeyRef.current = queryKey;
+
+  // Mantener el ref sincronizado con el último queryKey sin resuscribir el canal.
+  useEffect(() => {
+    queryKeyRef.current = queryKey;
+  }, [queryKey]);
 
   useEffect(() => {
     const channel = supabase

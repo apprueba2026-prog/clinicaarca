@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://clinicaarca.pe";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://clinicaarca.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,7 +8,20 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/dashboard", "/agenda", "/pacientes", "/contenidos", "/facturacion", "/configuracion", "/login", "/api/"],
+        disallow: [
+          "/dashboard",
+          "/agenda",
+          "/pacientes",
+          "/doctores",
+          "/contenidos",
+          "/facturacion",
+          "/configuracion",
+          "/login",
+          "/registro",
+          "/recuperar-contrasena",
+          "/mi-cuenta",
+          "/api/",
+        ],
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,

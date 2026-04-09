@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Icon } from "@/components/ui/icon";
-import { Button } from "@/components/ui/button";
+import { ContactActions } from "@/components/shared/contact-actions";
 
 export const metadata: Metadata = {
   title: "Ubicación | Clínica Arca",
@@ -66,21 +66,7 @@ export default function UbicacionPage() {
                 <h3 className="font-headline text-xl font-bold text-on-surface">
                   Hablemos
                 </h3>
-                <div className="flex flex-col gap-3">
-                  <Button
-                    variant="primary"
-                    className="w-full bg-gradient-to-r from-primary to-primary-container py-3.5 shadow-md"
-                  >
-                    <Icon name="smart_toy" />
-                    Chatear con IA (24/7)
-                  </Button>
-                  <a href="tel:+51985289689" className="block">
-                    <Button variant="secondary" className="w-full py-3.5" tabIndex={-1}>
-                      <Icon name="call" />
-                      Llamar a Recepción · 985 289 689
-                    </Button>
-                  </a>
-                </div>
+                <ContactActions />
               </div>
             </div>
           </div>

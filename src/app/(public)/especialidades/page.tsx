@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
@@ -29,7 +30,7 @@ export default function EspecialidadesPage() {
       </header>
 
       {/* ========== SECCIÓN 1: ODONTOPEDIATRÍA ========== */}
-      <section className="bg-surface-container-low dark:bg-surface-container-low/50 overflow-hidden">
+      <section id="odontopediatria" className="scroll-mt-24 bg-surface-container-low dark:bg-surface-container-low/50 overflow-hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center">
           {/* Texto */}
           <div className="w-full md:w-1/2 py-16 lg:py-24 px-8 md:px-20">
@@ -72,7 +73,7 @@ export default function EspecialidadesPage() {
       </section>
 
       {/* ========== SECCIÓN 2: IMPLANTES ========== */}
-      <section className="bg-surface overflow-hidden">
+      <section id="implantes" className="scroll-mt-24 bg-surface overflow-hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col-reverse md:flex-row items-center">
           {/* Imagen */}
           <div className="w-full md:w-1/2 h-[400px] md:h-[700px] relative overflow-hidden group">
@@ -108,20 +109,23 @@ export default function EspecialidadesPage() {
                   <span>Garantía de oseointegración</span>
                 </div>
               </div>
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-fit mt-8 shadow-lg hover:shadow-primary/20"
-              >
-                Consulta Diagnóstica
-              </Button>
+              <Link href="/agendar-cita" className="w-fit mt-8">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  tabIndex={-1}
+                  className="shadow-lg hover:shadow-primary/20"
+                >
+                  Consulta Diagnóstica
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* ========== SECCIÓN 3: ANESTESIOLOGÍA ========== */}
-      <section className="bg-surface-container-highest/30 overflow-hidden">
+      <section id="anestesiologia" className="scroll-mt-24 bg-surface-container-highest/30 overflow-hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center">
           {/* Texto */}
           <div className="w-full md:w-1/2 py-16 lg:py-24 px-8 md:px-20">
@@ -165,7 +169,7 @@ export default function EspecialidadesPage() {
       </section>
 
       {/* ========== SECCIÓN 4: ODONTOLOGÍA GENERAL ========== */}
-      <section className="bg-surface overflow-hidden">
+      <section id="odontologia-general" className="scroll-mt-24 bg-surface overflow-hidden">
         <div className="max-w-[1400px] mx-auto flex flex-col-reverse md:flex-row items-center">
           {/* Imagen */}
           <div className="w-full md:w-1/2 h-[400px] md:h-[700px] relative overflow-hidden group">
@@ -205,13 +209,16 @@ export default function EspecialidadesPage() {
                   </p>
                 </div>
               </div>
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-fit mt-8 bg-primary-container shadow-lg hover:shadow-primary-container/20"
-              >
-                Reserva Tu Revisión
-              </Button>
+              <Link href="/agendar-cita" className="w-fit mt-8">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  tabIndex={-1}
+                  className="bg-primary-container shadow-lg hover:shadow-primary-container/20"
+                >
+                  Reserva Tu Revisión
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

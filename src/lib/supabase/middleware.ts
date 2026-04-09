@@ -6,8 +6,14 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder-key";
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error(
+      "Faltan variables de entorno Supabase: NEXT_PUBLIC_SUPABASE_URL y/o NEXT_PUBLIC_SUPABASE_ANON_KEY"
+    );
+  }
 
   const supabase = createServerClient(
     supabaseUrl,
@@ -35,6 +41,18 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  // Leer rol desde profiles (fuente de verdad, no editable por el cliente).
+  // user_metadata NO se puede usar aquí: el propio usuario puede modificarlo.
+  let role: string | null = null;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    role = profile?.role ?? null;
+  }
 
   const pathname = request.nextUrl.pathname;
 
@@ -64,10 +82,11 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Proteger rutas admin: pacientes no pueden acceder
+  // Proteger rutas admin: solo staff (allowlist explícita).
+  // Cualquier rol distinto de admin/dentist/receptionist es redirigido.
   if (isAdminRoute && user) {
-    const role = user.user_metadata?.role as string;
-    if (role === "patient") {
+    const isStaff = role === "admin" || role === "dentist" || role === "receptionist";
+    if (!isStaff) {
       const url = request.nextUrl.clone();
       url.pathname = "/mi-cuenta";
       return NextResponse.redirect(url);
@@ -84,7 +103,6 @@ export async function updateSession(request: NextRequest) {
   // Si está logueado y va a rutas de auth, redirigir según rol
   if (isAuthRoute && user) {
     const url = request.nextUrl.clone();
-    const role = user.user_metadata?.role as string;
     url.pathname = role === "patient" ? "/mi-cuenta" : "/dashboard";
     return NextResponse.redirect(url);
   }

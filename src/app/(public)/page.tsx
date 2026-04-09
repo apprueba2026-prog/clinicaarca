@@ -24,6 +24,7 @@ const specialties = [
     imageUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuA6wemSKYnCYKXzzocoSSuwdzzqgcoGvtcMquxmXwGeafmMDinesxJapKULzRUWjue54dKi8Yl7byuc56GnXcJOgaZRVYQ8HZ5dVLRp5vXDKXA_8t7DLiD39-G2VYbnu48OCJ1YTLLaHY8mEuhtDiQoBToHzMp8tp7shRTAYhROUrtRsRIS2qJuLoNZVgRIq2Xc3JYXmwGX8qhRW9lZ2WpOKg9EDwdf11uAe_kHS8XCXXfv4uuahanR583h0-P1qfEkqmwNIjOCv5A",
     imageAlt: "Dentista atendiendo a niño en consultorio pediátrico moderno",
+    href: "/especialidades#odontopediatria",
   },
   {
     icon: "dentistry",
@@ -33,6 +34,7 @@ const specialties = [
     imageUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAJe-YHkVbcvgkBKOwwFXEeyMSGtOGLZUYGC2jCLmPTtJtk_YOMd__bJ9Dn_vFv_Z_0XBKE2vJv0UINuXsy7L_MV52ODpwtU93kR2n_ET5gUBywzjCO-vj7OPMwJuzpMnvCmjkiCZNdtcuVMJ_FJXHZAWqn2mXCf7bS9Vtx3Mmb5_F0WQpx1vvYMdw2Qq0ew7rqLLazN8lrvZ8DUOb9dMwWAF2dVErnwFbZr_OXtJYZy1V3C2jp6fcY0A3qBzBLnoGrwM_NuprZg0Q",
     imageAlt: "Prototipo de implante dental y escaneo digital 3D",
+    href: "/especialidades#implantes",
   },
   {
     icon: "medical_services",
@@ -42,6 +44,7 @@ const specialties = [
     imageUrl:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBnv9TCjja1q7r5HcP3P2xKgdkTT_L3iZ3dtvGTQeGTIpuB63ajCKnMYW7uxcVqYXlMEDbOmw94xYWngaWsDGxxCaQWbOLksz0JyDOsoxEYXXZ9MVMllZqeqhjO-OAPG78Flu2mZVt1DcgZp4wdim-fFZTglM88aqvuQ8a1bomPl9jfeRv_CSJtkRk6mTALBUYn_StVc5I95JlYbIvYSszZkIs5di_mNT7lQaOrbzgPc-3xN52uQ3C8HmHU_OqDSI5I97Diruqsmkk",
     imageAlt: "Paciente relajado durante procedimiento con sedación",
+    href: "/especialidades#anestesiologia",
   },
 ];
 
@@ -125,9 +128,11 @@ export default function HomePage() {
               tranquilidad.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Button variant="primary" size="lg" className="shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
-                Primera Consulta Gratis
-              </Button>
+              <Link href="/agendar-cita">
+                <Button variant="primary" size="lg" tabIndex={-1} className="shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                  Primera Consulta Gratis
+                </Button>
+              </Link>
               <Button variant="secondary" size="lg">
                 Ver Instalaciones <Icon name="play_circle" />
               </Button>

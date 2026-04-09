@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
@@ -77,6 +78,10 @@ export function PatientAppointmentCard({
   onCancel,
   showCancelButton = false,
 }: PatientAppointmentCardProps) {
+  // "now" fijado en el montaje del componente (lazy init) para mantener pureza
+  // de render. La ventana de cancelación es estable durante la vida del card.
+  const [now] = useState(() => Date.now());
+
   const doctorName = `Dr(a). ${appointment.doctor.profile.first_name} ${appointment.doctor.profile.last_name}`;
   const primarySpecialty = appointment.doctor.specialties?.[0] ?? "general";
   const specialty = specialtyLabels[primarySpecialty] ?? primarySpecialty;
@@ -89,8 +94,7 @@ export function PatientAppointmentCard({
     const appointmentTime = new Date(
       `${appointment.scheduled_date}T${appointment.start_time}`
     );
-    const hoursUntil =
-      (appointmentTime.getTime() - Date.now()) / (1000 * 60 * 60);
+    const hoursUntil = (appointmentTime.getTime() - now) / (1000 * 60 * 60);
     return hoursUntil >= 24;
   })();
 

@@ -662,8 +662,10 @@ async function createAppointment(args: unknown) {
 
     // Magic link: solo si el paciente es nuevo (sin auth_user_id) y tiene email
     if (patient.email && !patient.auth_user_id) {
-      const siteUrl =
-        process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+      if (!siteUrl) {
+        throw new Error("NEXT_PUBLIC_SITE_URL no está configurada");
+      }
       const { data: linkData, error: linkError } =
         await supabase.auth.admin.generateLink({
           type: "magiclink",

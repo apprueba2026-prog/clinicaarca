@@ -19,7 +19,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://clinicaarca.pe"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://clinicaarca.com"
   ),
   title: {
     default: "Clínica Arca — Centro Odontológico",
@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_PE",
     siteName: "Clínica Arca",
+    images: ["/opengraph-image"],
   },
 };
 
