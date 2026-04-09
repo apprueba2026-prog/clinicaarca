@@ -1,11 +1,27 @@
 "use client";
 
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { addDays, subDays, startOfWeek, format } from "date-fns";
+import { useMemo, useCallback, useTransition } from "react";
+import {
+  useQuery,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
+import {
+  addDays,
+  subDays,
+  addMonths,
+  subMonths,
+  startOfWeek,
+  startOfMonth,
+  endOfMonth,
+  endOfWeek,
+  format,
+} from "date-fns";
 import { es } from "date-fns/locale";
 import { Icon } from "@/components/ui/icon";
 import { CalendarGrid } from "@/components/shared/calendar-grid";
+import { CalendarDayView } from "@/components/shared/calendar-day-view";
+import { CalendarMonthView } from "@/components/shared/calendar-month-view";
 import { NewAppointmentModal } from "@/components/shared/new-appointment-modal";
 import { useFiltersStore } from "@/stores/filters.store";
 import { useModalStore } from "@/stores/modal.store";
@@ -23,26 +39,23 @@ const VIEW_LABELS: Record<CalendarView, string> = {
   month: "Mes",
 };
 
-async function getWeekAppointments(
-  weekStart: Date,
+async function getAppointments(
+  startDate: string,
+  endDate: string,
   doctorId: string | null
 ): Promise<AppointmentWithDetails[]> {
   const supabase = createClient();
-  const monday = startOfWeek(weekStart, { weekStartsOn: 1 });
-  const saturday = addDays(monday, 5);
-  const start = format(monday, "yyyy-MM-dd");
-  const end = format(saturday, "yyyy-MM-dd");
 
   let query = supabase
     .from("appointments")
     .select(
       `id, scheduled_date, start_time, end_time, status, priority, notes, room,
        patient:patients(first_name, last_name, dni, phone),
-       doctor:doctors(specialty, profile:profiles(first_name, last_name)),
+       doctor:doctors(specialties, profile:profiles(first_name, last_name)),
        procedure:procedures(name, category)`
     )
-    .gte("scheduled_date", start)
-    .lte("scheduled_date", end)
+    .gte("scheduled_date", startDate)
+    .lte("scheduled_date", endDate)
     .order("start_time", { ascending: true });
 
   if (doctorId) {
@@ -52,6 +65,14 @@ async function getWeekAppointments(
   const { data, error } = await query;
   if (error) throw error;
   return (data as unknown as AppointmentWithDetails[]) ?? [];
+}
+
+/** Skip Sundays: returns the next/prev valid date */
+function skipSunday(date: Date, direction: number): Date {
+  if (date.getDay() === 0) {
+    return direction > 0 ? addDays(date, 1) : subDays(date, 1);
+  }
+  return date;
 }
 
 export default function AgendaPage() {
@@ -64,28 +85,74 @@ export default function AgendaPage() {
     setSelectedDoctorId,
   } = useFiltersStore();
   const openModal = useModalStore((s) => s.openModal);
+  const queryClient = useQueryClient();
+  const [isPending, startTransition] = useTransition();
 
-  const currentDate = useMemo(() => new Date(selectedDate + "T00:00:00"), [selectedDate]);
+  const currentDate = useMemo(
+    () => new Date(selectedDate + "T00:00:00"),
+    [selectedDate]
+  );
+
+  // Calculate date range based on current view
+  const dateRange = useMemo(() => {
+    if (calendarView === "day") {
+      const dateStr = format(currentDate, "yyyy-MM-dd");
+      return { start: dateStr, end: dateStr };
+    }
+    if (calendarView === "week") {
+      const monday = startOfWeek(currentDate, { weekStartsOn: 1 });
+      const saturday = addDays(monday, 5);
+      return {
+        start: format(monday, "yyyy-MM-dd"),
+        end: format(saturday, "yyyy-MM-dd"),
+      };
+    }
+    // month
+    const monthStart = startOfMonth(currentDate);
+    const monthEnd = endOfMonth(currentDate);
+    const calStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    const calEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+    return {
+      start: format(calStart, "yyyy-MM-dd"),
+      end: format(calEnd, "yyyy-MM-dd"),
+    };
+  }, [calendarView, currentDate]);
+
   const weekStart = useMemo(
     () => startOfWeek(currentDate, { weekStartsOn: 1 }),
     [currentDate]
   );
 
-  const weekLabel = useMemo(() => {
-    const monday = weekStart;
-    const saturday = addDays(monday, 5);
-    const monthStart = format(monday, "MMMM", { locale: es });
-    return `${monthStart.charAt(0).toUpperCase() + monthStart.slice(1)} ${format(monday, "dd")} - ${format(saturday, "dd")}, ${format(saturday, "yyyy")}`;
-  }, [weekStart]);
+  // Dynamic label based on view
+  const dateLabel = useMemo(() => {
+    if (calendarView === "day") {
+      const label = format(currentDate, "EEEE d 'de' MMMM, yyyy", {
+        locale: es,
+      });
+      return label.charAt(0).toUpperCase() + label.slice(1);
+    }
+    if (calendarView === "week") {
+      const monday = weekStart;
+      const saturday = addDays(monday, 5);
+      const monthName = format(monday, "MMMM", { locale: es });
+      return `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} ${format(monday, "dd")} - ${format(saturday, "dd")}, ${format(saturday, "yyyy")}`;
+    }
+    // month
+    const label = format(currentDate, "MMMM yyyy", { locale: es });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }, [calendarView, currentDate, weekStart]);
 
-  const { data: appointments = [], isLoading } = useQuery({
+  const { data: appointments = [], isLoading, isFetching } = useQuery({
     queryKey: [
       "appointments",
-      "week",
-      weekStart.toISOString(),
+      calendarView,
+      dateRange.start,
+      dateRange.end,
       selectedDoctorId,
     ],
-    queryFn: () => getWeekAppointments(weekStart, selectedDoctorId),
+    queryFn: () =>
+      getAppointments(dateRange.start, dateRange.end, selectedDoctorId),
+    placeholderData: keepPreviousData,
   });
 
   const { data: doctors } = useQuery({
@@ -96,17 +163,65 @@ export default function AgendaPage() {
   // Realtime subscription
   useRealtime("appointments", ["appointments"]);
 
+  // Prefetch adjacent dates for instant day navigation
+  const prefetchAdjacent = useCallback(
+    (date: Date, view: CalendarView, doctorId: string | null) => {
+      if (view === "day") {
+        const prev = skipSunday(subDays(date, 1), -1);
+        const next = skipSunday(addDays(date, 1), 1);
+        const prevStr = format(prev, "yyyy-MM-dd");
+        const nextStr = format(next, "yyyy-MM-dd");
+        queryClient.prefetchQuery({
+          queryKey: ["appointments", "day", prevStr, prevStr, doctorId],
+          queryFn: () => getAppointments(prevStr, prevStr, doctorId),
+          staleTime: 60_000,
+        });
+        queryClient.prefetchQuery({
+          queryKey: ["appointments", "day", nextStr, nextStr, doctorId],
+          queryFn: () => getAppointments(nextStr, nextStr, doctorId),
+          staleTime: 60_000,
+        });
+      }
+    },
+    [queryClient]
+  );
+
+  // Prefetch neighbors when current data loads
+  useMemo(() => {
+    if (!isLoading && calendarView === "day") {
+      prefetchAdjacent(currentDate, calendarView, selectedDoctorId);
+    }
+  }, [isLoading, currentDate, calendarView, selectedDoctorId, prefetchAdjacent]);
+
   function goToToday() {
     setSelectedDate(new Date().toISOString().split("T")[0]);
   }
 
-  function navigateWeek(direction: number) {
-    const newDate =
-      direction > 0
-        ? addDays(currentDate, 7)
-        : subDays(currentDate, 7);
-    setSelectedDate(newDate.toISOString().split("T")[0]);
+  function navigate(direction: number) {
+    startTransition(() => {
+      let newDate: Date;
+      if (calendarView === "day") {
+        newDate = direction > 0 ? addDays(currentDate, 1) : subDays(currentDate, 1);
+        newDate = skipSunday(newDate, direction);
+      } else if (calendarView === "week") {
+        newDate = direction > 0 ? addDays(currentDate, 7) : subDays(currentDate, 7);
+      } else {
+        newDate =
+          direction > 0
+            ? addMonths(currentDate, 1)
+            : subMonths(currentDate, 1);
+      }
+      setSelectedDate(newDate.toISOString().split("T")[0]);
+    });
   }
+
+  function handleDayClickFromMonth(date: Date) {
+    setSelectedDate(date.toISOString().split("T")[0]);
+    setCalendarView("day");
+  }
+
+  // Only show full loading spinner on the very first load (no data at all)
+  const showSkeleton = isLoading && appointments.length === 0;
 
   return (
     <>
@@ -127,15 +242,17 @@ export default function AgendaPage() {
               </button>
               <div className="flex items-center gap-1 px-2 border-l border-slate-300 ml-2">
                 <button
-                  onClick={() => navigateWeek(-1)}
-                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded cursor-pointer"
+                  onClick={() => navigate(-1)}
+                  className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded cursor-pointer active:scale-95 transition-transform"
                 >
                   <Icon name="chevron_left" size="sm" />
                 </button>
-                <span className="text-xs font-semibold px-2">{weekLabel}</span>
+                <span className="text-xs font-semibold px-2 min-w-[180px] text-center">
+                  {dateLabel}
+                </span>
                 <button
-                  onClick={() => navigateWeek(1)}
-                  className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded cursor-pointer"
+                  onClick={() => navigate(1)}
+                  className="p-2 hover:bg-slate-200 dark:hover:bg-slate-700 rounded cursor-pointer active:scale-95 transition-transform"
                 >
                   <Icon name="chevron_right" size="sm" />
                 </button>
@@ -202,19 +319,45 @@ export default function AgendaPage() {
       </div>
 
       {/* Calendar */}
-      {isLoading ? (
-        <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-20 flex items-center justify-center">
-          <div className="flex items-center gap-3 text-slate-400">
-            <Icon name="progress_activity" className="animate-spin" />
-            <span className="text-sm font-medium">Cargando agenda...</span>
+      <div className="relative">
+        {/* Subtle fetch indicator - thin bar at top */}
+        {(isFetching || isPending) && !showSkeleton && (
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-primary/30 rounded-full overflow-hidden z-20">
+            <div className="h-full w-1/3 bg-primary rounded-full animate-[shimmer_1s_ease-in-out_infinite]" />
           </div>
-        </div>
-      ) : (
-        <CalendarGrid
-          weekStart={weekStart}
-          appointments={appointments}
-        />
-      )}
+        )}
+
+        {showSkeleton ? (
+          <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-20 flex items-center justify-center">
+            <div className="flex items-center gap-3 text-slate-400">
+              <Icon name="progress_activity" className="animate-spin" />
+              <span className="text-sm font-medium">Cargando agenda...</span>
+            </div>
+          </div>
+        ) : (
+          <>
+            {calendarView === "day" && (
+              <CalendarDayView
+                date={currentDate}
+                appointments={appointments}
+              />
+            )}
+            {calendarView === "week" && (
+              <CalendarGrid
+                weekStart={weekStart}
+                appointments={appointments}
+              />
+            )}
+            {calendarView === "month" && (
+              <CalendarMonthView
+                currentDate={currentDate}
+                appointments={appointments}
+                onDayClick={handleDayClickFromMonth}
+              />
+            )}
+          </>
+        )}
+      </div>
 
       {/* New Appointment Modal */}
       <NewAppointmentModal />

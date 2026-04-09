@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSupabase } from "./use-supabase";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -11,6 +11,8 @@ import { useQueryClient } from "@tanstack/react-query";
 export function useRealtime(table: string, queryKey: string[]) {
   const supabase = useSupabase();
   const queryClient = useQueryClient();
+  const queryKeyRef = useRef(queryKey);
+  queryKeyRef.current = queryKey;
 
   useEffect(() => {
     const channel = supabase
@@ -19,7 +21,7 @@ export function useRealtime(table: string, queryKey: string[]) {
         "postgres_changes",
         { event: "*", schema: "public", table },
         () => {
-          queryClient.invalidateQueries({ queryKey });
+          queryClient.invalidateQueries({ queryKey: queryKeyRef.current });
         }
       )
       .subscribe();
@@ -27,5 +29,5 @@ export function useRealtime(table: string, queryKey: string[]) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [supabase, queryClient, table, queryKey]);
+  }, [supabase, queryClient, table]);
 }

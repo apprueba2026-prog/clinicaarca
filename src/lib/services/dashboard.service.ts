@@ -12,7 +12,7 @@ const TODAY_APPOINTMENTS_QUERY = `
   room,
   patient:patients(first_name, last_name, dni, phone),
   doctor:doctors(
-    specialty,
+    specialties,
     profile:profiles(first_name, last_name)
   ),
   procedure:procedures(name, category)

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface NewsCardProps {
   category: string;
   title: string;
@@ -15,11 +17,13 @@ export function NewsCard({
 }: NewsCardProps) {
   return (
     <div className="flex gap-6 items-center bg-surface-container-lowest p-4 rounded-2xl hover:bg-white transition-all shadow-sm">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        className="w-32 h-32 rounded-xl object-cover shrink-0"
+      <Image
+        className="rounded-xl object-cover shrink-0"
         src={imageUrl}
         alt={imageAlt}
+        width={128}
+        height={128}
+        loading="lazy"
       />
       <div>
         <span className="text-primary text-xs font-bold uppercase tracking-wider">

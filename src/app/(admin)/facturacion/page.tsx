@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Icon } from "@/components/ui/icon";
 
 export const metadata: Metadata = {
   title: "Facturación",
@@ -19,9 +20,7 @@ export default function FacturacionPage() {
 
       <div className="bg-surface-container-lowest dark:bg-slate-900/50 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-16 flex flex-col items-center text-center">
         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-          <span className="material-symbols-outlined text-4xl text-primary">
-            receipt_long
-          </span>
+          <Icon name="receipt_long" size="xl" className="text-primary" />
         </div>
         <h3 className="text-xl font-extrabold text-on-surface mb-2">
           Módulo en Desarrollo
@@ -33,21 +32,15 @@ export default function FacturacionPage() {
         </p>
         <div className="flex gap-4">
           <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-            <span className="material-symbols-outlined text-sky-600 mb-1 block">
-              description
-            </span>
+            <Icon name="description" size="md" className="text-sky-600 mb-1" />
             <p className="text-[10px] font-bold text-slate-500 uppercase">Boletas</p>
           </div>
           <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-            <span className="material-symbols-outlined text-sky-600 mb-1 block">
-              article
-            </span>
+            <Icon name="article" size="md" className="text-sky-600 mb-1" />
             <p className="text-[10px] font-bold text-slate-500 uppercase">Facturas</p>
           </div>
           <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-center">
-            <span className="material-symbols-outlined text-sky-600 mb-1 block">
-              analytics
-            </span>
+            <Icon name="analytics" size="md" className="text-sky-600 mb-1" />
             <p className="text-[10px] font-bold text-slate-500 uppercase">Reportes</p>
           </div>
         </div>

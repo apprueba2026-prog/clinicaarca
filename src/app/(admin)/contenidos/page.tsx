@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@/components/ui/icon";
@@ -404,10 +405,12 @@ function NewsCard({
       {/* Cover image */}
       <div className="aspect-video bg-slate-200 dark:bg-slate-800 relative">
         {article.cover_image_url ? (
-          <img
+          <Image
             src={article.cover_image_url}
             alt={article.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 1024px) 100vw, 33vw"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

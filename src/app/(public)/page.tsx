@@ -6,6 +6,7 @@ import { SpecialtyCard } from "@/components/shared/specialty-card";
 import { TestimonialReel } from "@/components/shared/testimonial-reel";
 import { NewsCard } from "@/components/shared/news-card";
 import { InsuranceLogos } from "@/components/shared/insurance-logos";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -21,8 +22,8 @@ const specialties = [
     description:
       "Creamos experiencias positivas para los más pequeños en un ambiente lúdico y seguro.",
     imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBLiQTMHIM-7sYVIOIkii-qSR5SrPHRqojHK5PZeM89RqJ82pz17EgnSj7IS8a5OGhHoCBUiPTwC1BlQt60wd8zRXirztLK3Dm_QSBV1Eb5ARYtRb1J7IA029r1182ONrCAu8qR7uRQixcAWZ7cifmP_SiDcDIGty7ovK4gPwHzPCbEPhWowWnuiRyNCN5z8dDiqmvF36FWxrEn6ozShUPPHUkMrb1jYQkrEwK1CwVLb59vgQ-z8TOpJucGkbW0L9-V6bd_6aGZ6FA",
-    imageAlt: "Consultorio pediátrico colorido con dentista amigable",
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuA6wemSKYnCYKXzzocoSSuwdzzqgcoGvtcMquxmXwGeafmMDinesxJapKULzRUWjue54dKi8Yl7byuc56GnXcJOgaZRVYQ8HZ5dVLRp5vXDKXA_8t7DLiD39-G2VYbnu48OCJ1YTLLaHY8mEuhtDiQoBToHzMp8tp7shRTAYhROUrtRsRIS2qJuLoNZVgRIq2Xc3JYXmwGX8qhRW9lZ2WpOKg9EDwdf11uAe_kHS8XCXXfv4uuahanR583h0-P1qfEkqmwNIjOCv5A",
+    imageAlt: "Dentista atendiendo a niño en consultorio pediátrico moderno",
   },
   {
     icon: "dentistry",
@@ -137,12 +138,14 @@ export default function HomePage() {
           <div className="relative">
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-tertiary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30" />
             <div className="absolute -bottom-8 -left-8 w-72 h-72 bg-secondary-fixed rounded-full mix-blend-multiply filter blur-3xl opacity-30" />
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                className="w-full h-[500px] object-cover"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVJfhsUp5w-iE8mFMVivTnwk3-jH0D3uV1y_QuLkTky5T1oJFYSLWATIFIVyKkGcIZrg__8dQvvx3aNE8bLxGQSwgoYNtyAUoq_j3_3ja2qWkzVxeln9rZtWh7wNyX9SqVxqWo1BnyNrm2HpRVEL7bDkTzt0ddQozHgz-jtbKMrsdpvY21XarUEOZN3QRBWo6ap0LO3EFGhHby8VVWqyLoqi1OTAm5CWKRdqISd_4m9GBFBYXVNjSebw_GPT0pge4ULZqgknGNq7I"
-                alt="Interior moderno de clínica dental de alta tecnología"
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800 h-[500px]">
+              <Image
+                className="object-cover"
+                src="/hero-doctora-sonia.webp"
+                alt="Doctora Sonia, especialista de Clínica Arca"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
               />
             </div>
           </div>

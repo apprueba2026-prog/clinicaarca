@@ -175,7 +175,7 @@ export default function DashboardPage() {
                     doctorName={`${appt.doctor.profile.first_name} ${appt.doctor.profile.last_name}`}
                     specialty={
                       appt.procedure?.category ??
-                      appt.doctor.specialty ??
+                      appt.doctor.specialties?.[0] ??
                       "General"
                     }
                     status={appt.status}

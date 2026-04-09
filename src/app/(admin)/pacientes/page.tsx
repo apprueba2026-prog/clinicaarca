@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Icon } from "@/components/ui/icon";
@@ -132,7 +133,7 @@ export default function PacientesPage() {
           <h2 className="text-3xl font-extrabold tracking-tight text-on-surface-variant">
             Directorio de Pacientes
           </h2>
-          <p className="text-slate-500 mt-1">
+          <p className="text-on-surface-variant mt-1">
             Gestión centralizada de expedientes y estados de cuenta.
           </p>
         </div>
@@ -142,7 +143,7 @@ export default function PacientesPage() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value as PatientFilter)}
-              className="appearance-none bg-surface-container-lowest border-none px-6 py-3 pr-10 rounded-xl text-sm font-medium shadow-sm focus:ring-2 focus:ring-sky-500/20 cursor-pointer text-slate-600 dark:text-slate-400 dark:bg-slate-800"
+              className="appearance-none bg-surface-container-lowest border-none px-6 py-3 pr-10 rounded-xl text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary/20 cursor-pointer text-on-surface-variant"
             >
               <option value="all">Todos los pacientes</option>
               <option value="debtors">Deudores</option>
@@ -151,7 +152,7 @@ export default function PacientesPage() {
             <Icon
               name="expand_more"
               size="sm"
-              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant"
             />
           </div>
 
@@ -172,45 +173,45 @@ export default function PacientesPage() {
           <Icon
             name="search"
             size="sm"
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por DNI, Nombre o Teléfono..."
-            className="w-full pl-11 pr-4 py-3 bg-surface-container-lowest dark:bg-slate-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-sky-500/20 shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border-none rounded-xl text-sm text-on-surface focus:ring-2 focus:ring-primary/20 shadow-sm placeholder:text-on-surface-variant/50"
           />
         </div>
       </div>
 
       {/* Data Table */}
-      <div className="bg-surface-container-lowest dark:bg-slate-900/50 rounded-2xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
+      <div className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-outline-variant">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-surface-container-low/50 dark:bg-slate-800/50">
-              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <tr className="bg-surface-container-low/50">
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Paciente
               </th>
-              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Contacto
               </th>
-              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Última Visita
               </th>
-              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
                 Estado de Cuenta
               </th>
-              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
+              <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant text-right">
                 Acciones
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody className="divide-y divide-outline-variant">
             {isLoading ? (
               <tr>
                 <td colSpan={5} className="px-6 py-20 text-center">
-                  <div className="flex items-center justify-center gap-3 text-slate-400">
+                  <div className="flex items-center justify-center gap-3 text-on-surface-variant">
                     <Icon
                       name="progress_activity"
                       className="animate-spin"
@@ -224,7 +225,7 @@ export default function PacientesPage() {
             ) : filteredPatients.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-6 py-20 text-center">
-                  <div className="flex flex-col items-center gap-2 text-slate-400">
+                  <div className="flex flex-col items-center gap-2 text-on-surface-variant">
                     <Icon name="person_search" size="xl" />
                     <p className="text-sm font-medium">
                       {debouncedSearch
@@ -261,23 +262,27 @@ export default function PacientesPage() {
               <div className="flex flex-col items-center text-center">
                 <div className="relative mb-4">
                   {selectedPatient.avatar_url ? (
-                    <img
-                      src={selectedPatient.avatar_url}
-                      alt={selectedPatient.first_name}
-                      className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-slate-800 shadow-lg"
-                    />
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-surface-container-lowest shadow-lg">
+                      <Image
+                        src={selectedPatient.avatar_url}
+                        alt={selectedPatient.first_name}
+                        fill
+                        sizes="96px"
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-24 h-24 rounded-full bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-700 dark:text-sky-400 font-bold text-2xl border-4 border-white dark:border-slate-800 shadow-lg">
+                    <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl border-4 border-surface-container-lowest shadow-lg">
                       {selectedPatient.first_name.charAt(0)}
                       {selectedPatient.last_name.charAt(0)}
                     </div>
                   )}
-                  <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-4 border-white dark:border-slate-800 rounded-full" />
+                  <div className="absolute bottom-0 right-0 w-6 h-6 bg-green-500 border-4 border-surface-container-lowest rounded-full" />
                 </div>
                 <h3 className="text-xl font-extrabold text-on-surface">
                   {selectedPatient.first_name} {selectedPatient.last_name}
                 </h3>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-on-surface-variant">
                   DNI: {selectedPatient.dni}
                   {selectedPatient.is_premium && " • Paciente Premium"}
                 </p>
@@ -294,7 +299,7 @@ export default function PacientesPage() {
               {/* Tab: Historial */}
               {activeTab === 0 && (
                 <div className="space-y-4">
-                  <h4 className="text-sm font-extrabold text-slate-500 uppercase tracking-widest mb-4">
+                  <h4 className="text-sm font-extrabold text-on-surface-variant uppercase tracking-widest mb-4">
                     Datos del Paciente
                   </h4>
                   <div className="space-y-3">
@@ -330,10 +335,10 @@ export default function PacientesPage() {
                   </div>
                   {selectedPatient.notes && (
                     <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
-                      <p className="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase mb-1">
+                      <p className="text-xs font-bold text-amber-700 dark:text-amber-300 uppercase mb-1">
                         Notas
                       </p>
-                      <p className="text-sm text-amber-800 dark:text-amber-300">
+                      <p className="text-sm text-amber-800 dark:text-amber-200">
                         {selectedPatient.notes}
                       </p>
                     </div>
@@ -344,11 +349,11 @@ export default function PacientesPage() {
               {/* Tab: Citas */}
               {activeTab === 1 && (
                 <div>
-                  <h4 className="text-sm font-extrabold text-slate-500 uppercase tracking-widest mb-4">
+                  <h4 className="text-sm font-extrabold text-on-surface-variant uppercase tracking-widest mb-4">
                     Historial de Citas
                   </h4>
                   {patientAppointments.length === 0 ? (
-                    <div className="py-12 text-center text-slate-400">
+                    <div className="py-12 text-center text-on-surface-variant">
                       <Icon name="event_busy" size="xl" />
                       <p className="text-sm mt-2">Sin citas registradas</p>
                     </div>
@@ -361,19 +366,19 @@ export default function PacientesPage() {
                         return (
                           <div
                             key={appt.id}
-                            className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl"
+                            className="p-4 bg-surface-container-low rounded-xl"
                           >
                             <div className="flex justify-between items-start">
                               <div>
                                 <p className="text-sm font-bold text-on-surface">
                                   {appt.procedure?.name ?? "Consulta General"}
                                 </p>
-                                <p className="text-xs text-slate-500 mt-0.5">
+                                <p className="text-xs text-on-surface-variant mt-0.5">
                                   {formatDate(appt.scheduled_date)} •{" "}
                                   {appt.start_time.slice(0, 5)} -{" "}
                                   {appt.end_time.slice(0, 5)}
                                 </p>
-                                <p className="text-xs text-slate-400 mt-0.5">
+                                <p className="text-xs text-on-surface-variant mt-0.5">
                                   Dr. {appt.doctor.profile.first_name}{" "}
                                   {appt.doctor.profile.last_name}
                                 </p>
@@ -396,12 +401,12 @@ export default function PacientesPage() {
               {activeTab === 2 && (
                 <div>
                   <div className="flex justify-between items-center mb-6">
-                    <h4 className="text-sm font-extrabold text-slate-500 uppercase tracking-widest">
+                    <h4 className="text-sm font-extrabold text-on-surface-variant uppercase tracking-widest">
                       Comprobantes Emitidos
                     </h4>
                     <button
                       onClick={handleOpenInvoiceModal}
-                      className="text-xs font-bold text-sky-700 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
+                      className="text-xs font-bold text-primary hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Icon name="add_circle" size="sm" />
                       Generar Nuevo
@@ -409,7 +414,7 @@ export default function PacientesPage() {
                   </div>
 
                   {patientInvoices.length === 0 ? (
-                    <div className="py-12 text-center text-slate-400">
+                    <div className="py-12 text-center text-on-surface-variant">
                       <Icon name="receipt_long" size="xl" />
                       <p className="text-sm mt-2">Sin comprobantes</p>
                     </div>
@@ -432,7 +437,7 @@ export default function PacientesPage() {
                           {formatCurrency(patientBalance)}
                         </p>
                       </div>
-                      <button className="w-full py-3 bg-white text-primary font-extrabold rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
+                      <button className="w-full py-3 bg-surface-container-lowest text-primary font-extrabold rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
                         Cobrar Ahora
                       </button>
                     </div>
@@ -463,9 +468,9 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <Icon name={icon} size="sm" className="text-slate-400" />
+      <Icon name={icon} size="sm" className="text-on-surface-variant" />
       <div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase">
+        <p className="text-[10px] font-bold text-on-surface-variant uppercase">
           {label}
         </p>
         <p className="text-sm text-on-surface">{value}</p>

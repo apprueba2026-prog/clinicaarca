@@ -28,6 +28,7 @@ export function NewPatientModal() {
     mutationFn: (data: PatientFormData) =>
       patientsService.create({
         ...data,
+        auth_user_id: null,
         email: data.email || null,
         birth_date: data.birth_date || null,
         address: data.address || null,

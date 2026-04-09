@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import { ToggleSwitch } from "@/components/ui/toggle-switch";
 import type { Testimonial } from "@/lib/types/testimonial";
@@ -13,7 +14,7 @@ interface TestimonialItemProps {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex text-[14px]">
+    <div className="flex">
       {Array.from({ length: 5 }, (_, i) => (
         <Icon
           key={i}
@@ -41,10 +42,12 @@ export function TestimonialItem({
       {/* Thumbnail */}
       <div className="w-32 aspect-video bg-slate-200 dark:bg-slate-800 rounded-xl overflow-hidden relative shrink-0">
         {testimonial.thumbnail_url ? (
-          <img
+          <Image
             src={testimonial.thumbnail_url}
             alt={testimonial.patient_name}
-            className="w-full h-full object-cover"
+            fill
+            sizes="128px"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

@@ -14,7 +14,7 @@ export interface StaffProfile {
 
 export interface DoctorWithStaffInfo {
   id: string;
-  specialty: string;
+  specialties: string[];
   is_public: boolean;
   profile: {
     first_name: string;
@@ -29,7 +29,7 @@ export const staffService = {
     const { data, error } = await supabase
       .from("doctors")
       .select(
-        "id, specialty, is_public, profile:profiles(first_name, last_name, avatar_url)"
+        "id, specialties, is_public, profile:profiles(first_name, last_name, avatar_url)"
       )
       .order("created_at", { ascending: true });
 

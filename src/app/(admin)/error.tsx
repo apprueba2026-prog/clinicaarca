@@ -1,5 +1,7 @@
 "use client";
 
+import { Icon } from "@/components/ui/icon";
+
 export default function AdminError({
   error,
   reset,
@@ -10,9 +12,7 @@ export default function AdminError({
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center max-w-md">
-        <span className="material-symbols-outlined text-5xl text-error mb-4 block">
-          error
-        </span>
+        <Icon name="error" className="text-error mb-4 text-[48px] w-[48px] h-[48px]" />
         <h2 className="text-xl font-extrabold text-on-surface mb-2">
           Algo salió mal
         </h2>

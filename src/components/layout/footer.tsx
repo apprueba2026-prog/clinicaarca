@@ -5,8 +5,14 @@ import { Button } from "@/components/ui/button";
 const services = [
   { label: "Odontopediatría", href: "/especialidades" },
   { label: "Implantes Dentales", href: "/especialidades" },
-  { label: "Ortodoncia Invisible", href: "/especialidades" },
-  { label: "Sedación Consciente", href: "/especialidades" },
+  { label: "Anestesiología", href: "/especialidades" },
+  { label: "Odontología General", href: "/especialidades" },
+];
+
+const quickLinks = [
+  { label: "Inicio", href: "/" },
+  { label: "Especialidades", href: "/especialidades" },
+  { label: "Ubicación", href: "/ubicacion" },
 ];
 
 export function Footer() {
@@ -59,15 +65,20 @@ export function Footer() {
         <div>
           <h5 className="font-bold mb-6 text-on-surface">Contacto</h5>
           <p className="text-on-surface-variant mb-4 flex items-center gap-2">
-            <Icon name="location_on" className="text-primary" /> Av. Vanguardia
-            450, Lima
+            <Icon name="location_on" className="text-primary" /> Av. Huarochirí
+            Mz A14 - Lote 3, Santa Anita, Lima 15011
           </p>
           <p className="text-on-surface-variant mb-4 flex items-center gap-2">
-            <Icon name="call" className="text-primary" /> +51 1 234 5678
+            <Icon name="call" className="text-primary" />
+            <a href="tel:+51985289689" className="hover:text-primary transition-colors">
+              +51 985 289 689
+            </a>
           </p>
-          <Button variant="primary" className="mt-4 w-full">
-            Escríbenos
-          </Button>
+          <Link href="/ubicacion">
+            <Button variant="primary" className="mt-4 w-full" tabIndex={-1}>
+              Ver Ubicación
+            </Button>
+          </Link>
         </div>
       </div>
 

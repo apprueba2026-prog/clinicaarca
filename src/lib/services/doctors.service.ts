@@ -6,7 +6,7 @@ interface DoctorOption {
     first_name: string;
     last_name: string;
   };
-  specialty: string | null;
+  specialties: string | null;
 }
 
 export const doctorsService = {
@@ -14,7 +14,7 @@ export const doctorsService = {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("doctors")
-      .select("id, specialty, profile:profiles(first_name, last_name)")
+      .select("id, specialties, profile:profiles(first_name, last_name)")
       .eq("is_public", true)
       .order("created_at", { ascending: true });
 

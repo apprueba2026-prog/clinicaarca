@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import { StarRating } from "@/components/ui/star-rating";
 
@@ -19,11 +20,13 @@ export function TestimonialReel({
   return (
     <div className="relative aspect-[9/16] rounded-3xl overflow-hidden group cursor-pointer shadow-lg">
       {/* Imagen de fondo */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         src={imageUrl}
         alt={imageAlt}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        loading="lazy"
       />
 
       {/* Gradiente overlay */}

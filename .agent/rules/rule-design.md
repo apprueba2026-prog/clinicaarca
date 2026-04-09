@@ -199,11 +199,17 @@ bg-primary-fixed text-on-primary-fixed
 
 ## Modo Oscuro
 
-Patrones de uso:
+**Estrategia:** Class-based via `@custom-variant dark` en globals.css.
+
+**Patrón preferido:** Usar tokens MD3 que cambian automáticamente:
 
 ```
-bg-white dark:bg-slate-900
-text-slate-900 dark:text-white
+bg-surface                    /* #f7f9fb (light) → #111416 (dark) */
+bg-surface-container-lowest   /* #ffffff (light) → #0b0e10 (dark) */
+text-on-surface               /* #191c1e (light) → #e2e4e6 (dark) */
+text-on-surface-variant       /* #3f4850 (light) → #bfc7d2 (dark) */
+border-outline-variant        /* #bfc7d2 (light) → #3f4850 (dark) */
 ```
 
-Siempre incluir variantes `dark:` en los componentes que requieran soporte de modo oscuro.
+**Evitar:** Colores hardcodeados con `dark:` variant (`dark:bg-slate-900`, `dark:text-white`).
+Solo usar `dark:` para colores de acento que no tienen token MD3 (amber, green, etc.).

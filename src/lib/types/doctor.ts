@@ -3,7 +3,7 @@ import type { ProcedureCategory, ScheduleDay } from "./enums";
 export interface Doctor {
   id: string;
   profile_id: string;
-  specialty: ProcedureCategory;
+  specialties: ProcedureCategory[];
   license_number: string | null;
   bio: string | null;
   consultation_duration_minutes: number;

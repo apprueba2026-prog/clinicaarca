@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 
@@ -30,12 +31,14 @@ export function SpecialtyCard({
       </p>
 
       {/* Imagen */}
-      <div className="h-48 rounded-2xl overflow-hidden mb-6">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          className="w-full h-full object-cover"
+      <div className="h-48 rounded-2xl overflow-hidden mb-6 relative">
+        <Image
+          className="object-cover"
           src={imageUrl}
           alt={imageAlt}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          loading="lazy"
         />
       </div>
 

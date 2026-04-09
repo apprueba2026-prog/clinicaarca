@@ -112,6 +112,21 @@ Debe completarse con **0 advertencias**.
 - Verificar colores, tipografia, espaciado
 - Verificar responsividad
 
+### 5. Performance (Lighthouse)
+
+- Correr Lighthouse en Chrome DevTools sobre la pagina modificada
+- **Metricas objetivo:** Performance >= 90, LCP < 1.5s, CLS < 0.1
+- Verificar que **no hay errores de hidratacion** en la consola
+- **Reglas criticas para imagenes (next/image):**
+  - Si CSS controla dimensiones (h-[Xpx], w-full): usar `fill` + poner h/w en el contenedor padre
+  - Si CSS solo controla una dimension (h-[68px] w-auto): width/height deben coincidir con display
+  - NUNCA usar width/height grandes cuando CSS los reduce (causa CLS)
+  - Siempre limpiar `.next` cache despues de cambiar Image props
+- **Dev mode:** Ignorar warnings de "Minify JS", "Unused JS", "bfcache" (artefactos de dev)
+- **Regla de Icon fonts:** Todo componente que use web fonts (Material Symbols, etc.) DEBE tener dimensiones fijas (w-X h-X + overflow-hidden) para prevenir CLS por font swap. Los nombres de iconos como texto ("dark_mode") son mucho mas anchos que el glifo.
+- **Regla de font-display:** Para `next/font` (Manrope, Inter), usar `"swap"` — Next.js genera `size-adjust` automaticamente. `"optional"` puede causar shifts sutiles en primera visita.
+- **Regla de cache:** SIEMPRE limpiar `.next` despues de cambiar props de Image o dimensiones de componentes
+
 ---
 
 ## ACTUAR (Act)
@@ -130,3 +145,16 @@ Registrar lo aprendido durante el ciclo:
 - Problemas encontrados y como se resolvieron
 - Patrones utiles descubiertos
 - Mejoras para el proximo ciclo
+
+---
+
+## Variantes especializadas
+
+Para cambios en areas especificas del proyecto, usa el workflow correspondiente
+(extiende este, no lo reemplaza):
+
+- **Arca Assistant (bot conversacional con Gemini)**: [pdca-bot.md](./pdca-bot.md)
+  - Aplica cuando tocas `src/lib/ai/*`, `src/app/api/ai/**`,
+    `src/lib/services/ai-conversation*` o `email-otp*`.
+  - Anade un paso obligatorio: ejecutar `npm run test:bot` en la fase Verificar.
+  - Catalogo de regresiones: [bot-test-cases.md](./bot-test-cases.md).

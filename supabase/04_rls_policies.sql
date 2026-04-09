@@ -82,6 +82,20 @@ CREATE POLICY "Users can update own profile"
     ON profiles FOR UPDATE
     USING (auth.uid() = id);
 
+CREATE POLICY "Public can view profiles of public doctors"
+    ON profiles FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM doctors
+            WHERE doctors.profile_id = profiles.id
+              AND doctors.is_public = true
+        )
+    );
+
+CREATE POLICY "Admin can insert profiles"
+    ON profiles FOR INSERT
+    WITH CHECK (is_admin());
+
 -- ============================================
 -- PATIENTS
 -- ============================================

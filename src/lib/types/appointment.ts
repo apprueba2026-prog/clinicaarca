@@ -30,7 +30,7 @@ export interface AppointmentWithDetails extends Appointment {
       first_name: string;
       last_name: string;
     };
-    specialty: string;
+    specialties: string[];
   };
   procedure: {
     name: string;

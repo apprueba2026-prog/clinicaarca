@@ -6,6 +6,10 @@
       "type": "node-terminal",
       "request": "launch",
       "command": "npm run dev",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/.next/**"
+      ],
       "serverReadyAction": {
         "pattern": "- Local:\\s+(https?://\\S+)",
         "uriFormat": "%s",

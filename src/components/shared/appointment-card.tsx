@@ -123,9 +123,7 @@ export function AppointmentCard({
               {s.statusText}
             </span>
           )}
-          <span className="material-symbols-outlined text-xs text-sky-400 opacity-0 group-hover:opacity-100">
-            open_in_new
-          </span>
+          <Icon name="open_in_new" size="xs" className="text-sky-400 opacity-0 group-hover:opacity-100" />
         </div>
       )}
       <h4
@@ -143,7 +141,7 @@ export function AppointmentCard({
             {room ? ` • ${room}` : ""}
           </p>
           <div className="mt-2 flex items-center gap-1.5 text-[9px]">
-            <Icon name="schedule" className={cn("text-[12px]", s.statusColor)} />
+            <Icon name="schedule" size="xs" className={s.statusColor} />
             <span className={s.statusColor}>
               {startTime} - {endTime}
             </span>

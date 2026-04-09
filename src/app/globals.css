@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ====== DARK MODE: usar clase .dark en lugar de prefers-color-scheme ====== */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* ====== MD3 COLOR TOKENS (46 tokens) ====== */
   --color-primary: #006194;
@@ -71,28 +74,102 @@
   --radius-3xl: 1.5rem;
 }
 
+/* ====== DARK MODE OVERRIDES ====== */
+.dark {
+  --color-primary: #93ccff;
+  --color-primary-container: #004b73;
+  --color-primary-fixed: #cce5ff;
+  --color-primary-fixed-dim: #93ccff;
+  --color-on-primary: #003351;
+  --color-on-primary-container: #cce5ff;
+  --color-on-primary-fixed: #001d31;
+  --color-on-primary-fixed-variant: #004b73;
+
+  --color-secondary: #bec6e0;
+  --color-secondary-container: #3f465c;
+  --color-secondary-fixed: #dae2fd;
+  --color-secondary-fixed-dim: #bec6e0;
+  --color-on-secondary: #282f44;
+  --color-on-secondary-container: #dae2fd;
+  --color-on-secondary-fixed: #131b2e;
+  --color-on-secondary-fixed-variant: #3f465c;
+
+  --color-tertiary: #7bd0ff;
+  --color-tertiary-container: #004c69;
+  --color-tertiary-fixed: #c4e7ff;
+  --color-tertiary-fixed-dim: #7bd0ff;
+  --color-on-tertiary: #003549;
+  --color-on-tertiary-container: #c4e7ff;
+  --color-on-tertiary-fixed: #001e2c;
+  --color-on-tertiary-fixed-variant: #004c69;
+
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+
+  --color-surface: #111416;
+  --color-surface-dim: #111416;
+  --color-surface-bright: #363a3c;
+  --color-surface-variant: #3f4850;
+  --color-surface-tint: #93ccff;
+  --color-surface-container: #1d2022;
+  --color-surface-container-low: #191c1e;
+  --color-surface-container-high: #272a2d;
+  --color-surface-container-highest: #323537;
+  --color-surface-container-lowest: #0b0e10;
+  --color-on-surface: #e2e4e6;
+  --color-on-surface-variant: #bfc7d2;
+
+  --color-outline: #8a9199;
+  --color-outline-variant: #3f4850;
+  --color-background: #111416;
+  --color-on-background: #e2e4e6;
+
+  --color-inverse-surface: #e2e4e6;
+  --color-inverse-on-surface: #2d3133;
+  --color-inverse-primary: #006194;
+}
+
 /* ====== CUSTOM UTILITIES ====== */
 @utility glass-nav {
   background: rgba(247, 249, 251, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-}
 
-@utility glass-nav-dark {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  :where(.dark, .dark *) & {
+    background: rgba(17, 20, 22, 0.8);
+  }
 }
 
 /* Material Symbols base */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  line-height: 1;
 }
 
 /* Colores de selección */
 ::selection {
   background-color: var(--color-primary-fixed);
   color: var(--color-on-primary-fixed);
+}
+
+/* Shimmer animation for loading indicators */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* Noé avatar breathe animation (FAB + chat header) */
+@keyframes noe-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.animate-noe-breathe {
+  animation: noe-breathe 2.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-noe-breathe { animation: none; }
 }
 
 /* Base styles */

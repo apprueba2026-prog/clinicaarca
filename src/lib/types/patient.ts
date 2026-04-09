@@ -2,6 +2,7 @@ import type { PatientStatus } from "./enums";
 
 export interface Patient {
   id: string;
+  auth_user_id: string | null;
   dni: string;
   first_name: string;
   last_name: string;

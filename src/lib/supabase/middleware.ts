@@ -36,25 +36,56 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
   // Rutas protegidas del admin
   const isAdminRoute =
-    request.nextUrl.pathname.startsWith("/dashboard") ||
-    request.nextUrl.pathname.startsWith("/agenda") ||
-    request.nextUrl.pathname.startsWith("/pacientes") ||
-    request.nextUrl.pathname.startsWith("/contenidos") ||
-    request.nextUrl.pathname.startsWith("/facturacion") ||
-    request.nextUrl.pathname.startsWith("/configuracion");
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/agenda") ||
+    pathname.startsWith("/pacientes") ||
+    pathname.startsWith("/doctores") ||
+    pathname.startsWith("/contenidos") ||
+    pathname.startsWith("/facturacion") ||
+    pathname.startsWith("/configuracion");
 
+  // Rutas protegidas del paciente
+  const isPatientRoute = pathname.startsWith("/mi-cuenta");
+
+  // Rutas de auth (login, registro, recuperar contraseña)
+  const isAuthRoute =
+    pathname === "/login" ||
+    pathname === "/registro" ||
+    pathname === "/recuperar-contrasena";
+
+  // Proteger rutas admin: requieren sesión
   if (isAdminRoute && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // Si está logueado y va a login, redirigir a dashboard
-  if (request.nextUrl.pathname === "/login" && user) {
+  // Proteger rutas admin: pacientes no pueden acceder
+  if (isAdminRoute && user) {
+    const role = user.user_metadata?.role as string;
+    if (role === "patient") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/mi-cuenta";
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Proteger rutas paciente: requieren sesión
+  if (isPatientRoute && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = "/dashboard";
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Si está logueado y va a rutas de auth, redirigir según rol
+  if (isAuthRoute && user) {
+    const url = request.nextUrl.clone();
+    const role = user.user_metadata?.role as string;
+    url.pathname = role === "patient" ? "/mi-cuenta" : "/dashboard";
     return NextResponse.redirect(url);
   }
 

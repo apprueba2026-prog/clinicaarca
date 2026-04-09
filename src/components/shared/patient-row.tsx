@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import type { Patient } from "@/lib/types/patient";
 import type { PaymentStatus } from "@/lib/types/enums";
@@ -75,11 +76,15 @@ export function PatientRow({
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           {patient.avatar_url ? (
-            <img
-              src={patient.avatar_url}
-              alt={patient.first_name}
-              className="w-10 h-10 rounded-full object-cover"
-            />
+            <div className="relative w-10 h-10 rounded-full overflow-hidden">
+              <Image
+                src={patient.avatar_url}
+                alt={patient.first_name}
+                fill
+                sizes="40px"
+                className="object-cover"
+              />
+            </div>
           ) : (
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm ${colorClass}`}

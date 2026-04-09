@@ -36,14 +36,14 @@ export function SlideOverPanel({
     <div className="fixed inset-0 z-50">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm"
+        className="absolute inset-0 bg-on-surface/20 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
         className={cn(
-          "absolute right-0 top-0 h-full w-[450px] bg-white dark:bg-slate-900 shadow-2xl flex flex-col",
+          "absolute right-0 top-0 h-full w-[450px] bg-surface-container-lowest shadow-2xl flex flex-col",
           "animate-in slide-in-from-right duration-300"
         )}
       >
@@ -67,18 +67,18 @@ export function SlideOverHeader({
   children,
 }: SlideOverHeaderProps) {
   return (
-    <div className="p-8 border-b border-slate-100 dark:border-slate-800">
+    <div className="p-8 border-b border-outline-variant">
       <div className="flex justify-between items-start mb-6">
         <button
           onClick={onClose}
-          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full cursor-pointer"
+          className="p-2 hover:bg-surface-container-high rounded-full cursor-pointer"
         >
           <Icon name="close" />
         </button>
         {onEdit && (
           <button
             onClick={onEdit}
-            className="px-4 py-2 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+            className="px-4 py-2 border border-outline-variant text-on-surface-variant text-sm font-bold rounded-lg hover:bg-surface-container cursor-pointer"
           >
             Editar Perfil
           </button>
@@ -101,7 +101,7 @@ export function SlideOverTabs({
   onTabChange,
 }: SlideOverTabsProps) {
   return (
-    <div className="flex border-b border-slate-100 dark:border-slate-800 px-8">
+    <div className="flex border-b border-outline-variant px-8">
       {tabs.map((tab, i) => (
         <button
           key={tab}
@@ -109,8 +109,8 @@ export function SlideOverTabs({
           className={cn(
             "px-4 py-4 text-sm font-bold border-b-2 transition-colors cursor-pointer",
             activeTab === i
-              ? "text-sky-700 dark:text-sky-400 border-sky-600"
-              : "text-slate-400 border-transparent hover:text-sky-600"
+              ? "text-primary border-primary"
+              : "text-on-surface-variant border-transparent hover:text-primary"
           )}
         >
           {tab}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Icon } from "@/components/ui/icon";
 import type { DoctorWithStaffInfo } from "@/lib/services/staff.service";
 
@@ -22,19 +23,22 @@ const SPECIALTY_LABELS: Record<string, string> = {
 
 export function StaffRow({ doctor, onEdit }: StaffRowProps) {
   const fullName = `${doctor.profile.first_name} ${doctor.profile.last_name}`;
-  const specialtyLabel =
-    SPECIALTY_LABELS[doctor.specialty] ?? doctor.specialty;
+  const specialtyLabel = doctor.specialties
+    .map((s: string) => SPECIALTY_LABELS[s] ?? s)
+    .join(" / ");
 
   return (
     <tr className="group">
       <td className="py-4 px-2">
         <div className="flex items-center gap-3">
           {doctor.profile.avatar_url ? (
-            <div className="w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 overflow-hidden">
-              <img
+            <div className="relative w-10 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 overflow-hidden">
+              <Image
                 src={doctor.profile.avatar_url}
                 alt={fullName}
-                className="w-full h-full object-cover"
+                fill
+                sizes="40px"
+                className="object-cover"
               />
             </div>
           ) : (
