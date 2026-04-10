@@ -74,11 +74,14 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
       if (selectionMode === "doctor") {
         set({ currentStep: 1, selectedDate: null, selectedSlot: null });
       } else {
+        // NO limpiar selectedDoctorId: si hay 1 solo doctor, el paso 2
+        // tiene un auto-advance que rebotaría al paso 3 inmediatamente
+        // creando un loop invisible. Mantener el doctor seleccionado
+        // permite al usuario ver el paso 2 y cambiar si quiere.
         set({
           currentStep: 2,
           selectedDate: null,
           selectedSlot: null,
-          selectedDoctorId: null,
         });
       }
       return;

@@ -316,7 +316,7 @@ export function StepConfirmation() {
 
       {/* Botón atrás */}
       <div className="flex justify-start">
-        <Button variant="ghost" onClick={goBack}>
+        <Button type="button" variant="ghost" onClick={goBack}>
           <Icon name="arrow_back" size="sm" />
           Atrás
         </Button>

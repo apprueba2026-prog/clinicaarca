@@ -109,7 +109,7 @@ export function StepDatetimeSelection() {
 
       {/* Botones */}
       <div className="flex justify-between pt-2">
-        <Button variant="ghost" onClick={goBack}>
+        <Button type="button" variant="ghost" onClick={goBack}>
           <Icon name="arrow_back" size="sm" />
           Atrás
         </Button>
