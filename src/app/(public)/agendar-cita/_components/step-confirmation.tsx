@@ -49,6 +49,14 @@ export function StepConfirmation() {
     selectedSlot,
     notes,
     setNotes,
+    guestName,
+    guestPhone,
+    guestEmail,
+    guestDni,
+    setGuestName,
+    setGuestPhone,
+    setGuestEmail,
+    setGuestDni,
     saveDraft,
     clearDraft,
     goBack,
@@ -116,8 +124,72 @@ export function StepConfirmation() {
     }
   };
 
+  const handleConfirmGuest = async () => {
+    if (!selectedDoctorId || !selectedDate || !selectedSlot) return;
+
+    // Validación básica en cliente
+    if (!guestName.trim() || guestName.trim().length < 2) {
+      setError("Ingresa tu nombre completo");
+      return;
+    }
+    if (!/^9\d{8}$/.test(guestPhone)) {
+      setError("Teléfono debe ser 9 dígitos (ej: 985289689)");
+      return;
+    }
+    if (!guestEmail.includes("@")) {
+      setError("Ingresa un email válido");
+      return;
+    }
+    if (!/^\d{8}$/.test(guestDni)) {
+      setError("DNI debe ser 8 dígitos");
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/appointments/book-guest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          guest_name: guestName.trim(),
+          guest_phone: guestPhone.trim(),
+          guest_email: guestEmail.trim().toLowerCase(),
+          guest_dni: guestDni.trim(),
+          doctor_id: selectedDoctorId,
+          scheduled_date: selectedDate,
+          start_time: selectedSlot.start,
+          end_time: selectedSlot.end,
+          notes: notes || undefined,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error ?? "Error al agendar la cita");
+        return;
+      }
+
+      setSuccess(true);
+      clearDraft();
+    } catch {
+      setError("Error de conexión. Intenta de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Estado de éxito
   if (success) {
+    const isLoggedIn = user && isPatient;
+
+    if (isLoggedIn) {
+      // Redirigir a mi-cuenta tras 2.5s
+      setTimeout(() => router.push("/mi-cuenta"), 2500);
+    }
+
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
@@ -127,12 +199,38 @@ export function StepConfirmation() {
           ¡Cita Confirmada!
         </h2>
         <p className="text-sm text-on-surface-variant mt-2 max-w-sm">
-          Tu cita ha sido agendada exitosamente. Recibirás un correo de
-          confirmación con los detalles.
+          Tu cita ha sido agendada exitosamente.
+          {guestEmail
+            ? ` Recibirás un correo de confirmación en ${guestEmail}.`
+            : " Recibirás un correo de confirmación con los detalles."}
         </p>
-        <p className="text-xs text-on-surface-variant/70 mt-4">
-          Redirigiendo a tu cuenta...
-        </p>
+
+        {isLoggedIn ? (
+          <p className="text-xs text-on-surface-variant/70 mt-4">
+            Redirigiendo a tu cuenta...
+          </p>
+        ) : (
+          <div className="mt-6 space-y-3">
+            <p className="text-xs text-on-surface-variant">
+              ¿Quieres gestionar tus citas online y recibir recordatorios?
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.push(`/registro?email=${encodeURIComponent(guestEmail)}&next=/mi-cuenta`)}
+            >
+              <Icon name="person_add" size="sm" />
+              Crear mi cuenta (opcional)
+            </Button>
+            <button
+              type="button"
+              onClick={() => router.push("/")}
+              className="block mx-auto text-sm text-primary font-semibold hover:underline cursor-pointer"
+            >
+              Volver al inicio
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -260,25 +358,106 @@ export function StepConfirmation() {
           <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !user || !isPatient ? (
-        <div className="bg-primary-fixed/20 rounded-2xl p-6 text-center space-y-4">
-          <div className="flex items-center justify-center gap-2">
-            <Icon name="lock" size="sm" className="text-primary" />
-            <p className="text-sm font-semibold text-on-surface">
-              Para confirmar tu cita necesitas una cuenta
+        <div className="space-y-4">
+          {/* Formulario guest */}
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-6 space-y-4">
+            <p className="text-sm font-semibold text-on-surface text-center">
+              Completa tus datos para confirmar la cita
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="guest-name" className="text-xs font-semibold text-on-surface-variant mb-1 block">
+                  Nombre completo
+                </label>
+                <input
+                  id="guest-name"
+                  type="text"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  placeholder="Juan Pérez García"
+                  className="w-full rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="guest-dni" className="text-xs font-semibold text-on-surface-variant mb-1 block">
+                  DNI
+                </label>
+                <input
+                  id="guest-dni"
+                  type="text"
+                  inputMode="numeric"
+                  value={guestDni}
+                  onChange={(e) => setGuestDni(e.target.value.replace(/\D/g, "").slice(0, 8))}
+                  placeholder="12345678"
+                  maxLength={8}
+                  className="w-full rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="guest-phone" className="text-xs font-semibold text-on-surface-variant mb-1 block">
+                  Teléfono
+                </label>
+                <input
+                  id="guest-phone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value.replace(/\D/g, "").slice(0, 9))}
+                  placeholder="985289689"
+                  maxLength={9}
+                  className="w-full rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="guest-email" className="text-xs font-semibold text-on-surface-variant mb-1 block">
+                  Email
+                </label>
+                <input
+                  id="guest-email"
+                  type="email"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  className="w-full rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              variant="outline"
+
+          {/* Botón confirmar guest */}
+          <Button
+            type="button"
+            onClick={handleConfirmGuest}
+            disabled={submitting}
+            size="lg"
+            className={cn("w-full", submitting && "opacity-70")}
+          >
+            {submitting ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Agendando...
+              </>
+            ) : (
+              <>
+                <Icon name="event_available" size="sm" />
+                Confirmar Cita
+              </>
+            )}
+          </Button>
+
+          {/* Link login opcional */}
+          <div className="text-center">
+            <button
+              type="button"
               onClick={() => handleRedirectToAuth("login")}
+              className="text-xs text-primary font-semibold hover:underline cursor-pointer"
             >
-              <Icon name="login" size="sm" />
-              Ya tengo cuenta
-            </Button>
-            <Button onClick={() => handleRedirectToAuth("registro")}>
-              <Icon name="person_add" size="sm" />
-              Crear cuenta
-            </Button>
+              ¿Ya tienes cuenta? Inicia sesión
+            </button>
           </div>
         </div>
       ) : (

@@ -1,5 +1,6 @@
 import { sendEmail } from "./send-email";
 import { appointmentConfirmationTemplate } from "./templates/appointment-confirmation";
+import { appointmentConfirmationGuestTemplate } from "./templates/appointment-confirmation-guest";
 import { appointmentCancelledTemplate } from "./templates/appointment-cancelled";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -102,6 +103,41 @@ export async function sendConfirmationEmail(ctx: AppointmentEmailContext) {
     });
   } catch (err) {
     console.error("[EMAIL] Error enviando confirmación:", err);
+  }
+}
+
+/** Enviar email de confirmación para paciente guest (sin cuenta) */
+export async function sendGuestConfirmationEmail(params: {
+  patientName: string;
+  patientEmail: string;
+  doctorName: string;
+  specialty: string;
+  scheduledDate: string;
+  startTime: string;
+  endTime: string;
+  duration: number;
+  siteUrl: string;
+}) {
+  try {
+    const registerUrl = `${params.siteUrl}/registro?email=${encodeURIComponent(params.patientEmail)}&next=/mi-cuenta`;
+
+    const html = appointmentConfirmationGuestTemplate({
+      patientName: params.patientName,
+      doctorName: params.doctorName,
+      specialty: params.specialty,
+      date: formatDateES(params.scheduledDate),
+      time: `${formatTime(params.startTime)} - ${formatTime(params.endTime)}`,
+      duration: params.duration,
+      registerUrl,
+    });
+
+    await sendEmail({
+      to: params.patientEmail,
+      subject: `Cita confirmada — ${formatDateES(params.scheduledDate)}`,
+      html,
+    });
+  } catch (err) {
+    console.error("[EMAIL] Error enviando confirmación guest:", err);
   }
 }
 

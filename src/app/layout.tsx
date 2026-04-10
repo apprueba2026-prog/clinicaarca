@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${manrope.variable} ${inter.variable} h-full antialiased`}
+      className={`${manrope.variable} ${inter.variable} h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >
       <head>

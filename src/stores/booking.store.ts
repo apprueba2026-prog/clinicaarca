@@ -15,6 +15,12 @@ interface BookingState {
   selectedSlot: { start: string; end: string } | null;
   notes: string;
 
+  // Datos de paciente guest (sin cuenta)
+  guestName: string;
+  guestPhone: string;
+  guestEmail: string;
+  guestDni: string;
+
   // Actions
   setStep: (step: 1 | 2 | 3 | 4) => void;
   setSelectionMode: (mode: "service" | "doctor") => void;
@@ -23,6 +29,10 @@ interface BookingState {
   selectDate: (date: string) => void;
   selectSlot: (slot: { start: string; end: string }) => void;
   setNotes: (notes: string) => void;
+  setGuestName: (name: string) => void;
+  setGuestPhone: (phone: string) => void;
+  setGuestEmail: (email: string) => void;
+  setGuestDni: (dni: string) => void;
   goBack: () => void;
   reset: () => void;
 
@@ -42,6 +52,10 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
   selectedDate: null,
   selectedSlot: null,
   notes: "",
+  guestName: "",
+  guestPhone: "",
+  guestEmail: "",
+  guestDni: "",
 
   setStep: (step) => set({ currentStep: step }),
 
@@ -57,6 +71,11 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
   selectSlot: (slot) => set({ selectedSlot: slot }),
 
   setNotes: (notes) => set({ notes }),
+
+  setGuestName: (guestName) => set({ guestName }),
+  setGuestPhone: (guestPhone) => set({ guestPhone }),
+  setGuestEmail: (guestEmail) => set({ guestEmail }),
+  setGuestDni: (guestDni) => set({ guestDni }),
 
   goBack: () => {
     const { currentStep, selectionMode } = get();
@@ -101,6 +120,10 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
       selectedDate: null,
       selectedSlot: null,
       notes: "",
+      guestName: "",
+      guestPhone: "",
+      guestEmail: "",
+      guestDni: "",
     }),
 
   saveDraft: () => {
@@ -113,6 +136,10 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
       selectedDate: state.selectedDate,
       selectedSlot: state.selectedSlot,
       notes: state.notes,
+      guestName: state.guestName,
+      guestPhone: state.guestPhone,
+      guestEmail: state.guestEmail,
+      guestDni: state.guestDni,
     };
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -135,6 +162,10 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
         selectedDate: draft.selectedDate,
         selectedSlot: draft.selectedSlot,
         notes: draft.notes ?? "",
+        guestName: draft.guestName ?? "",
+        guestPhone: draft.guestPhone ?? "",
+        guestEmail: draft.guestEmail ?? "",
+        guestDni: draft.guestDni ?? "",
       });
       return true;
     } catch {
