@@ -59,7 +59,7 @@ export async function updateSession(request: NextRequest) {
   // Rutas protegidas del admin
   const isAdminRoute =
     pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/agenda") ||
+    pathname === "/agenda" || pathname.startsWith("/agenda/") ||
     pathname.startsWith("/pacientes") ||
     pathname.startsWith("/doctores") ||
     pathname.startsWith("/contenidos") ||
