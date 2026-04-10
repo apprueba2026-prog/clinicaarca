@@ -3,10 +3,10 @@ import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 
 const services = [
-  { label: "Odontopediatría", href: "/especialidades" },
-  { label: "Implantes Dentales", href: "/especialidades" },
-  { label: "Anestesiología", href: "/especialidades" },
-  { label: "Odontología General", href: "/especialidades" },
+  { label: "Odontopediatría", href: "/especialidades#odontopediatria" },
+  { label: "Implantes Dentales", href: "/especialidades#implantes" },
+  { label: "Anestesiología", href: "/especialidades#anestesiologia" },
+  { label: "Odontología General", href: "/especialidades#odontologia-general" },
 ];
 
 const quickLinks = [
