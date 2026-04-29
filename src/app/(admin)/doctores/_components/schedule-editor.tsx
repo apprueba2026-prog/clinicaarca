@@ -27,7 +27,7 @@ interface DaySchedule {
 
 const DEFAULT_SCHEDULE: DaySchedule[] = DAYS.map((d) => ({
   day_of_week: d.key,
-  start_time: "08:00",
+  start_time: "09:00",
   end_time: "20:00",
   is_active: false,
 }));
@@ -59,7 +59,7 @@ export function ScheduleEditor({ doctorId }: ScheduleEditorProps) {
             }
           : {
               day_of_week: d.key,
-              start_time: "08:00",
+              start_time: "09:00",
               end_time: "20:00",
               is_active: false,
             };

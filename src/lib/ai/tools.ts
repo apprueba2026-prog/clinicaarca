@@ -994,7 +994,7 @@ async function getClinicInfo(args: unknown) {
         topic: "Horarios de atención",
         info:
           settingsMap.get("hours") ??
-          "Lunes a Viernes: 8:00am - 8:00pm. Sábados: 9:00am - 2:00pm. Domingos cerrado.",
+          "Lunes a Sábado: 9:00am - 8:00pm. Domingos cerrado.",
       };
     case "phone":
       return {

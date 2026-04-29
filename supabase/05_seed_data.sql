@@ -21,4 +21,4 @@ INSERT INTO clinic_settings (key, value, description) VALUES
     ('clinic_name',    '"Clínica Arca"',                                                          'Nombre de la clínica'),
     ('clinic_phone',   '"+51 1 234 5678"',                                                        'Teléfono principal'),
     ('clinic_address', '"Av. Ejemplo 123, Lima, Perú"',                                           'Dirección de la clínica'),
-    ('working_hours',  '{"lunes_viernes": "08:00 - 20:00", "sabado": "08:00 - 14:00"}',          'Horarios de atención');
+    ('working_hours',  '{"lunes_sabado": "09:00 - 20:00", "domingo": "cerrado"}',                'Horarios de atención');

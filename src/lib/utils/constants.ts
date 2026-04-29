@@ -16,8 +16,8 @@ export const PUBLIC_NAV_ITEMS = [
   { label: "Contacto", href: "/contacto" },
 ] as const;
 
-// Horarios del calendario
-export const CALENDAR_START_HOUR = 8;
+// Horarios del calendario (atención de la clínica: 09:00 a 20:00)
+export const CALENDAR_START_HOUR = 9;
 export const CALENDAR_END_HOUR = 20;
 
 // Agendamiento de citas

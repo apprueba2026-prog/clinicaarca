@@ -89,17 +89,17 @@ BEGIN
         );
     END IF;
 
-    -- 3. Crear horarios de lunes a sábado (8:00 - 20:00)
+    -- 3. Crear horarios de lunes a sábado (09:00 - 20:00)
     DELETE FROM doctor_schedules WHERE doctor_id = v_doctor_id;
 
     INSERT INTO doctor_schedules (doctor_id, day_of_week, start_time, end_time, is_active)
     VALUES
-        (v_doctor_id, 'lunes',     '08:00', '20:00', true),
-        (v_doctor_id, 'martes',    '08:00', '20:00', true),
-        (v_doctor_id, 'miercoles', '08:00', '20:00', true),
-        (v_doctor_id, 'jueves',    '08:00', '20:00', true),
-        (v_doctor_id, 'viernes',   '08:00', '20:00', true),
-        (v_doctor_id, 'sabado',    '08:00', '20:00', true);
+        (v_doctor_id, 'lunes',     '09:00', '20:00', true),
+        (v_doctor_id, 'martes',    '09:00', '20:00', true),
+        (v_doctor_id, 'miercoles', '09:00', '20:00', true),
+        (v_doctor_id, 'jueves',    '09:00', '20:00', true),
+        (v_doctor_id, 'viernes',   '09:00', '20:00', true),
+        (v_doctor_id, 'sabado',    '09:00', '20:00', true);
 
     RAISE NOTICE 'Dra. Sonia Arca creada: user_id=%, doctor_id=%', v_user_id, v_doctor_id;
 END;
