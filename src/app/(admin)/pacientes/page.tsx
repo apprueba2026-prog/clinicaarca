@@ -8,6 +8,7 @@ import { PatientRow } from "@/components/shared/patient-row";
 import { InvoiceCard } from "@/components/shared/invoice-card";
 import { InvoiceModal } from "@/components/shared/invoice-modal";
 import { NewPatientModal } from "@/components/shared/new-patient-modal";
+import { AppointmentDetailModal } from "@/components/shared/appointment-detail-modal";
 import {
   SlideOverPanel,
   SlideOverHeader,
@@ -29,20 +30,30 @@ async function getPatientAppointments(
   patientId: string
 ): Promise<AppointmentWithDetails[]> {
   const supabase = createClient();
+  // Bug fix v1.1: la columna se llama `specialties` (array), no `specialty`.
+  // El typo previo hacía que la query fallara silenciosamente y el slide-over
+  // mostraba "Sin citas" aunque el paciente tuviera citas registradas.
   const { data, error } = await supabase
     .from("appointments")
     .select(
       `id, scheduled_date, start_time, end_time, status, priority, notes, room,
        patient:patients(first_name, last_name, dni, phone),
-       doctor:doctors(specialty, profile:profiles(first_name, last_name)),
+       doctor:doctors(specialties, profile:profiles(first_name, last_name)),
        procedure:procedures(name, category)`
     )
     .eq("patient_id", patientId)
     .order("scheduled_date", { ascending: false })
-    .limit(20);
+    .order("start_time", { ascending: false })
+    .limit(50);
 
   if (error) throw error;
   return (data as unknown as AppointmentWithDetails[]) ?? [];
+}
+
+function todayISOLima(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Lima",
+  }).format(new Date());
 }
 
 const APPOINTMENT_STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -346,56 +357,102 @@ export default function PacientesPage() {
                 </div>
               )}
 
-              {/* Tab: Citas */}
-              {activeTab === 1 && (
-                <div>
-                  <h4 className="text-sm font-extrabold text-on-surface-variant uppercase tracking-widest mb-4">
-                    Historial de Citas
-                  </h4>
-                  {patientAppointments.length === 0 ? (
+              {/* Tab: Citas — Próximas + Historial separados */}
+              {activeTab === 1 && (() => {
+                const today = todayISOLima();
+                const upcoming = patientAppointments.filter(
+                  (a) =>
+                    a.scheduled_date >= today &&
+                    !["cancelled", "no_show"].includes(a.status)
+                );
+                const past = patientAppointments.filter(
+                  (a) =>
+                    a.scheduled_date < today ||
+                    ["cancelled", "no_show", "completed"].includes(a.status)
+                );
+
+                const renderAppt = (appt: AppointmentWithDetails) => {
+                  const statusConfig =
+                    APPOINTMENT_STATUS_LABELS[appt.status] ??
+                    APPOINTMENT_STATUS_LABELS.pending;
+                  return (
+                    <button
+                      key={appt.id}
+                      onClick={() =>
+                        openModal("appointment-detail", {
+                          appointmentId: appt.id,
+                        })
+                      }
+                      className="w-full text-left p-4 bg-surface-container-low rounded-xl hover:bg-surface-container transition-colors cursor-pointer"
+                    >
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-on-surface truncate">
+                            {appt.procedure?.name ?? "Consulta General"}
+                          </p>
+                          <p className="text-xs text-on-surface-variant mt-0.5">
+                            {formatDate(appt.scheduled_date)} ·{" "}
+                            {appt.start_time.slice(0, 5)} –{" "}
+                            {appt.end_time.slice(0, 5)}
+                          </p>
+                          <p className="text-xs text-on-surface-variant mt-0.5 truncate">
+                            Dr(a). {appt.doctor.profile.first_name}{" "}
+                            {appt.doctor.profile.last_name}
+                          </p>
+                        </div>
+                        <span
+                          className={`shrink-0 px-2.5 py-1 text-[10px] font-bold uppercase tracking-tight rounded-full ${statusConfig.color}`}
+                        >
+                          {statusConfig.label}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                };
+
+                if (patientAppointments.length === 0) {
+                  return (
                     <div className="py-12 text-center text-on-surface-variant">
                       <Icon name="event_busy" size="xl" />
                       <p className="text-sm mt-2">Sin citas registradas</p>
                     </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {patientAppointments.map((appt) => {
-                        const statusConfig =
-                          APPOINTMENT_STATUS_LABELS[appt.status] ??
-                          APPOINTMENT_STATUS_LABELS.pending;
-                        return (
-                          <div
-                            key={appt.id}
-                            className="p-4 bg-surface-container-low rounded-xl"
-                          >
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <p className="text-sm font-bold text-on-surface">
-                                  {appt.procedure?.name ?? "Consulta General"}
-                                </p>
-                                <p className="text-xs text-on-surface-variant mt-0.5">
-                                  {formatDate(appt.scheduled_date)} •{" "}
-                                  {appt.start_time.slice(0, 5)} -{" "}
-                                  {appt.end_time.slice(0, 5)}
-                                </p>
-                                <p className="text-xs text-on-surface-variant mt-0.5">
-                                  Dr. {appt.doctor.profile.first_name}{" "}
-                                  {appt.doctor.profile.last_name}
-                                </p>
-                              </div>
-                              <span
-                                className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-tight rounded-full ${statusConfig.color}`}
-                              >
-                                {statusConfig.label}
-                              </span>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
+                  );
+                }
+
+                return (
+                  <div className="space-y-6">
+                    <section>
+                      <h4 className="text-xs font-extrabold text-primary uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <Icon name="schedule" size="sm" />
+                        Próximas ({upcoming.length})
+                      </h4>
+                      {upcoming.length === 0 ? (
+                        <p className="text-xs text-on-surface-variant py-2">
+                          Sin citas programadas a futuro.
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {upcoming.map(renderAppt)}
+                        </div>
+                      )}
+                    </section>
+
+                    <section>
+                      <h4 className="text-xs font-extrabold text-on-surface-variant uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <Icon name="history" size="sm" />
+                        Historial ({past.length})
+                      </h4>
+                      {past.length === 0 ? (
+                        <p className="text-xs text-on-surface-variant py-2">
+                          Sin citas previas.
+                        </p>
+                      ) : (
+                        <div className="space-y-2">{past.map(renderAppt)}</div>
+                      )}
+                    </section>
+                  </div>
+                );
+              })()}
 
               {/* Tab: Facturación */}
               {activeTab === 2 && (
@@ -452,6 +509,7 @@ export default function PacientesPage() {
       {/* Modals */}
       <NewPatientModal />
       <InvoiceModal />
+      <AppointmentDetailModal />
     </>
   );
 }
