@@ -5,7 +5,7 @@ import { BookingWizard } from "./_components/booking-wizard";
 export const metadata: Metadata = {
   title: "Agendar Cita — Clínica Arca",
   description:
-    "Agenda tu cita dental en Clínica Arca. Consulta gratuita con nuestros especialistas. Selecciona horario y confirma en minutos.",
+    "Agenda tu cita dental en Clínica Arca. Selecciona entre odontología general y especialidades. Reserva tu horario y confirma en minutos.",
 };
 
 export default function AgendarCitaPage() {

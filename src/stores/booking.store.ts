@@ -3,6 +3,8 @@
 import { create } from "zustand";
 import type { ProcedureCategory } from "@/lib/types/enums";
 
+export type DocumentType = "dni" | "passport";
+
 interface BookingState {
   // Wizard navigation
   currentStep: 1 | 2 | 3 | 4;
@@ -20,6 +22,7 @@ interface BookingState {
   guestPhone: string;
   guestEmail: string;
   guestDni: string;
+  guestDocumentType: DocumentType;
 
   // Actions
   setStep: (step: 1 | 2 | 3 | 4) => void;
@@ -33,6 +36,7 @@ interface BookingState {
   setGuestPhone: (phone: string) => void;
   setGuestEmail: (email: string) => void;
   setGuestDni: (dni: string) => void;
+  setGuestDocumentType: (type: DocumentType) => void;
   goBack: () => void;
   reset: () => void;
 
@@ -56,6 +60,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
   guestPhone: "",
   guestEmail: "",
   guestDni: "",
+  guestDocumentType: "dni",
 
   setStep: (step) => set({ currentStep: step }),
 
@@ -76,6 +81,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
   setGuestPhone: (guestPhone) => set({ guestPhone }),
   setGuestEmail: (guestEmail) => set({ guestEmail }),
   setGuestDni: (guestDni) => set({ guestDni }),
+  setGuestDocumentType: (guestDocumentType) => set({ guestDocumentType, guestDni: "" }),
 
   goBack: () => {
     const { currentStep, selectionMode } = get();
@@ -124,6 +130,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
       guestPhone: "",
       guestEmail: "",
       guestDni: "",
+      guestDocumentType: "dni",
     }),
 
   saveDraft: () => {
@@ -140,6 +147,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
       guestPhone: state.guestPhone,
       guestEmail: state.guestEmail,
       guestDni: state.guestDni,
+      guestDocumentType: state.guestDocumentType,
     };
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -166,6 +174,7 @@ export const useBookingStore = create<BookingState>()((set, get) => ({
         guestPhone: draft.guestPhone ?? "",
         guestEmail: draft.guestEmail ?? "",
         guestDni: draft.guestDni ?? "",
+        guestDocumentType: draft.guestDocumentType ?? "dni",
       });
       return true;
     } catch {

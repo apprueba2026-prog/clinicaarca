@@ -19,8 +19,8 @@ export function ContactActions() {
         onClick={openChat}
         className="w-full bg-gradient-to-r from-primary to-primary-container py-3.5 shadow-md"
       >
-        <Icon name="smart_toy" />
-        Dialoga con nuestro asistente Noé 24/7
+        <Icon name="support_agent" />
+        Conversa con Noé, tu anfitrión 24/7
       </Button>
       <div className="w-full py-3.5 px-6 rounded-lg bg-surface-container-high text-on-surface-variant font-medium flex items-center justify-center gap-2">
         <Icon name="call" className="text-primary" />

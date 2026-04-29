@@ -3,11 +3,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { SpecialtyCard } from "@/components/shared/specialty-card";
-import { TestimonialReel } from "@/components/shared/testimonial-reel";
-import { NewsCard } from "@/components/shared/news-card";
-import { InsuranceLogos } from "@/components/shared/insurance-logos";
+import { TestimonialCarousel } from "@/components/shared/testimonial-carousel";
+import { ComingSoonCard } from "@/components/shared/coming-soon-card";
+import { getPublicTestimonials } from "@/lib/services/testimonials.server";
 import Image from "next/image";
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Inicio — Especialistas en Odontología",
@@ -28,86 +30,29 @@ const specialties = [
   },
   {
     icon: "dentistry",
-    title: "Implantes",
+    title: "Periodoncia e Implantes",
     description:
-      "Recupera tu sonrisa con tecnología de carga inmediata y materiales biocompatibles de alta gama.",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAJe-YHkVbcvgkBKOwwFXEeyMSGtOGLZUYGC2jCLmPTtJtk_YOMd__bJ9Dn_vFv_Z_0XBKE2vJv0UINuXsy7L_MV52ODpwtU93kR2n_ET5gUBywzjCO-vj7OPMwJuzpMnvCmjkiCZNdtcuVMJ_FJXHZAWqn2mXCf7bS9Vtx3Mmb5_F0WQpx1vvYMdw2Qq0ew7rqLLazN8lrvZ8DUOb9dMwWAF2dVErnwFbZr_OXtJYZy1V3C2jp6fcY0A3qBzBLnoGrwM_NuprZg0Q",
-    imageAlt: "Prototipo de implante dental y escaneo digital 3D",
+      "Recupera tu sonrisa con tecnología de carga inmediata y mediata con materiales biocompatibles de alta gama.",
+    imageUrl: "/periodoncia-implantes-clinica-arca.webp",
+    imageAlt:
+      "Pantalla de diagnóstico avanzado 3D mostrando planificación de implantes y evaluación periodontal en Clínica Arca",
     href: "/especialidades#implantes",
   },
   {
     icon: "medical_services",
-    title: "Sedación Consciente",
+    title: "Odontología General",
     description:
-      "Elimina la ansiedad por completo con nuestro equipo de anestesiología especializado.",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBnv9TCjja1q7r5HcP3P2xKgdkTT_L3iZ3dtvGTQeGTIpuB63ajCKnMYW7uxcVqYXlMEDbOmw94xYWngaWsDGxxCaQWbOLksz0JyDOsoxEYXXZ9MVMllZqeqhjO-OAPG78Flu2mZVt1DcgZp4wdim-fFZTglM88aqvuQ8a1bomPl9jfeRv_CSJtkRk6mTALBUYn_StVc5I95JlYbIvYSszZkIs5di_mNT7lQaOrbzgPc-3xN52uQ3C8HmHU_OqDSI5I97Diruqsmkk",
-    imageAlt: "Paciente relajado durante procedimiento con sedación",
-    href: "/especialidades#anestesiologia",
+      "Desde limpiezas profundas hasta restauraciones estéticas. Prevención y mantenimiento de una sonrisa radiante y funcional.",
+    imageUrl: "/odontologia-general-clinica-arca.webp",
+    imageAlt:
+      "Doctora de Clínica Arca revisando historial digital del paciente en consultorio",
+    href: "/especialidades#odontologia-general",
   },
 ];
 
-const testimonials = [
-  {
-    name: "Carlos M.",
-    quote:
-      '"Increíble trato, no sentí absolutamente nada durante mi implante."',
-    rating: 5,
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDjZ9IjUkAC7A5Q7GD29dcXj6gbdIWOAzBsXsd7HfwJhmjk_0ui0xKzfm5sAOzIgBeuAOh4SBDptSJfdIPMap2T3QWaEMMcFThR5TEgaRkuXdJjmHP-PgZYYYFtjQNLzW3qTs9c3u-j43IEyPtyo1dLLjPquYkgRjYQLqvkB6EI4Zt0sr89NG8MCiaZigrH5BzHw7gGZecVljfhuKxZGgm6lk0hiEmgmvKcRTmaar-q0QNYhEnHNA326fBgva19UsgHV3G1G2WNLQk",
-    imageAlt: "Hombre joven sonriendo mostrando su sonrisa perfecta",
-  },
-  {
-    name: "Elena R.",
-    quote: '"Mis hijos aman venir aquí. El área de niños es fantástica."',
-    rating: 5,
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBCKSTwoG_YbfGFLREKcMyypn1d6MbOYl9xaPOsQ49QEUHAN8aKQmKvdkLfEtsdXaLZ8x1YXzQWzxExpRkN6IrXwaxA61NOo5vteqnonwnQGucJa_fGukDszpwUcWzdm99MZi3Q0i1bRjxjyNeVNBQl1dd8Gb4PgQn5iMVOdMhbTCT_bGkdCov2inQHkNHgeu2Ji5Jj_Z2EoEUNYpmJhB-Xc88pTXckAeh725s1Wq03hi_G26oSQ9S1GAcXw46VyzPin30SN3qc3T0",
-    imageAlt: "Mujer profesional sonriendo después de un tratamiento estético",
-  },
-  {
-    name: "Roberto F.",
-    quote:
-      '"La tecnología que usan es de otro nivel. Súper recomendado."',
-    rating: 5,
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCZICe4z22n5DmCVIoa3X1bT4JwkAmG3uqm9nFvp02m2bUmyYadTom0kxu69vF2ZiPnZbROaLZhVUlmMUDxGY4XRGgWJmCIQmb3Tv2f0-OHKuJ7qjT7GoOclUJNP191xTVCECfJuOzNCdxkb3_9aY6-X7LN86Whme_yUC8xy-9n9h110SDBpW3OyvMo_FBfdYYrFlE66J_XNamlRP63Cxfi4mEO8ZpYywpy2tyfCVLdzjXOOSmpA9c9PFD1k5Ra6sE-SLz5SVc30S4",
-    imageAlt: "Hombre mayor riendo y mostrando sus dientes sanos",
-  },
-  {
-    name: "Lucía S.",
-    quote:
-      '"La sedación fue la clave para perder mi miedo al dentista."',
-    rating: 5,
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBNkZKyY3u5UqQrZqz3LO19NGUdPjUHoa5oyQfDIIOUD1XQca5S8lhdJU5p0V02MsUZTKDLOc_ECDyD1o1kXU2z76ySsXkUCtrBsJmLzUbH4l1JF13kCjMJl7RHr8gEYXEua9dzv0p_3HqOSztuFDIrOXgSoEv_aCbBcS9UrBEEgQbCV7_DEA4VoZ7evdqK3pV_xV0QzeySLrA34HzHmHIoeu_IiNbIjX-YI_Yz_Yu0W0WaNUQCcmQVqHXFIQQ-955zTdmyyIq2wb4",
-    imageAlt: "Joven artista sonriendo mostrando sus resultados de ortodoncia",
-  },
-];
+export default async function HomePage() {
+  const testimonials = await getPublicTestimonials();
 
-const news = [
-  {
-    category: "Innovación",
-    title: "Inauguramos nuestra nueva unidad de escaneo 3D facial",
-    excerpt:
-      "Precisión milimétrica para cirugías maxilofaciales más seguras.",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBLr9jVntVbJPKlBOX6fgm3HvuxlHp-O3m5DxGUlzTzgSRo4gRUR38WJKb7TRAdYSfHh-6YqHE1NdGfDEDy1vSgDrADFYBecrHQT67Mo7Ifo2MdJgZ8J92xx8SS1Ohh5CyykNzIeU5PZ5LVcF6Cor9oPI0D7_tH3ORcgXxslQ4JsKtUpsERDqGztZGI1TGbG2ciVaxMFj1pwiy2-WnK2YoKr3ZLaAXDaVpfYjaB1tba65WUdi6-uALS5kBpRLPsjxXRssr7jSkeBnk",
-    imageAlt: "Dentista enseñando odontología digital con equipos avanzados",
-  },
-  {
-    category: "Premios",
-    title: "Reconocidos como clínica líder en excelencia médica 2024",
-    excerpt:
-      "Un logro compartido con toda nuestra comunidad de pacientes.",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAPa5R703_i_0-3ipN53zcNGb5yxcEk4cnLcBky3OA9XF759ghYjVUKy5uzBfWwxi7X68WSY6cG7Vd3Iy85d2L8zlzHsHpFWoaEBK0nUVgLebCkXhdAjMiq8n2xYR-ryVWPx-puqRplnjS3mhWMp-KPL8Xo5BF-VdQd2STFvtep7WQtipIs0dbfoQsBkrQS7q6eQWoX4Pj292Gl8fTyda9vRj37fJPG2OZB6eJeT-EYQw1wio9dteptZ-zktVEGKjkQR1leV8GNxJ0",
-    imageAlt: "Placa de premio con logo de Clínica Arca",
-  },
-];
-
-export default function HomePage() {
   return (
     <>
       {/* ========== HERO SECTION ========== */}
@@ -130,12 +75,9 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-4">
               <Link href="/agendar-cita">
                 <Button variant="primary" size="lg" tabIndex={-1} className="shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
-                  Primera Consulta Gratis
+                  Reserve su cita YA
                 </Button>
               </Link>
-              <Button variant="secondary" size="lg">
-                Ver Instalaciones <Icon name="play_circle" />
-              </Button>
             </div>
           </div>
 
@@ -200,11 +142,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonials.map((t) => (
-              <TestimonialReel key={t.name} {...t} />
-            ))}
-          </div>
+          <TestimonialCarousel items={testimonials} />
         </div>
       </section>
 
@@ -212,16 +150,17 @@ export default function HomePage() {
       <section className="py-24 bg-surface-container-low">
         <div className="max-w-screen-2xl mx-auto px-8">
           <div className="grid lg:grid-cols-2 gap-16">
-            {/* Noticias */}
+            {/* Actualidad */}
             <div>
               <h2 className="text-3xl font-headline font-bold mb-8">
                 Actualidad Clínica
               </h2>
-              <div className="grid gap-6">
-                {news.map((n) => (
-                  <NewsCard key={n.title} {...n} />
-                ))}
-              </div>
+              <ComingSoonCard
+                icon="newspaper"
+                title="Próximamente"
+                description="Pronto compartiremos noticias, hitos y novedades de la clínica."
+                variant="wide"
+              />
             </div>
 
             {/* Convenios */}
@@ -229,7 +168,12 @@ export default function HomePage() {
               <h2 className="text-3xl font-headline font-bold mb-8">
                 Convenios y Aseguradoras
               </h2>
-              <InsuranceLogos />
+              <ComingSoonCard
+                icon="handshake"
+                title="Próximamente"
+                description="Trabajamos en alianzas con las principales aseguradoras del país. Pronto verás aquí los convenios disponibles."
+                variant="wide"
+              />
             </div>
           </div>
         </div>

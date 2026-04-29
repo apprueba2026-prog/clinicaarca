@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/stores/booking.store";
 import { usePublicDoctors } from "@/hooks/use-public-doctors";
 import { useAuth } from "@/hooks/use-auth";
+import type { DocumentType } from "@/stores/booking.store";
 
 const CATEGORY_LABELS: Record<string, string> = {
   general: "Odontología General",
@@ -39,6 +40,16 @@ function formatTime(time: string): string {
   return time.slice(0, 5);
 }
 
+/** Valida DNI (8 dígitos numéricos) */
+function isValidDni(value: string): boolean {
+  return /^\d{8}$/.test(value);
+}
+
+/** Valida Pasaporte (alfanumérico, 6-15 caracteres) */
+function isValidPassport(value: string): boolean {
+  return /^[A-Za-z0-9]{6,15}$/.test(value);
+}
+
 export function StepConfirmation() {
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
@@ -53,10 +64,12 @@ export function StepConfirmation() {
     guestPhone,
     guestEmail,
     guestDni,
+    guestDocumentType,
     setGuestName,
     setGuestPhone,
     setGuestEmail,
     setGuestDni,
+    setGuestDocumentType,
     saveDraft,
     clearDraft,
     goBack,
@@ -81,6 +94,29 @@ export function StepConfirmation() {
   const handleRedirectToAuth = (path: "login" | "registro") => {
     saveDraft();
     router.push(`/${path}?next=/agendar-cita&restore=1`);
+  };
+
+  const handleDocumentChange = (value: string) => {
+    if (guestDocumentType === "dni") {
+      // Solo números, máximo 8
+      setGuestDni(value.replace(/\D/g, "").slice(0, 8));
+    } else {
+      // Alfanumérico, máximo 15 caracteres
+      setGuestDni(value.replace(/[^A-Za-z0-9]/g, "").slice(0, 15));
+    }
+  };
+
+  const validateDocument = (): string | null => {
+    if (guestDocumentType === "dni") {
+      if (!isValidDni(guestDni)) {
+        return "DNI debe ser 8 dígitos numéricos";
+      }
+    } else {
+      if (!isValidPassport(guestDni)) {
+        return "Pasaporte debe tener entre 6 y 15 caracteres alfanuméricos";
+      }
+    }
+    return null;
   };
 
   const handleConfirm = async () => {
@@ -132,16 +168,20 @@ export function StepConfirmation() {
       setError("Ingresa tu nombre completo");
       return;
     }
+
+    // Validar documento
+    const docError = validateDocument();
+    if (docError) {
+      setError(docError);
+      return;
+    }
+
     if (!/^9\d{8}$/.test(guestPhone)) {
       setError("Teléfono debe ser 9 dígitos (ej: 985289689)");
       return;
     }
     if (!guestEmail.includes("@")) {
       setError("Ingresa un email válido");
-      return;
-    }
-    if (!/^\d{8}$/.test(guestDni)) {
-      setError("DNI debe ser 8 dígitos");
       return;
     }
 
@@ -157,6 +197,7 @@ export function StepConfirmation() {
           guest_phone: guestPhone.trim(),
           guest_email: guestEmail.trim().toLowerCase(),
           guest_dni: guestDni.trim(),
+          guest_document_type: guestDocumentType,
           doctor_id: selectedDoctorId,
           scheduled_date: selectedDate,
           start_time: selectedSlot.start,
@@ -196,13 +237,11 @@ export function StepConfirmation() {
           <Icon name="check_circle" size="xl" className="text-green-600" filled />
         </div>
         <h2 className="font-headline text-xl font-extrabold text-on-surface">
-          ¡Cita Confirmada!
+          ¡Cita Agendada!
         </h2>
         <p className="text-sm text-on-surface-variant mt-2 max-w-sm">
           Tu cita ha sido agendada exitosamente.
-          {guestEmail
-            ? ` Recibirás un correo de confirmación en ${guestEmail}.`
-            : " Recibirás un correo de confirmación con los detalles."}
+          Recibirás un correo de confirmación con los detalles de tu cita.
         </p>
 
         {isLoggedIn ? (
@@ -263,7 +302,8 @@ export function StepConfirmation() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        {/* Grid: Fecha, Hora, Duración (sin Costo) */}
+        <div className="grid grid-cols-3 gap-4">
           <div className="flex items-start gap-2">
             <Icon
               name="calendar_month"
@@ -302,18 +342,6 @@ export function StepConfirmation() {
               </p>
               <p className="text-sm font-semibold text-on-surface">
                 {duration} minutos
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-2">
-            <Icon name="payments" size="sm" className="text-primary mt-0.5" />
-            <div>
-              <p className="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">
-                Costo
-              </p>
-              <p className="text-sm font-semibold text-on-surface">
-                Consulta gratuita
               </p>
             </div>
           </div>
@@ -380,20 +408,50 @@ export function StepConfirmation() {
                 />
               </div>
 
+              {/* DNI / Pasaporte con toggle */}
               <div>
-                <label htmlFor="guest-dni" className="text-xs font-semibold text-on-surface-variant mb-1 block">
-                  DNI
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label htmlFor="guest-document" className="text-xs font-semibold text-on-surface-variant">
+                    DNI / Pasaporte
+                  </label>
+                  <div className="flex bg-surface-container-high rounded-lg p-0.5 gap-0.5">
+                    {(
+                      [
+                        { id: "dni" as DocumentType, label: "DNI" },
+                        { id: "passport" as DocumentType, label: "Pasaporte" },
+                      ] as const
+                    ).map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setGuestDocumentType(opt.id)}
+                        className={cn(
+                          "px-2.5 py-0.5 rounded-md text-[10px] font-semibold transition-all duration-200 cursor-pointer",
+                          guestDocumentType === opt.id
+                            ? "bg-primary text-on-primary shadow-sm"
+                            : "text-on-surface-variant hover:text-on-surface"
+                        )}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <input
-                  id="guest-dni"
+                  id="guest-document"
                   type="text"
-                  inputMode="numeric"
+                  inputMode={guestDocumentType === "dni" ? "numeric" : "text"}
                   value={guestDni}
-                  onChange={(e) => setGuestDni(e.target.value.replace(/\D/g, "").slice(0, 8))}
-                  placeholder="12345678"
-                  maxLength={8}
+                  onChange={(e) => handleDocumentChange(e.target.value)}
+                  placeholder={guestDocumentType === "dni" ? "12345678" : "AB1234567"}
+                  maxLength={guestDocumentType === "dni" ? 8 : 15}
                   className="w-full rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                 />
+                <p className="text-[10px] text-on-surface-variant/60 mt-0.5">
+                  {guestDocumentType === "dni"
+                    ? "8 dígitos numéricos"
+                    : "6-15 caracteres alfanuméricos"}
+                </p>
               </div>
 
               <div>
