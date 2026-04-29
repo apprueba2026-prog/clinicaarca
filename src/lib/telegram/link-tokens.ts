@@ -302,3 +302,18 @@ export async function unlinkByChatId(chatId: number): Promise<boolean> {
     .eq("telegram_chat_id", chatId);
   return !error;
 }
+
+/**
+ * Marca como consumidos cualquier token de flujo /vincular activo para
+ * un chat_id. Útil cuando ya está vinculado por otro mecanismo y el
+ * step viejo quedó huérfano provocando confusión en el handler de
+ * mensajes libres.
+ */
+export async function clearActiveFlowTokens(chatId: number): Promise<void> {
+  const supabase = createAdminClient();
+  await supabase
+    .from("telegram_link_tokens")
+    .update({ used_at: new Date().toISOString(), step: "consumed" })
+    .eq("telegram_chat_id", chatId)
+    .in("step", ["awaiting_dni", "awaiting_otp"]);
+}

@@ -3,14 +3,24 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { ADMIN_NAV_ITEMS } from "@/lib/utils/constants";
+import {
+  filterNavItemsByRole,
+  type StaffRole,
+} from "@/lib/utils/constants";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils/cn";
 
 export function SideNavBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
+  // Filtra items según rol del usuario logueado.
+  // patient no debería estar en este sidebar — pero por defensa filtramos.
+  const role =
+    profile?.role && profile.role !== "patient"
+      ? (profile.role as StaffRole)
+      : null;
+  const navItems = filterNavItemsByRole(role);
 
   const handleSignOut = async () => {
     await signOut();
@@ -38,7 +48,7 @@ export function SideNavBar() {
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1">
-        {ADMIN_NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
             <Link

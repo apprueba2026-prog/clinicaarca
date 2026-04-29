@@ -26,6 +26,7 @@ import {
   buildWelcomeMessage,
 } from "@/lib/telegram/templates";
 import {
+  clearActiveFlowTokens,
   consumeWebLinkToken,
   getFlowStep,
   startTelegramLinkFlow,
@@ -34,6 +35,38 @@ import {
   verifyOtpAndLink,
 } from "@/lib/telegram/link-tokens";
 import { sendEmail } from "@/lib/email/send-email";
+import { createAdminClient } from "@/lib/supabase/admin";
+
+/**
+ * Si un chat_id ya está vinculado activamente (doctor o paciente),
+ * devuelve el tipo. Permite cortar el flujo /vincular antes de pedir DNI
+ * a alguien que ya está vinculado (ej. la Dra. Sonia escribiendo texto
+ * libre — no debe ser tratada como paciente nuevo).
+ */
+async function getActiveLink(
+  chatId: number
+): Promise<{ type: "doctor" | "patient"; firstName: string | null } | null> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("telegram_users")
+    .select(
+      "linked_entity_type, doctor:doctors(profile:profiles(first_name)), patient:patients(first_name)"
+    )
+    .eq("telegram_chat_id", chatId)
+    .eq("status", "active")
+    .maybeSingle();
+  if (!data) return null;
+  const type = data.linked_entity_type as "doctor" | "patient" | null;
+  if (!type) return null;
+  if (type === "doctor") {
+    const doctor = data.doctor as unknown as
+      | { profile: { first_name: string } | null }
+      | null;
+    return { type, firstName: doctor?.profile?.first_name ?? null };
+  }
+  const patient = data.patient as unknown as { first_name: string } | null;
+  return { type, firstName: patient?.first_name ?? null };
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -72,7 +105,18 @@ function registerHandlers() {
   });
 
   bot.command(["vincular", "link"], async (ctx) => {
-    await startTelegramLinkFlow(ctx.chat.id);
+    const chatId = ctx.chat.id;
+    // Si el chat ya está vinculado activamente, NO iniciar flujo /vincular.
+    const existing = await getActiveLink(chatId);
+    if (existing) {
+      const greet = existing.firstName ? `, ${existing.firstName}` : "";
+      const role = existing.type === "doctor" ? "doctor(a)" : "paciente";
+      await ctx.reply(
+        `Ya estás vinculado${greet} como ${role}. Si quieres cambiar de cuenta, escribe /desvincular primero.`
+      );
+      return;
+    }
+    await startTelegramLinkFlow(chatId);
     await ctx.reply(
       "Para vincular tu cuenta, envíame tu *DNI* \\(8 dígitos\\)\\.",
       { parse_mode: "MarkdownV2" }
@@ -97,6 +141,30 @@ function registerHandlers() {
     const text = ctx.message.text?.trim();
     if (!text || text.startsWith("/")) return;
     const chatId = ctx.chat.id;
+
+    // PRIORIDAD #1: si el chat ya está vinculado, NO interpretar como paciente
+    // intentando dar DNI. Bug detectado en v1.1: la Dra. Sonia ya vinculada
+    // como doctora recibía "El DNI debe tener 8 dígitos" cada vez que escribía
+    // texto libre, porque un /vincular previo dejó un token con awaiting_dni
+    // y el handler entraba en ese flujo sin verificar si ya estaba vinculada.
+    const existing = await getActiveLink(chatId);
+    if (existing) {
+      // Limpieza de tokens huérfanos del flujo /vincular para que no vuelvan
+      // a confundir si el usuario escribe algo en otro turno.
+      await clearActiveFlowTokens(chatId);
+      const greet = existing.firstName ? `, ${existing.firstName}` : "";
+      if (existing.type === "doctor") {
+        await ctx.reply(
+          `Hola Dr(a)${greet} 👋. Por aquí solo te envío avisos de tus citas (nuevas, reprogramadas, canceladas) y tu reporte diario.\n\nNo puedo agendar citas desde el chat. Para gestionar la agenda, ingresa al panel admin.\n\nEscribe /ayuda para ver mis comandos.`
+        );
+      } else {
+        await ctx.reply(
+          `Hola${greet} 👋. Por aquí solo te envío recordatorios de tus citas en Clínica Arca.\n\nPara agendar una nueva cita, escríbenos por el chat de la web (clinicaarca.com) o llama a recepción.\n\nEscribe /ayuda para ver mis comandos.`
+        );
+      }
+      return;
+    }
+
     const step = await getFlowStep(chatId);
 
     if (step === "awaiting_dni") {
