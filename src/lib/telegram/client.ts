@@ -28,7 +28,8 @@ export type TelegramNotificationType =
   | "reminder_24h"
   | "doctor_daily_report"
   | "welcome"
-  | "link_confirmation";
+  | "link_confirmation"
+  | "new_appointment_admin";
 
 interface SendOptions {
   telegramUserId?: string | null;

@@ -37,6 +37,9 @@ interface AppointmentEmailContext {
   scheduledDate: string;
   startTime: string;
   endTime: string;
+  procedureId?: string | null;
+  procedureName?: string | null;
+  procedureDescription?: string | null;
 }
 
 /** Obtener datos necesarios para el email */
@@ -87,6 +90,16 @@ export async function sendConfirmationEmail(ctx: AppointmentEmailContext) {
     const data = await getEmailContext(ctx);
     if (!data) return;
 
+    let procedureName: string | null = ctx.procedureName ?? null;
+    if (!procedureName && ctx.procedureId) {
+      const { data: proc } = await ctx.supabase
+        .from("procedures")
+        .select("name")
+        .eq("id", ctx.procedureId)
+        .maybeSingle();
+      procedureName = proc?.name ?? null;
+    }
+
     const html = appointmentConfirmationTemplate({
       patientName: data.patientName,
       doctorName: data.doctorName,
@@ -94,6 +107,8 @@ export async function sendConfirmationEmail(ctx: AppointmentEmailContext) {
       date: formatDateES(ctx.scheduledDate),
       time: `${formatTime(ctx.startTime)} - ${formatTime(ctx.endTime)}`,
       duration: data.duration,
+      procedureName,
+      procedureDescription: ctx.procedureDescription ?? null,
     });
 
     await sendEmail({

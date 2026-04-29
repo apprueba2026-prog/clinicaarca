@@ -5,11 +5,29 @@ interface ConfirmationEmailData {
   date: string;
   time: string;
   duration: number;
+  procedureName?: string | null;
+  procedureDescription?: string | null;
 }
 
 export function appointmentConfirmationTemplate(
   data: ConfirmationEmailData
 ): string {
+  const procedureRow = data.procedureName
+    ? `
+                <tr>
+                  <td style="padding:6px 0;font-size:13px;color:#666;">Procedimiento</td>
+                  <td style="padding:6px 0;font-size:14px;color:#1a1a1a;">${data.procedureName}</td>
+                </tr>`
+    : "";
+
+  const descriptionBlock = data.procedureDescription
+    ? `
+        <div style="margin:20px 0 0;padding:18px 20px;background:#f8fafc;border-left:4px solid #006194;border-radius:8px;">
+          <p style="margin:0 0 6px;font-size:12px;color:#006194;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Detalle del procedimiento</p>
+          <p style="margin:0;font-size:14px;color:#1a1a1a;line-height:1.6;white-space:pre-wrap;">${escapeHtml(data.procedureDescription)}</p>
+        </div>`
+    : "";
+
   return `
 <!DOCTYPE html>
 <html lang="es">
@@ -19,7 +37,6 @@ export function appointmentConfirmationTemplate(
 </head>
 <body style="margin:0;padding:0;background-color:#f5f5f5;font-family:'Segoe UI',Roboto,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:32px auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e0e0e0;">
-    <!-- Header -->
     <tr>
       <td style="background:#006194;padding:28px 32px;text-align:center;">
         <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">Clínica Arca</h1>
@@ -27,7 +44,6 @@ export function appointmentConfirmationTemplate(
       </td>
     </tr>
 
-    <!-- Body -->
     <tr>
       <td style="padding:32px;">
         <p style="margin:0 0 20px;font-size:15px;color:#1a1a1a;">
@@ -37,7 +53,6 @@ export function appointmentConfirmationTemplate(
           Tu cita ha sido agendada exitosamente. Aquí están los detalles:
         </p>
 
-        <!-- Detalles -->
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f7fb;border-radius:12px;border:1px solid #d0e8f2;">
           <tr>
             <td style="padding:20px 24px;">
@@ -49,7 +64,7 @@ export function appointmentConfirmationTemplate(
                 <tr>
                   <td style="padding:6px 0;font-size:13px;color:#666;">Especialidad</td>
                   <td style="padding:6px 0;font-size:14px;color:#1a1a1a;">${data.specialty}</td>
-                </tr>
+                </tr>${procedureRow}
                 <tr>
                   <td style="padding:6px 0;font-size:13px;color:#666;">Fecha</td>
                   <td style="padding:6px 0;font-size:14px;color:#1a1a1a;font-weight:600;">${data.date}</td>
@@ -65,9 +80,8 @@ export function appointmentConfirmationTemplate(
               </table>
             </td>
           </tr>
-        </table>
+        </table>${descriptionBlock}
 
-        <!-- Política -->
         <div style="margin:24px 0 0;padding:16px 20px;background:#fff8e1;border-radius:10px;border:1px solid #ffe082;">
           <p style="margin:0;font-size:12px;color:#795548;line-height:1.5;">
             <strong>Política de cancelación:</strong> Puedes cancelar o reagendar tu cita
@@ -81,7 +95,6 @@ export function appointmentConfirmationTemplate(
       </td>
     </tr>
 
-    <!-- Footer -->
     <tr>
       <td style="padding:20px 32px;background:#fafafa;border-top:1px solid #eee;text-align:center;">
         <p style="margin:0;font-size:11px;color:#999;">
@@ -92,4 +105,13 @@ export function appointmentConfirmationTemplate(
   </table>
 </body>
 </html>`;
+}
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }

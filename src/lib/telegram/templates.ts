@@ -31,6 +31,18 @@ export function buildWelcomeMessage(firstName?: string): string {
   ].join("\n");
 }
 
+export function buildDoctorLinkConfirmation(doctorFirstName: string): string {
+  return [
+    `¡Listo, Dr\\(a\\)\\. ${escapeMd2(doctorFirstName)}\\! Tu cuenta de *Clínica Arca* está vinculada\\.`,
+    ``,
+    `A partir de ahora recibirás aquí:`,
+    `• Notificaciones cuando se agende una nueva cita en tu agenda\\.`,
+    `• Tu reporte diario de citas\\.`,
+    ``,
+    `Si quieres dejar de recibir mensajes, escribe /desvincular\\.`,
+  ].join("\n");
+}
+
 export function buildLinkConfirmation(patientFirstName: string): string {
   return [
     `✅ *Vinculación exitosa*`,
@@ -111,6 +123,42 @@ export function buildDoctorDailyReport(
     return lines.join("\n");
   });
   return [...header, ...body, ``, `Total: *${appointments.length}* cita\\(s\\)\\.`].join("\n");
+}
+
+export interface NewAppointmentNotice {
+  doctorFirstName: string;
+  patientFullName: string;
+  scheduledDate: string;     // 'YYYY-MM-DD'
+  startTime: string;         // 'HH:MM' o 'HH:MM:SS'
+  endTime: string;
+  procedureName?: string | null;
+  procedureDescription?: string | null;
+  scheduledBy?: string | null;
+}
+
+export function buildNewAppointmentForDoctor(n: NewAppointmentNotice): string {
+  const fecha = formatLimaDate(n.scheduledDate);
+  const start = n.startTime.slice(0, 5);
+  const end = n.endTime.slice(0, 5);
+  const lines: string[] = [
+    `🦷 *Nueva cita agendada*`,
+    ``,
+    `Hola Dr\\(a\\)\\. ${escapeMd2(n.doctorFirstName)}, se acaba de registrar una cita en tu agenda:`,
+    ``,
+    `👤 *Paciente:* ${escapeMd2(n.patientFullName)}`,
+    `📅 *Fecha:* ${escapeMd2(fecha)}`,
+    `🕒 *Hora:* ${escapeMd2(start)}–${escapeMd2(end)}`,
+  ];
+  if (n.procedureName) {
+    lines.push(`💠 *Procedimiento:* ${escapeMd2(n.procedureName)}`);
+  }
+  if (n.procedureDescription) {
+    lines.push(``, `📝 _Detalle_:`, escapeMd2(n.procedureDescription));
+  }
+  if (n.scheduledBy) {
+    lines.push(``, `_Agendada por ${escapeMd2(n.scheduledBy)}_`);
+  }
+  return lines.join("\n");
 }
 
 export function buildHelpMessage(): string {
