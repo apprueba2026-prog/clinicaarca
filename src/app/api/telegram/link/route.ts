@@ -35,9 +35,15 @@ export async function POST(req: NextRequest) {
 
     const botUsername = process.env.TELEGRAM_BOT_USERNAME;
     if (!botUsername) {
+      console.error(
+        "[telegram/link] Falta env var TELEGRAM_BOT_USERNAME en producción."
+      );
       return NextResponse.json(
-        { error: "TELEGRAM_BOT_USERNAME no configurado" },
-        { status: 500 }
+        {
+          error:
+            "Servicio Telegram no disponible temporalmente. Por favor inténtalo más tarde.",
+        },
+        { status: 503 }
       );
     }
 

@@ -71,9 +71,15 @@ export async function POST(req: NextRequest) {
 
     const botUsername = process.env.TELEGRAM_BOT_USERNAME;
     if (!botUsername) {
+      console.error(
+        "[telegram/link-doctor] Falta env var TELEGRAM_BOT_USERNAME en producción."
+      );
       return NextResponse.json(
-        { error: "TELEGRAM_BOT_USERNAME no configurado" },
-        { status: 500 }
+        {
+          error:
+            "Servicio Telegram no configurado. Pide al administrador del sistema que defina la variable TELEGRAM_BOT_USERNAME en Vercel.",
+        },
+        { status: 503 }
       );
     }
 

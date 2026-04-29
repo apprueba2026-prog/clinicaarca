@@ -401,17 +401,13 @@ export function AppointmentDetailModal() {
                       return (
                         <button
                           key={start}
-                          onClick={() =>
-                            setNewSlot({
-                              start: start + ":00",
-                              end: end + ":00",
-                            })
-                          }
+                          type="button"
+                          onClick={() => setNewSlot({ start, end })}
                           className={cn(
-                            "px-3 py-2 rounded-lg text-xs font-semibold border transition-colors",
+                            "px-3 py-2 rounded-lg text-xs font-semibold border transition-colors cursor-pointer",
                             selected
-                              ? "border-primary bg-primary text-on-primary"
-                              : "border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+                              ? "border-primary bg-primary text-on-primary shadow-sm"
+                              : "border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200"
                           )}
                         >
                           {start}
