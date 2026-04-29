@@ -25,6 +25,9 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
   try {
     const fromEmail =
       process.env.RESEND_FROM_EMAIL ?? "Clínica Arca <noreply@clinicaarca.com>";
+
+    console.log(`[EMAIL] Enviando a: ${to}, Desde: ${fromEmail}, Asunto: ${subject}`);
+
     const { data, error } = await getResend().emails.send({
       from: fromEmail,
       to,
@@ -33,13 +36,16 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
     });
 
     if (error) {
-      console.error("[EMAIL ERROR]", error);
+      console.error("[EMAIL ERROR] Resend devolvió error:", JSON.stringify(error, null, 2));
+      console.error("[EMAIL ERROR] Verifica que RESEND_FROM_EMAIL use un dominio verificado en Resend.");
+      console.error("[EMAIL ERROR] Si usas plan gratuito, solo puedes enviar desde 'onboarding@resend.dev' o un dominio verificado.");
       return { success: false, error };
     }
 
+    console.log(`[EMAIL OK] Enviado exitosamente. ID: ${data?.id}`);
     return { success: true, id: data?.id };
   } catch (err) {
-    console.error("[EMAIL ERROR]", err);
+    console.error("[EMAIL ERROR] Excepción al enviar:", err);
     return { success: false, error: err };
   }
 }

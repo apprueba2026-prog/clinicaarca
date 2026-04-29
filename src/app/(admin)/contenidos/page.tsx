@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { VideoUploadZone } from "@/components/shared/video-upload-zone";
 import { TestimonialItem } from "@/components/shared/testimonial-item";
 import { StaffRow } from "@/components/shared/staff-row";
-import { testimonialsService } from "@/lib/services/testimonials.service";
+import {
+  testimonialsService,
+  PUBLIC_CAROUSEL_LIMIT,
+} from "@/lib/services/testimonials.service";
+import { generateVideoThumbnail } from "@/lib/utils/video-thumbnail";
 import { staffService } from "@/lib/services/staff.service";
 import { newsService, type NewsArticle } from "@/lib/services/news.service";
 import { formatDate } from "@/lib/utils/format-date";
@@ -90,21 +94,32 @@ export default function ContenidosPage() {
   }, []);
 
   async function handleCreateTestimonial() {
-    if (!patientName.trim()) return;
+    if (!patientName.trim() || !reviewText.trim() || !videoFile) return;
 
     setIsUploading(true);
     try {
-      let videoUrl: string | null = null;
-      if (videoFile) {
-        videoUrl = await testimonialsService.uploadVideo(videoFile);
+      // FIFO: si ya hay 7 publicados visibles, elimina los más antiguos
+      await testimonialsService.pruneOldestIfFull();
+
+      // Generar thumbnail desde el primer frame del video
+      let thumbnailUrl: string | null = null;
+      try {
+        const thumbBlob = await generateVideoThumbnail(videoFile, {
+          seekSeconds: 1,
+        });
+        thumbnailUrl = await testimonialsService.uploadThumbnail(thumbBlob);
+      } catch (err) {
+        console.warn("[contenidos] No se pudo generar thumbnail", err);
       }
+
+      const videoUrl = await testimonialsService.uploadVideo(videoFile);
 
       await testimonialsService.create({
         patient_name: patientName,
-        review_text: reviewText || null,
+        review_text: reviewText,
         rating,
         video_url: videoUrl,
-        thumbnail_url: null,
+        thumbnail_url: thumbnailUrl,
       });
 
       queryClient.invalidateQueries({ queryKey: ["testimonials"] });
@@ -228,20 +243,32 @@ export default function ContenidosPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 ml-1">
-                    Reseña corta
+                    Reseña corta <span className="text-error">*</span>
                   </label>
                   <textarea
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
                     rows={3}
+                    required
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-outline-variant/20 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none resize-none"
                     placeholder="Describe la experiencia del paciente..."
                   />
                 </div>
 
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Se mostrarán los {PUBLIC_CAROUSEL_LIMIT} testimonios más
+                  recientes en el carrusel de la web. Al subir uno nuevo, el
+                  más antiguo se reemplaza automáticamente.
+                </p>
+
                 <Button
                   onClick={handleCreateTestimonial}
-                  disabled={isUploading || !patientName.trim()}
+                  disabled={
+                    isUploading ||
+                    !patientName.trim() ||
+                    !reviewText.trim() ||
+                    !videoFile
+                  }
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-primary-container"
                   size="lg"
                 >
