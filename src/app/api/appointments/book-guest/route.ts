@@ -55,6 +55,7 @@ export async function POST(request: Request) {
       guest_phone,
       guest_email,
       guest_dni,
+      guest_document_type,
       doctor_id,
       scheduled_date,
       start_time,
@@ -162,6 +163,7 @@ export async function POST(request: Request) {
           last_name: lastName,
           phone: guest_phone,
           dni: guest_dni,
+          document_type: guest_document_type ?? "dni",
         })
         .eq("id", patientId);
     } else {
@@ -174,6 +176,7 @@ export async function POST(request: Request) {
           email: guest_email,
           phone: guest_phone,
           dni: guest_dni,
+          document_type: guest_document_type ?? "dni",
           status: "new",
         })
         .select("id")
@@ -185,7 +188,7 @@ export async function POST(request: Request) {
           return NextResponse.json(
             {
               error:
-                "El DNI ingresado ya está registrado. Si tienes cuenta, inicia sesión.",
+                "El documento ingresado ya está registrado. Si tienes cuenta, inicia sesión.",
             },
             { status: 400 }
           );
