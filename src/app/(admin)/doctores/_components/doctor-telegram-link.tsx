@@ -72,6 +72,35 @@ export function DoctorTelegramLink({ doctorId }: Props) {
     },
   });
 
+  const [registerResult, setRegisterResult] = useState<string | null>(null);
+  const registerWebhookMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/telegram/register-webhook", {
+        method: "POST",
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(
+          (json.error as string) ?? "Error registrando webhook"
+        );
+      }
+      return json;
+    },
+    onSuccess: (data) => {
+      const ok = (data as { registered: boolean }).registered === true;
+      setRegisterResult(
+        ok
+          ? "✅ Webhook re-registrado. Pídele a la doctora que escriba /ayuda al bot — debe responder ahora."
+          : "⚠️ Telegram rechazó el registro. Revisa logs del servidor."
+      );
+      setTimeout(() => setRegisterResult(null), 8000);
+    },
+    onError: (e: Error) => {
+      setRegisterResult(`❌ ${e.message}`);
+      setTimeout(() => setRegisterResult(null), 8000);
+    },
+  });
+
   function handleCopy() {
     if (!generatedUrl) return;
     navigator.clipboard.writeText(generatedUrl).then(() => {
@@ -210,6 +239,33 @@ export function DoctorTelegramLink({ doctorId }: Props) {
           </Button>
         </div>
       )}
+
+      {/* Acción admin: re-registrar webhook si el bot no responde.
+          Útil tras rotar TELEGRAM_WEBHOOK_SECRET en Vercel. */}
+      <details className="mt-3 border-t border-outline-variant pt-3 -mx-1 px-1">
+        <summary className="text-[11px] text-on-surface-variant cursor-pointer select-none hover:text-primary">
+          Diagnóstico avanzado
+        </summary>
+        <div className="mt-2 space-y-2">
+          <p className="text-[11px] text-on-surface-variant leading-relaxed">
+            Si la doctora envía mensajes al bot y no recibe respuesta,
+            re-registra el webhook con el secret actual de Vercel.
+          </p>
+          <button
+            type="button"
+            onClick={() => registerWebhookMutation.mutate()}
+            disabled={registerWebhookMutation.isPending}
+            className="text-xs font-bold text-amber-700 dark:text-amber-300 hover:underline cursor-pointer disabled:opacity-60"
+          >
+            {registerWebhookMutation.isPending
+              ? "Registrando..."
+              : "🔧 Re-registrar webhook Telegram"}
+          </button>
+          {registerResult && (
+            <p className="text-[11px] leading-relaxed">{registerResult}</p>
+          )}
+        </div>
+      </details>
     </div>
   );
 }
