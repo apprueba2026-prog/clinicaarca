@@ -23,10 +23,12 @@ import { CalendarGrid } from "@/components/shared/calendar-grid";
 import { CalendarDayView } from "@/components/shared/calendar-day-view";
 import { CalendarMonthView } from "@/components/shared/calendar-month-view";
 import { NewAppointmentModal } from "@/components/shared/new-appointment-modal";
+import { NewBlockModal } from "@/components/shared/new-block-modal";
 import { useFiltersStore } from "@/stores/filters.store";
 import { useModalStore } from "@/stores/modal.store";
 import { useRealtime } from "@/hooks/use-realtime";
 import { doctorsService } from "@/lib/services/doctors.service";
+import { schedulingService } from "@/lib/services/scheduling.service";
 import { cn } from "@/lib/utils/cn";
 import type { AppointmentWithDetails } from "@/lib/types/appointment";
 import { createClient } from "@/lib/supabase/client";
@@ -160,8 +162,25 @@ export default function AgendaPage() {
     queryFn: () => doctorsService.getAll(),
   });
 
+  const { data: blocks = [] } = useQuery({
+    queryKey: [
+      "appointment-blocks",
+      dateRange.start,
+      dateRange.end,
+      selectedDoctorId,
+    ],
+    queryFn: () =>
+      schedulingService.getBlocksByDateRange(
+        dateRange.start,
+        dateRange.end,
+        selectedDoctorId
+      ),
+    placeholderData: keepPreviousData,
+  });
+
   // Realtime subscription
   useRealtime("appointments", ["appointments"]);
+  useRealtime("appointment_blocks", ["appointment-blocks"]);
 
   // Prefetch adjacent dates for instant day navigation
   const prefetchAdjacent = useCallback(
@@ -309,6 +328,13 @@ export default function AgendaPage() {
             IA: Reprogramar Día
           </button>
           <button
+            onClick={() => openModal("new-block")}
+            className="flex items-center gap-2 px-5 py-2.5 bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-900/30 dark:text-amber-200 dark:hover:bg-amber-900/50 transition-colors rounded-xl text-xs font-bold cursor-pointer"
+          >
+            <Icon name="event_busy" size="sm" />
+            + Pre-reserva
+          </button>
+          <button
             onClick={() => openModal("new-appointment")}
             className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary hover:bg-primary-container transition-colors rounded-xl text-xs font-bold shadow-lg shadow-primary/20 cursor-pointer"
           >
@@ -340,18 +366,21 @@ export default function AgendaPage() {
               <CalendarDayView
                 date={currentDate}
                 appointments={appointments}
+                blocks={blocks}
               />
             )}
             {calendarView === "week" && (
               <CalendarGrid
                 weekStart={weekStart}
                 appointments={appointments}
+                blocks={blocks}
               />
             )}
             {calendarView === "month" && (
               <CalendarMonthView
                 currentDate={currentDate}
                 appointments={appointments}
+                blocks={blocks}
                 onDayClick={handleDayClickFromMonth}
               />
             )}
@@ -359,8 +388,9 @@ export default function AgendaPage() {
         )}
       </div>
 
-      {/* New Appointment Modal */}
+      {/* Modals */}
       <NewAppointmentModal />
+      <NewBlockModal />
     </>
   );
 }

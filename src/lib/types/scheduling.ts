@@ -6,6 +6,22 @@ export interface TimeSlot {
   slot_end: string;   // 'HH:MM:SS'
 }
 
+export type BlockType = "fixed_patients" | "unavailable";
+
+export interface AppointmentBlock {
+  id: string;
+  doctor_id: string;
+  block_type: BlockType;
+  block_date: string;          // 'YYYY-MM-DD'
+  start_time: string | null;   // null = día completo
+  end_time: string | null;
+  title: string | null;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 /** Doctor público con perfil y horarios para el wizard de agendamiento */
 export interface PublicDoctor {
   id: string;

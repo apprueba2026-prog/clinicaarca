@@ -1,20 +1,23 @@
 "use client";
 
 import { AppointmentCard } from "@/components/shared/appointment-card";
+import { CalendarBlockBand } from "@/components/shared/calendar-block-overlay";
 import { cn } from "@/lib/utils/cn";
 import { CALENDAR_START_HOUR, CALENDAR_END_HOUR } from "@/lib/utils/constants";
 import type { AppointmentWithDetails } from "@/lib/types/appointment";
+import type { AppointmentBlock } from "@/lib/types/scheduling";
 import { format, addDays, startOfWeek, isToday, isSameDay } from "date-fns";
 import { es } from "date-fns/locale";
 
 interface CalendarGridProps {
   weekStart: Date;
   appointments: AppointmentWithDetails[];
+  blocks?: AppointmentBlock[];
   onAppointmentClick?: (appointment: AppointmentWithDetails) => void;
 }
 
 const HOUR_HEIGHT = 96; // h-24 = 6rem = 96px
-const TOTAL_HOURS = CALENDAR_END_HOUR - CALENDAR_START_HOUR; // 11 hours (08-19)
+const TOTAL_HOURS = CALENDAR_END_HOUR - CALENDAR_START_HOUR;
 
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
@@ -37,6 +40,7 @@ function formatTime12(time: string): string {
 export function CalendarGrid({
   weekStart,
   appointments,
+  blocks = [],
   onAppointmentClick,
 }: CalendarGridProps) {
   const weekMonday = startOfWeek(weekStart, { weekStartsOn: 1 });
@@ -49,6 +53,12 @@ export function CalendarGrid({
   function getAppointmentsForDay(day: Date) {
     return appointments.filter((appt) =>
       isSameDay(new Date(appt.scheduled_date + "T00:00:00"), day)
+    );
+  }
+
+  function getBlocksForDay(day: Date) {
+    return blocks.filter((b) =>
+      isSameDay(new Date(b.block_date + "T00:00:00"), day)
     );
   }
 
@@ -131,7 +141,10 @@ export function CalendarGrid({
           {/* Day Columns with appointments */}
           {days.map((day) => {
             const dayAppts = getAppointmentsForDay(day);
+            const dayBlocks = getBlocksForDay(day);
             const today = isToday(day);
+            const baseMin = CALENDAR_START_HOUR * 60;
+            const totalRangePx = TOTAL_HOURS * HOUR_HEIGHT;
             return (
               <div
                 key={day.toISOString()}
@@ -144,6 +157,32 @@ export function CalendarGrid({
                     className="h-24 border-b border-slate-100 dark:border-slate-800/30"
                   />
                 ))}
+
+                {/* Block overlays (background) */}
+                {dayBlocks.map((b) => {
+                  if (!b.start_time || !b.end_time) {
+                    return (
+                      <CalendarBlockBand
+                        key={b.id}
+                        block={b}
+                        topPx={0}
+                        heightPx={totalRangePx}
+                      />
+                    );
+                  }
+                  const startMin = timeToMinutes(b.start_time);
+                  const endMin = timeToMinutes(b.end_time);
+                  const topPx = ((startMin - baseMin) / 60) * HOUR_HEIGHT;
+                  const heightPx = ((endMin - startMin) / 60) * HOUR_HEIGHT;
+                  return (
+                    <CalendarBlockBand
+                      key={b.id}
+                      block={b}
+                      topPx={topPx}
+                      heightPx={Math.max(heightPx, 24)}
+                    />
+                  );
+                })}
 
                 {/* Appointment cards */}
                 {dayAppts.map((appt) => {

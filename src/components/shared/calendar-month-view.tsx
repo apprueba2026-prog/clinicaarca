@@ -1,7 +1,9 @@
 "use client";
 
+import { CalendarBlockAllDayChip } from "@/components/shared/calendar-block-overlay";
 import { cn } from "@/lib/utils/cn";
 import type { AppointmentWithDetails } from "@/lib/types/appointment";
+import type { AppointmentBlock } from "@/lib/types/scheduling";
 import type { AppointmentStatus } from "@/lib/types/enums";
 import {
   startOfMonth,
@@ -19,6 +21,7 @@ import { es } from "date-fns/locale";
 interface CalendarMonthViewProps {
   currentDate: Date;
   appointments: AppointmentWithDetails[];
+  blocks?: AppointmentBlock[];
   onAppointmentClick?: (appointment: AppointmentWithDetails) => void;
   onDayClick?: (date: Date) => void;
 }
@@ -45,6 +48,7 @@ function formatTime12Short(time: string): string {
 export function CalendarMonthView({
   currentDate,
   appointments,
+  blocks = [],
   onAppointmentClick,
   onDayClick,
 }: CalendarMonthViewProps) {
@@ -74,6 +78,12 @@ export function CalendarMonthView({
     );
   }
 
+  function getBlocksForDay(d: Date) {
+    return blocks.filter((b) =>
+      isSameDay(new Date(b.block_date + "T00:00:00"), d)
+    );
+  }
+
   return (
     <div className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
       {/* Day Headers */}
@@ -98,6 +108,7 @@ export function CalendarMonthView({
         >
           {week.map((d) => {
             const dayAppts = getAppointmentsForDay(d);
+            const dayBlocks = getBlocksForDay(d);
             const inMonth = isSameMonth(d, currentDate);
             const today = isToday(d);
             return (
@@ -130,6 +141,15 @@ export function CalendarMonthView({
                     </span>
                   )}
                 </div>
+
+                {/* Block chips */}
+                {dayBlocks.length > 0 && (
+                  <div className="space-y-0.5 mb-1">
+                    {dayBlocks.map((b) => (
+                      <CalendarBlockAllDayChip key={b.id} block={b} />
+                    ))}
+                  </div>
+                )}
 
                 {/* Appointments (max 3 visible) */}
                 <div className="space-y-0.5">

@@ -1,14 +1,17 @@
 "use client";
 
 import { AppointmentCard } from "@/components/shared/appointment-card";
+import { CalendarBlockBand } from "@/components/shared/calendar-block-overlay";
 import { cn } from "@/lib/utils/cn";
 import { CALENDAR_START_HOUR, CALENDAR_END_HOUR } from "@/lib/utils/constants";
 import type { AppointmentWithDetails } from "@/lib/types/appointment";
-import { isToday } from "date-fns";
+import type { AppointmentBlock } from "@/lib/types/scheduling";
+import { isToday, isSameDay } from "date-fns";
 
 interface CalendarDayViewProps {
   date: Date;
   appointments: AppointmentWithDetails[];
+  blocks?: AppointmentBlock[];
   onAppointmentClick?: (appointment: AppointmentWithDetails) => void;
 }
 
@@ -45,6 +48,7 @@ function getPosition(startTime: string, endTime: string) {
 export function CalendarDayView({
   date,
   appointments,
+  blocks = [],
   onAppointmentClick,
 }: CalendarDayViewProps) {
   const today = isToday(date);
@@ -52,6 +56,12 @@ export function CalendarDayView({
     { length: TOTAL_HOURS },
     (_, i) => CALENDAR_START_HOUR + i
   );
+
+  const dayBlocks = blocks.filter((b) =>
+    isSameDay(new Date(b.block_date + "T00:00:00"), date)
+  );
+  const baseMin = CALENDAR_START_HOUR * 60;
+  const totalRangePx = TOTAL_HOURS * HOUR_HEIGHT;
 
   return (
     <div className="bg-surface-container-lowest rounded-2xl shadow-sm overflow-hidden border border-slate-200 dark:border-slate-800">
@@ -79,6 +89,32 @@ export function CalendarDayView({
               className="h-24 border-b border-slate-100 dark:border-slate-800/30"
             />
           ))}
+
+          {/* Block overlays */}
+          {dayBlocks.map((b) => {
+            if (!b.start_time || !b.end_time) {
+              return (
+                <CalendarBlockBand
+                  key={b.id}
+                  block={b}
+                  topPx={0}
+                  heightPx={totalRangePx}
+                />
+              );
+            }
+            const startMin = timeToMinutes(b.start_time);
+            const endMin = timeToMinutes(b.end_time);
+            const topPx = ((startMin - baseMin) / 60) * HOUR_HEIGHT;
+            const heightPx = ((endMin - startMin) / 60) * HOUR_HEIGHT;
+            return (
+              <CalendarBlockBand
+                key={b.id}
+                block={b}
+                topPx={topPx}
+                heightPx={Math.max(heightPx, 24)}
+              />
+            );
+          })}
 
           {/* Appointment cards */}
           {appointments.map((appt) => {
