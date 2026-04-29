@@ -126,8 +126,30 @@ export async function GET() {
       created_at: t.created_at,
     }));
 
+    // Extraer errores del webhook de Telegram (si los hay)
+    const wh = webhookInfo as
+      | {
+          last_error_date?: number;
+          last_error_message?: string;
+          last_synchronization_error_date?: number;
+          pending_update_count?: number;
+        }
+      | null;
+    const lastError =
+      wh && wh.last_error_message
+        ? {
+            message: wh.last_error_message,
+            when: wh.last_error_date
+              ? new Date(wh.last_error_date * 1000).toISOString()
+              : null,
+          }
+        : null;
+
     // Diagnóstico interpretado: ¿qué le pasó a los tokens pendientes?
     const interpret = (() => {
+      if (lastError) {
+        return `Telegram registró un error reciente al entregar updates al webhook: "${lastError.message}". Usa el botón 'Re-registrar webhook'.`;
+      }
       if (!recentTokens.length) {
         return "No hay tokens recientes. Genera uno desde el modal de doctor.";
       }
@@ -139,7 +161,7 @@ export async function GET() {
         return "El último token expiró sin usarse. Genera uno nuevo y abre el enlace ANTES de 15 min.";
       }
       if (!latest.has_chat_id) {
-        return "El token NUNCA recibió un chat_id de Telegram. Probablemente abriste el enlace pero NO presionaste 'Iniciar/Start' en el bot. Vuelve a abrir el enlace y presiona el botón AZUL grande.";
+        return "El token NUNCA recibió un chat_id. Posibles causas: (1) la doctora no presionó 'Iniciar/Start' después de abrir el enlace; (2) el webhook está rechazando los updates de Telegram. Revisa el campo 'lastError' arriba; si es null, también revisa los logs de Vercel filtrados por '[telegram webhook]'.";
       }
       return "El token recibió chat_id pero no se consumió. Revisa los logs del webhook en Vercel.";
     })();
@@ -149,6 +171,7 @@ export async function GET() {
       bot: botInfo,
       webhook: webhookInfo,
       webhookError,
+      lastError,
       counts: {
         doctorsLinked: doctorsLinked ?? 0,
         patientsLinked: patientsLinked ?? 0,

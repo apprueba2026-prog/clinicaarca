@@ -190,10 +190,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    await getBot().handleUpdate(update);
+    const bot = getBot();
+    // grammy en serverless puede dejar botInfo sin inicializar. Sin botInfo
+    // los matchers de comandos pueden no resolver correctamente. init() es
+    // idempotente: si ya está inicializado, no hace una nueva llamada.
+    await bot.init();
+    await bot.handleUpdate(update);
+    console.log("[telegram webhook] update handled OK");
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[telegram webhook]", err);
+    console.error("[telegram webhook] ERROR handling update:", err);
     // Telegram reenvía updates si respondemos 5xx. Devolvemos 200 para evitar loops.
     return NextResponse.json({ ok: false, error: String(err) });
   }

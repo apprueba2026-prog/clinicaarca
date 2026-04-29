@@ -36,9 +36,10 @@ export async function POST() {
       );
     }
 
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const url = process.env.TELEGRAM_WEBHOOK_URL;
-    const secret = process.env.TELEGRAM_WEBHOOK_SECRET;
+    const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+    const url = process.env.TELEGRAM_WEBHOOK_URL?.trim();
+    const secretRaw = process.env.TELEGRAM_WEBHOOK_SECRET ?? "";
+    const secret = secretRaw.trim();
 
     if (!token || !url || !secret) {
       return NextResponse.json(
@@ -51,6 +52,25 @@ export async function POST() {
           },
         },
         { status: 503 }
+      );
+    }
+
+    // Telegram acepta secret_token con SOLO [A-Za-z0-9_-] (1-256 chars).
+    // Si el secret tiene otros caracteres (=, +, /, ., !, etc.) Telegram
+    // RECHAZA el setWebhook silenciosamente y los updates llegan SIN
+    // header → el webhook responde 401 y el bot nunca contesta.
+    const VALID_SECRET = /^[A-Za-z0-9_-]{1,256}$/;
+    if (!VALID_SECRET.test(secret)) {
+      return NextResponse.json(
+        {
+          error:
+            "TELEGRAM_WEBHOOK_SECRET contiene caracteres no permitidos por Telegram. Solo se aceptan A-Z, a-z, 0-9, '_' y '-'. Genera uno nuevo con: openssl rand -hex 32",
+          secretLength: secret.length,
+          hasSpaces: /\s/.test(secretRaw),
+          firstInvalidChar:
+            (secret.match(/[^A-Za-z0-9_-]/) ?? [null])[0] ?? null,
+        },
+        { status: 422 }
       );
     }
 
