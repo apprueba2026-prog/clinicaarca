@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 
 const services = [
   { label: "Odontopediatría", href: "/especialidades#odontopediatria" },
-  { label: "Implantes Dentales", href: "/especialidades#implantes" },
-  { label: "Anestesiología", href: "/especialidades#anestesiologia" },
+  { label: "Periodoncia e Implantes", href: "/especialidades#implantes" },
   { label: "Odontología General", href: "/especialidades#odontologia-general" },
 ];
 
@@ -86,10 +85,10 @@ export function Footer() {
       <div className="max-w-screen-2xl mx-auto px-8 mt-20 pt-8 border-t border-surface-variant flex flex-col md:flex-row justify-between gap-6 text-sm text-on-surface-variant">
         <p>© 2024 Clínica Arca. Todos los derechos reservados.</p>
         <div className="flex gap-8">
-          <Link href="#" className="hover:underline">
-            Políticas de Privacidad
+          <Link href="/legal#privacidad" className="hover:underline">
+            Política de Privacidad
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link href="/legal#terminos" className="hover:underline">
             Términos de Servicio
           </Link>
         </div>
