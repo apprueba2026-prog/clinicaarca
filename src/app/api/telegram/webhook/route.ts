@@ -20,6 +20,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBot } from "@/lib/telegram/client";
 import {
+  buildDoctorLinkConfirmation,
   buildHelpMessage,
   buildLinkConfirmation,
   buildWelcomeMessage,
@@ -55,9 +56,11 @@ function registerHandlers() {
       // Deep-link: /start <token>
       const result = await consumeWebLinkToken(payload, chatId, username, firstName);
       if (result.ok) {
-        await ctx.reply(buildLinkConfirmation(result.patientFirstName), {
-          parse_mode: "MarkdownV2",
-        });
+        const text =
+          result.role === "doctor"
+            ? buildDoctorLinkConfirmation(result.firstName)
+            : buildLinkConfirmation(result.firstName);
+        await ctx.reply(text, { parse_mode: "MarkdownV2" });
       } else {
         await ctx.reply(
           `No pude vincular tu cuenta: ${result.reason}. Escribe /vincular para intentarlo con tu DNI.`

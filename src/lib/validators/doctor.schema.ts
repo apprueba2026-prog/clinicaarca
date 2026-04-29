@@ -18,8 +18,7 @@ export const createDoctorSchema = z.object({
   email: z.string().email("Ingresa un correo válido"),
   specialties: z
     .array(specialtyEnum)
-    .min(1, "Selecciona al menos una especialidad")
-    .max(3, "Máximo 3 especialidades"),
+    .min(1, "Selecciona al menos una especialidad"),
   license_number: z.string().min(4, "Número de colegiatura obligatorio"),
   bio: z.string().max(500, "Máximo 500 caracteres").optional(),
   consultation_duration_minutes: z.number().min(15).max(120).optional(),
@@ -34,7 +33,6 @@ export const updateDoctorSchema = z.object({
   specialties: z
     .array(specialtyEnum)
     .min(1, "Selecciona al menos una especialidad")
-    .max(3, "Máximo 3 especialidades")
     .optional(),
   license_number: z.string().min(4).optional(),
   bio: z.string().max(500).optional(),

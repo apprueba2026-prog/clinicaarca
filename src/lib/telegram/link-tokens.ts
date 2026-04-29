@@ -36,6 +36,7 @@ export async function createWebLinkToken(patientId: string): Promise<string> {
   const { error } = await supabase.from("telegram_link_tokens").insert({
     token,
     patient_id: patientId,
+    link_role: "patient",
     step: "pending",
     expires_at: expiresAt(TOKEN_TTL_MIN),
   });
@@ -43,22 +44,89 @@ export async function createWebLinkToken(patientId: string): Promise<string> {
   return token;
 }
 
+export async function createWebLinkTokenForDoctor(
+  doctorId: string
+): Promise<string> {
+  const supabase = createAdminClient();
+  const token = generateToken();
+  const { error } = await supabase.from("telegram_link_tokens").insert({
+    token,
+    doctor_id: doctorId,
+    link_role: "doctor",
+    step: "pending",
+    expires_at: expiresAt(TOKEN_TTL_MIN),
+  });
+  if (error) throw new Error(`No se pudo crear token: ${error.message}`);
+  return token;
+}
+
+type ConsumeResult =
+  | { ok: true; role: "patient"; patientId: string; firstName: string }
+  | { ok: true; role: "doctor"; doctorId: string; firstName: string }
+  | { ok: false; reason: string };
+
 export async function consumeWebLinkToken(
   token: string,
   chatId: number,
   telegramUsername?: string,
   telegramFirstName?: string
-): Promise<{ ok: true; patientId: string; patientFirstName: string } | { ok: false; reason: string }> {
+): Promise<ConsumeResult> {
   const supabase = createAdminClient();
   const { data: row } = await supabase
     .from("telegram_link_tokens")
-    .select("token, patient_id, expires_at, used_at")
+    .select("token, patient_id, doctor_id, link_role, expires_at, used_at")
     .eq("token", token)
     .maybeSingle();
-  if (!row || !row.patient_id) return { ok: false, reason: "Token inválido" };
+  if (!row) return { ok: false, reason: "Token inválido" };
   if (row.used_at) return { ok: false, reason: "Token ya utilizado" };
   if (new Date(row.expires_at).getTime() < Date.now())
     return { ok: false, reason: "Token expirado" };
+
+  if (row.link_role === "doctor") {
+    if (!row.doctor_id) return { ok: false, reason: "Token sin doctor asignado" };
+
+    const { data: doctor } = await supabase
+      .from("doctors")
+      .select("id, profile:profiles(first_name)")
+      .eq("id", row.doctor_id)
+      .maybeSingle();
+    const profile = (doctor as unknown as {
+      profile: { first_name: string } | null;
+    } | null)?.profile;
+    if (!doctor || !profile) return { ok: false, reason: "Doctor no encontrado" };
+
+    const { error: upsertErr } = await supabase
+      .from("telegram_users")
+      .upsert(
+        {
+          telegram_chat_id: chatId,
+          telegram_username: telegramUsername ?? null,
+          telegram_first_name: telegramFirstName ?? null,
+          linked_entity_type: "doctor",
+          patient_id: null,
+          doctor_id: row.doctor_id,
+          status: "active",
+          linked_at: new Date().toISOString(),
+        },
+        { onConflict: "telegram_chat_id" }
+      );
+    if (upsertErr) return { ok: false, reason: upsertErr.message };
+
+    await supabase
+      .from("telegram_link_tokens")
+      .update({ used_at: new Date().toISOString(), step: "consumed" })
+      .eq("token", token);
+
+    return {
+      ok: true,
+      role: "doctor",
+      doctorId: row.doctor_id,
+      firstName: profile.first_name,
+    };
+  }
+
+  // link_role = 'patient'
+  if (!row.patient_id) return { ok: false, reason: "Token inválido" };
 
   const { data: patient } = await supabase
     .from("patients")
@@ -67,7 +135,6 @@ export async function consumeWebLinkToken(
     .maybeSingle();
   if (!patient) return { ok: false, reason: "Paciente no encontrado" };
 
-  // Upsert telegram_users (reactivar si existía con status unlinked)
   const { error: upsertErr } = await supabase
     .from("telegram_users")
     .upsert(
@@ -90,7 +157,12 @@ export async function consumeWebLinkToken(
     .update({ used_at: new Date().toISOString(), step: "consumed" })
     .eq("token", token);
 
-  return { ok: true, patientId: patient.id, patientFirstName: patient.first_name };
+  return {
+    ok: true,
+    role: "patient",
+    patientId: patient.id,
+    firstName: patient.first_name,
+  };
 }
 
 // ------------------------------------------------------------
@@ -102,7 +174,9 @@ async function getActiveFlowToken(chatId: number) {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("telegram_link_tokens")
-    .select("*")
+    .select(
+      "token, patient_id, doctor_id, link_role, telegram_chat_id, step, dni, otp_code, otp_sent_at, expires_at, used_at, created_at"
+    )
     .eq("telegram_chat_id", chatId)
     .in("step", ["awaiting_dni", "awaiting_otp"])
     .gte("expires_at", new Date().toISOString())

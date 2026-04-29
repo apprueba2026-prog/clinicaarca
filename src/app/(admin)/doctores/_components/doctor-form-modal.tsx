@@ -5,6 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
+import { DoctorTelegramLink } from "./doctor-telegram-link";
 import { useCreateDoctor, useUpdateDoctor } from "@/hooks/use-admin-doctors";
 import {
   createDoctorSchema,
@@ -213,7 +214,7 @@ export function DoctorFormModal({ isOpen, onClose, doctor }: DoctorFormModalProp
           {/* Especialidades (multi-select chips) */}
           <div>
             <label className="block text-xs font-medium text-on-surface-variant mb-2">
-              Especialidades <span className="text-on-surface-variant/60">(máx. 3)</span>
+              Especialidades
             </label>
             <Controller
               name="specialties"
@@ -222,26 +223,22 @@ export function DoctorFormModal({ isOpen, onClose, doctor }: DoctorFormModalProp
                 <div className="flex flex-wrap gap-2">
                   {SPECIALTY_OPTIONS.map((opt) => {
                     const isSelected = field.value?.includes(opt.value);
-                    const isMaxReached = (field.value?.length ?? 0) >= 3 && !isSelected;
-
                     return (
                       <button
                         key={opt.value}
                         type="button"
-                        disabled={isMaxReached}
                         onClick={() => {
                           if (isSelected) {
                             field.onChange(field.value.filter((v: string) => v !== opt.value));
                           } else {
-                            field.onChange([...field.value, opt.value]);
+                            field.onChange([...(field.value ?? []), opt.value]);
                           }
                         }}
                         className={cn(
                           "px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer",
                           isSelected
                             ? "bg-primary text-on-primary border-primary"
-                            : "bg-surface-container-low text-on-surface-variant border-outline-variant hover:border-primary/50",
-                          isMaxReached && "opacity-40 cursor-not-allowed"
+                            : "bg-surface-container-low text-on-surface-variant border-outline-variant hover:border-primary/50"
                         )}
                       >
                         {opt.label}
@@ -300,6 +297,11 @@ export function DoctorFormModal({ isOpen, onClose, doctor }: DoctorFormModalProp
               {...register("bio")}
             />
           </div>
+
+          {/* Telegram (solo en modo edición — necesita doctor.id) */}
+          {isEditMode && doctor && (
+            <DoctorTelegramLink doctorId={doctor.id} />
+          )}
 
           {/* Visible públicamente */}
           <label className="flex items-center gap-3 cursor-pointer">
