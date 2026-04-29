@@ -109,7 +109,7 @@ export function TopNavBar() {
                 {user
                   ? user.user_metadata?.role === "patient"
                     ? "Mi Cuenta"
-                    : "Dashboard"
+                    : "Panel Admin"
                   : "Iniciar Sesión"}
               </Button>
             </Link>
