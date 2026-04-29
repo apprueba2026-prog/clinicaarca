@@ -2,6 +2,7 @@ import { sendEmail } from "./send-email";
 import { appointmentConfirmationTemplate } from "./templates/appointment-confirmation";
 import { appointmentConfirmationGuestTemplate } from "./templates/appointment-confirmation-guest";
 import { appointmentCancelledTemplate } from "./templates/appointment-cancelled";
+import { appointmentRescheduledTemplate } from "./templates/appointment-rescheduled";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const specialtyLabels: Record<string, string> = {
@@ -153,6 +154,48 @@ export async function sendGuestConfirmationEmail(params: {
     });
   } catch (err) {
     console.error("[EMAIL] Error enviando confirmación guest:", err);
+  }
+}
+
+/** Enviar email de reprogramación de cita (clínica/admin) */
+export async function sendRescheduledEmail(params: {
+  supabase: SupabaseClient;
+  patientId: string;
+  doctorId: string;
+  oldDate: string;
+  oldStart: string;
+  oldEnd: string;
+  newDate: string;
+  newStart: string;
+  newEnd: string;
+}) {
+  try {
+    const data = await getEmailContext({
+      supabase: params.supabase,
+      patientId: params.patientId,
+      doctorId: params.doctorId,
+      scheduledDate: params.newDate,
+      startTime: params.newStart,
+      endTime: params.newEnd,
+    });
+    if (!data) return;
+
+    const html = appointmentRescheduledTemplate({
+      patientName: data.patientName,
+      doctorName: data.doctorName,
+      oldDate: formatDateES(params.oldDate),
+      oldTime: `${formatTime(params.oldStart)} - ${formatTime(params.oldEnd)}`,
+      newDate: formatDateES(params.newDate),
+      newTime: `${formatTime(params.newStart)} - ${formatTime(params.newEnd)}`,
+    });
+
+    await sendEmail({
+      to: data.patientEmail,
+      subject: `Cita reprogramada — ${formatDateES(params.newDate)}`,
+      html,
+    });
+  } catch (err) {
+    console.error("[EMAIL] Error enviando reprogramación:", err);
   }
 }
 

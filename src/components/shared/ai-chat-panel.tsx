@@ -12,6 +12,15 @@ const QUICK_SUGGESTIONS = [
   "Información de la clínica",
 ];
 
+// Frases que rotan en el indicador de "escribiendo" para que el usuario
+// perciba progreso en latencias largas (multi-turn con tools).
+const TYPING_PHRASES = [
+  "Pensando…",
+  "Buscando información…",
+  "Revisando horarios…",
+  "Casi listo…",
+];
+
 export function AIChatPanel() {
   const {
     isOpen,
@@ -27,8 +36,21 @@ export function AIChatPanel() {
   const [telegramLoading, setTelegramLoading] = useState(false);
   const [telegramError, setTelegramError] = useState<string | null>(null);
   const [input, setInput] = useState("");
+  const [typingPhraseIdx, setTypingPhraseIdx] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Rotar frases del indicador "escribiendo" cada 2.5s mientras isLoading
+  useEffect(() => {
+    if (!isLoading) {
+      setTypingPhraseIdx(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setTypingPhraseIdx((i) => (i + 1) % TYPING_PHRASES.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   // Auto-scroll al fondo cuando llegan mensajes
   useEffect(() => {
@@ -177,13 +199,18 @@ export function AIChatPanel() {
           </div>
         )}
 
-        {/* Indicador de escribiendo */}
+        {/* Indicador de escribiendo con frase contextual rotativa */}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
-              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
-              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
-              <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
+            <div className="bg-slate-100 dark:bg-slate-800 px-4 py-3 rounded-2xl rounded-bl-sm flex items-center gap-2">
+              <div className="flex gap-1">
+                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
+              </div>
+              <span className="text-xs text-slate-500 dark:text-slate-400 transition-opacity">
+                {TYPING_PHRASES[typingPhraseIdx]}
+              </span>
             </div>
           </div>
         )}

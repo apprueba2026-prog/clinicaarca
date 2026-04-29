@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useThemeStore } from "@/stores/theme.store";
+import { AuthProvider } from "@/providers/auth-provider";
 
 function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { resolvedTheme } = useThemeStore();
@@ -34,7 +35,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>{children}</ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

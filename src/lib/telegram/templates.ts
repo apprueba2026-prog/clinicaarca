@@ -161,6 +161,63 @@ export function buildNewAppointmentForDoctor(n: NewAppointmentNotice): string {
   return lines.join("\n");
 }
 
+export interface RescheduledNotice {
+  doctorFirstName: string;
+  patientFullName: string;
+  oldDate: string;
+  oldStart: string;
+  oldEnd: string;
+  newDate: string;
+  newStart: string;
+  newEnd: string;
+  changedBy?: string | null;
+}
+
+export function buildRescheduledForDoctor(n: RescheduledNotice): string {
+  const oldFecha = formatLimaDate(n.oldDate);
+  const newFecha = formatLimaDate(n.newDate);
+  const lines = [
+    `🔄 *Cita reprogramada*`,
+    ``,
+    `Hola Dr\\(a\\)\\. ${escapeMd2(n.doctorFirstName)}, una cita en tu agenda fue reprogramada:`,
+    ``,
+    `👤 *Paciente:* ${escapeMd2(n.patientFullName)}`,
+    ``,
+    `📅 *Antes:* ${escapeMd2(oldFecha)} · ${escapeMd2(n.oldStart.slice(0, 5))}–${escapeMd2(n.oldEnd.slice(0, 5))}`,
+    `📅 *Ahora:* ${escapeMd2(newFecha)} · ${escapeMd2(n.newStart.slice(0, 5))}–${escapeMd2(n.newEnd.slice(0, 5))}`,
+  ];
+  if (n.changedBy) {
+    lines.push(``, `_Reprogramada por ${escapeMd2(n.changedBy)}_`);
+  }
+  return lines.join("\n");
+}
+
+export interface CancelledNotice {
+  doctorFirstName: string;
+  patientFullName: string;
+  scheduledDate: string;
+  startTime: string;
+  endTime: string;
+  changedBy?: string | null;
+}
+
+export function buildCancelledForDoctor(n: CancelledNotice): string {
+  const fecha = formatLimaDate(n.scheduledDate);
+  const lines = [
+    `❌ *Cita cancelada*`,
+    ``,
+    `Hola Dr\\(a\\)\\. ${escapeMd2(n.doctorFirstName)}, una cita en tu agenda fue cancelada:`,
+    ``,
+    `👤 *Paciente:* ${escapeMd2(n.patientFullName)}`,
+    `📅 *Fecha:* ${escapeMd2(fecha)}`,
+    `🕒 *Hora:* ${escapeMd2(n.startTime.slice(0, 5))}–${escapeMd2(n.endTime.slice(0, 5))}`,
+  ];
+  if (n.changedBy) {
+    lines.push(``, `_Cancelada por ${escapeMd2(n.changedBy)}_`);
+  }
+  return lines.join("\n");
+}
+
 export function buildHelpMessage(): string {
   return [
     `*Comandos disponibles:*`,

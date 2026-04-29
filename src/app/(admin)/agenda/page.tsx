@@ -24,6 +24,7 @@ import { CalendarDayView } from "@/components/shared/calendar-day-view";
 import { CalendarMonthView } from "@/components/shared/calendar-month-view";
 import { NewAppointmentModal } from "@/components/shared/new-appointment-modal";
 import { NewBlockModal } from "@/components/shared/new-block-modal";
+import { AppointmentDetailModal } from "@/components/shared/appointment-detail-modal";
 import { useFiltersStore } from "@/stores/filters.store";
 import { useModalStore } from "@/stores/modal.store";
 import { useRealtime } from "@/hooks/use-realtime";
@@ -239,6 +240,10 @@ export default function AgendaPage() {
     setCalendarView("day");
   }
 
+  function handleAppointmentClick(appointment: AppointmentWithDetails) {
+    openModal("appointment-detail", { appointmentId: appointment.id });
+  }
+
   // Only show full loading spinner on the very first load (no data at all)
   const showSkeleton = isLoading && appointments.length === 0;
 
@@ -367,6 +372,7 @@ export default function AgendaPage() {
                 date={currentDate}
                 appointments={appointments}
                 blocks={blocks}
+                onAppointmentClick={handleAppointmentClick}
               />
             )}
             {calendarView === "week" && (
@@ -374,6 +380,7 @@ export default function AgendaPage() {
                 weekStart={weekStart}
                 appointments={appointments}
                 blocks={blocks}
+                onAppointmentClick={handleAppointmentClick}
               />
             )}
             {calendarView === "month" && (
@@ -382,6 +389,7 @@ export default function AgendaPage() {
                 appointments={appointments}
                 blocks={blocks}
                 onDayClick={handleDayClickFromMonth}
+                onAppointmentClick={handleAppointmentClick}
               />
             )}
           </>
@@ -391,6 +399,7 @@ export default function AgendaPage() {
       {/* Modals */}
       <NewAppointmentModal />
       <NewBlockModal />
+      <AppointmentDetailModal />
     </>
   );
 }

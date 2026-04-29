@@ -29,7 +29,9 @@ export type TelegramNotificationType =
   | "doctor_daily_report"
   | "welcome"
   | "link_confirmation"
-  | "new_appointment_admin";
+  | "new_appointment_admin"
+  | "rescheduled_admin"
+  | "cancelled_admin";
 
 interface SendOptions {
   telegramUserId?: string | null;

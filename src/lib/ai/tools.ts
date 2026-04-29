@@ -28,8 +28,82 @@ const SPECIALTY_LABELS: Record<ProcedureCategory, string> = {
 
 const SPECIALTY_VALUES = Object.keys(SPECIALTY_LABELS) as ProcedureCategory[];
 
+// Aliases tolerantes: aceptan labels, sinónimos coloquiales, con/sin acento.
+// Evita que el modelo se quede "no la reconoce" al recibir "Odontología General".
+const SPECIALTY_ALIASES: Record<string, ProcedureCategory> = {
+  "general": "general",
+  "odontologia general": "general",
+  "consulta": "general",
+  "consulta general": "general",
+  "limpieza": "general",
+  "limpieza dental": "general",
+  "profilaxis": "general",
+  "odontopediatria": "odontopediatria",
+  "ninos": "odontopediatria",
+  "pediatria dental": "odontopediatria",
+  "implantes": "implantes",
+  "implantes dentales": "implantes",
+  "implante": "implantes",
+  "ortodoncia": "ortodoncia",
+  "frenos": "ortodoncia",
+  "frenillos": "ortodoncia",
+  "brackets": "ortodoncia",
+  "alineadores": "ortodoncia",
+  "sedacion": "sedacion",
+  "sedacion dental": "sedacion",
+  "sedacion consciente": "sedacion",
+  "cirugia": "cirugia",
+  "cirugia oral": "cirugia",
+  "extraccion": "cirugia",
+  "muelas del juicio": "cirugia",
+  "estetica": "estetica",
+  "estetica dental": "estetica",
+  "blanqueamiento": "estetica",
+  "carillas": "estetica",
+  "diseno de sonrisa": "estetica",
+  "endodoncia": "endodoncia",
+  "tratamiento de conducto": "endodoncia",
+  "nervio": "endodoncia",
+  "periodoncia": "periodoncia",
+  "encias": "periodoncia",
+};
+
+function stripAccents(s: string): string {
+  return s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
+
+function normalizeSpecialty(input: string): ProcedureCategory | null {
+  const key = stripAccents(input.toLowerCase().trim());
+  return SPECIALTY_ALIASES[key] ?? null;
+}
+
 function isValidSpecialty(s: string): s is ProcedureCategory {
   return (SPECIALTY_VALUES as string[]).includes(s);
+}
+
+// ============================================================================
+// PII MASKING — ocultar datos sensibles en respuestas que el modelo verbaliza
+// ============================================================================
+
+function maskEmail(email: string | null): string {
+  if (!email) return "";
+  const [user, domain] = email.split("@");
+  if (!domain) return "***";
+  const visible = user.slice(0, 1);
+  return `${visible}***@${domain}`;
+}
+
+function maskPhone(phone: string | null): string {
+  if (!phone) return "";
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 4) return "***";
+  return `***${digits.slice(-3)}`;
+}
+
+function maskDni(dni: string | null): string {
+  if (!dni) return "";
+  if (dni.length < 4) return "***";
+  return `${dni.slice(0, 2)}****${dni.slice(-2)}`;
 }
 
 // DNI peruano: 8 dígitos numéricos
@@ -115,7 +189,7 @@ export const ASSISTANT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     parameters: {
       type: SchemaType.OBJECT,
       properties: {
-        doctorId: { type: SchemaType.STRING, description: "UUID del doctor." },
+        doctorId: { type: SchemaType.STRING, description: "Identificador interno del doctor (campo _id de listDoctorsForSpecialty). Es interno, no lo muestres al usuario." },
         dateFrom: {
           type: SchemaType.STRING,
           description:
@@ -290,8 +364,19 @@ const listDoctorsArgs = z.object({ specialty: z.string() });
 
 async function listDoctorsForSpecialty(args: unknown) {
   const { specialty } = listDoctorsArgs.parse(args);
-  if (!isValidSpecialty(specialty)) {
-    return { error: `Especialidad inválida: ${specialty}`, doctors: [] };
+
+  // Tolerante: acepta labels, aliases con/sin acento, sinónimos comunes.
+  const normalized = isValidSpecialty(specialty)
+    ? specialty
+    : normalizeSpecialty(specialty);
+
+  if (!normalized) {
+    // No exponer "especialidad inválida" al modelo: que reintente con otra clave.
+    return {
+      doctors: [],
+      retry: true,
+      hint: "No se encontró la especialidad pedida. Pregunta al usuario qué tipo de tratamiento busca o sugiérele 'Odontología General'.",
+    };
   }
 
   const supabase = createAdminClient();
@@ -302,9 +387,12 @@ async function listDoctorsForSpecialty(args: unknown) {
        profile:profiles(first_name, last_name)`
     )
     .eq("is_public", true)
-    .contains("specialties", [specialty]);
+    .contains("specialties", [normalized]);
 
-  if (error) return { error: error.message, doctors: [] };
+  if (error) {
+    console.error("[listDoctorsForSpecialty] db error:", error.message);
+    return { doctors: [], retry: true };
+  }
 
   const doctors = (data ?? [])
     .map((d) => {
@@ -313,8 +401,11 @@ async function listDoctorsForSpecialty(args: unknown) {
         | null;
       if (!profile) return null;
       return {
-        id: d.id as string,
+        // _id es el UUID que el modelo necesita para chained calls (getAvailableSlots, etc.)
+        // El prefijo _ recuerda al modelo que es interno y no debe verbalizarse.
+        _id: d.id as string,
         name: `Dr(a). ${profile.first_name} ${profile.last_name}`,
+        specialty: SPECIALTY_LABELS[normalized],
         durationMinutes: (d.consultation_duration_minutes as number) ?? 30,
       };
     })
@@ -502,13 +593,17 @@ async function createOrFindPatient(args: unknown) {
     return {
       found: true,
       patient: {
-        id: existing.id,
+        _id: existing.id,
         dni: existing.dni,
         firstName: existing.first_name,
         lastName: existing.last_name,
         email: existing.email,
         phone: existing.phone,
         hasAccount: !!existing.auth_user_id,
+        // Versiones enmascaradas: USA ESTAS al confirmar al usuario
+        displayEmail: maskEmail(existing.email),
+        displayPhone: maskPhone(existing.phone),
+        displayDni: maskDni(existing.dni),
       },
     };
   }
@@ -542,13 +637,16 @@ async function createOrFindPatient(args: unknown) {
     found: false,
     created: true,
     patient: {
-      id: created.id,
+      _id: created.id,
       dni: created.dni,
       firstName: created.first_name,
       lastName: created.last_name,
       email: created.email,
       phone: created.phone,
       hasAccount: false,
+      displayEmail: maskEmail(created.email),
+      displayPhone: maskPhone(created.phone),
+      displayDni: maskDni(created.dni),
     },
   };
 }
@@ -935,7 +1033,7 @@ async function getMyAppointments(args: unknown) {
     };
     const primarySpecialty = doctor.specialties?.[0] ?? "general";
     return {
-      id: a.id,
+      _id: a.id,
       date: a.scheduled_date,
       startTime: (a.start_time as string).slice(0, 5),
       endTime: (a.end_time as string).slice(0, 5),
