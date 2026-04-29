@@ -176,6 +176,20 @@ export async function POST(req: NextRequest) {
   try {
     registerHandlers();
     const update = await req.json();
+
+    // Logging para diagnóstico — ayuda a confirmar que los updates llegan
+    // y que el comando /start con token se está recibiendo bien.
+    const msg = update?.message;
+    if (msg) {
+      const text = (msg.text as string | undefined) ?? "";
+      const summary = text.startsWith("/start ")
+        ? `/start with token (len=${text.length - 7})`
+        : text.slice(0, 30);
+      console.log(
+        `[telegram webhook] update from chat=${msg.chat?.id} user=${msg.from?.username ?? msg.from?.first_name} text=${JSON.stringify(summary)}`
+      );
+    }
+
     await getBot().handleUpdate(update);
     return NextResponse.json({ ok: true });
   } catch (err) {
