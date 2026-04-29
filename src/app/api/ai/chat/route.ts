@@ -4,6 +4,7 @@ import { getAssistantModel } from "@/lib/ai/gemini-client";
 import { executeToolCall, type ToolContext } from "@/lib/ai/tools";
 import { aiConversationService } from "@/lib/services/ai-conversation.service";
 import { checkRateLimit } from "@/lib/ratelimit";
+import { verifyTurnstileToken } from "@/lib/security/turnstile";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 interface ChatRequestBody {
   sessionId: string;
   message: string;
+  turnstileToken?: string | null;
 }
 
 interface ChatResponse {
@@ -25,28 +27,50 @@ const MAX_ITERATIONS = 8;
 
 export async function POST(request: Request) {
   try {
-    // 1. Rate limit (Upstash; degradación graceful en dev)
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       request.headers.get("x-real-ip") ??
       "unknown";
-    const rl = await checkRateLimit(ip);
-    if (!rl.success) {
+
+    // 1. Parsear body
+    const body = (await request.json()) as ChatRequestBody;
+    if (!body.sessionId || !body.message?.trim()) {
+      return NextResponse.json(
+        { error: "sessionId y message son requeridos" },
+        { status: 400 }
+      );
+    }
+
+    // 2. Cloudflare Turnstile — fail-closed si está configurado
+    const captcha = await verifyTurnstileToken(
+      body.turnstileToken ?? null,
+      ip
+    );
+    if (!captcha.success) {
+      return NextResponse.json(
+        {
+          error:
+            "No pudimos validar que eres humano. Recarga la página e intenta de nuevo.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // 3. Rate limit doble: por IP (50/15min global) y por sessionId (15/5min granular)
+    const [rlIp, rlSession] = await Promise.all([
+      checkRateLimit(`ip:${ip}`),
+      checkRateLimit(`session:${body.sessionId}`, {
+        max: 15,
+        windowSeconds: 5 * 60,
+      }),
+    ]);
+    if (!rlIp.success || !rlSession.success) {
       return NextResponse.json(
         {
           error:
             "Has hecho muchas consultas seguidas. Espera unos minutos por favor.",
         },
         { status: 429 }
-      );
-    }
-
-    // 2. Parsear body
-    const body = (await request.json()) as ChatRequestBody;
-    if (!body.sessionId || !body.message?.trim()) {
-      return NextResponse.json(
-        { error: "sessionId y message son requeridos" },
-        { status: 400 }
       );
     }
 
