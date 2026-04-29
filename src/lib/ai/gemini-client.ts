@@ -37,25 +37,42 @@ function getClient(): GoogleGenerativeAI {
   return _client;
 }
 
+interface AssistantModelOverrides {
+  /** Reemplaza el system prompt por uno personalizado (modo admin/operativo). */
+  systemInstruction?: string;
+  /** Reemplaza las tool declarations por defecto. Si se omite usa las globales. */
+  tools?: typeof ASSISTANT_TOOL_DECLARATIONS;
+}
+
 /**
  * Devuelve el modelo de Gemini configurado para Noé (asistente de Clínica Arca)
  * con tools (function calling) y system instruction.
  *
  * El system prompt se construye dinámicamente con la fecha actual de Lima
  * para que el modelo siempre tenga contexto temporal correcto.
+ *
+ * Pasa `overrides.systemInstruction` para usar el prompt admin (Noé Operativo).
  */
-export function getAssistantModel(): GenerativeModel {
+export function getAssistantModel(
+  overrides: AssistantModelOverrides = {}
+): GenerativeModel {
   const todayISO = new Intl.DateTimeFormat("en-CA", {
     timeZone: "America/Lima",
   }).format(new Date());
 
-  return getClient().getGenerativeModel({
-    model: GEMINI_MODEL,
-    systemInstruction: buildAssistantSystemPrompt({
+  const systemInstruction =
+    overrides.systemInstruction ??
+    buildAssistantSystemPrompt({
       todayFormatted: todayLimaFormatted(),
       todayISO,
-    }),
-    tools: [{ functionDeclarations: ASSISTANT_TOOL_DECLARATIONS }],
+    });
+
+  const toolDecls = overrides.tools ?? ASSISTANT_TOOL_DECLARATIONS;
+
+  return getClient().getGenerativeModel({
+    model: GEMINI_MODEL,
+    systemInstruction,
+    tools: [{ functionDeclarations: toolDecls }],
     generationConfig: {
       temperature: 0.4,
       // ⚠️ Importante: no bajar de 4096. Gemini Flash trunca la generación
