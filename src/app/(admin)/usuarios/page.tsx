@@ -86,7 +86,29 @@ export default function UsuariosPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      showFeedback("ok", "✅ Usuario actualizado.");
+      showFeedback(
+        "ok",
+        "✅ Usuario actualizado. Para que el cambio de rol tome efecto, el usuario debe cerrar sesión y volver a entrar."
+      );
+    },
+    onError: (e: Error) => showFeedback("err", `❌ ${e.message}`),
+  });
+
+  // Backfill: sincroniza user_metadata con profiles para todos los usuarios
+  // existentes. Útil tras el fix de v1.2 — corrige cuentas que cambiaron de
+  // rol antes del fix (Aldrick, Dina) y siguen cayendo al dashboard viejo.
+  const syncMetadataMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/users/sync-metadata", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Error en sincronización");
+      return json as { total: number; synced: number; failed: number };
+    },
+    onSuccess: (r) => {
+      showFeedback(
+        "ok",
+        `✅ Sincronizados ${r.synced}/${r.total} usuarios. Pídeles que cierren sesión y vuelvan a entrar.`
+      );
     },
     onError: (e: Error) => showFeedback("err", `❌ ${e.message}`),
   });
@@ -121,6 +143,32 @@ export default function UsuariosPage() {
           </Button>
         </div>
       </header>
+
+      {/* Acción de mantenimiento: backfill metadata. Útil tras fix v1.2 o
+          cuando algún usuario reporta que su nuevo rol no toma efecto. */}
+      <details className="rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+        <summary className="text-xs font-bold text-on-surface-variant cursor-pointer select-none hover:text-primary">
+          🔧 Mantenimiento: sincronizar metadatos de auth
+        </summary>
+        <div className="mt-3 space-y-2">
+          <p className="text-[11px] text-on-surface-variant leading-relaxed">
+            Si un usuario cambió de rol pero al iniciar sesión sigue viendo
+            el dashboard del rol anterior, ejecuta esta sincronización. Copia
+            (rol + nombre) de profiles a auth.users.user_metadata, que es lo
+            que el callback de login usa para redirigir.
+          </p>
+          <button
+            type="button"
+            onClick={() => syncMetadataMutation.mutate()}
+            disabled={syncMetadataMutation.isPending}
+            className="text-xs font-bold text-amber-700 dark:text-amber-300 hover:underline cursor-pointer disabled:opacity-60"
+          >
+            {syncMetadataMutation.isPending
+              ? "Sincronizando..."
+              : "Sincronizar metadatos de todos los usuarios"}
+          </button>
+        </div>
+      </details>
 
       {feedback && (
         <div

@@ -4,16 +4,31 @@ import { Icon } from "@/components/ui/icon";
 import { useThemeStore } from "@/stores/theme.store";
 import { useAuth } from "@/hooks/use-auth";
 
+const ROLE_LABELS: Record<string, string> = {
+  admin: "admin",
+  dentist: "doctor(a)",
+  receptionist: "recepcionista",
+  patient: "paciente",
+};
+
 export function AdminTopBar() {
   const { resolvedTheme, setTheme } = useThemeStore();
-  const { user } = useAuth();
+  // Bug fix v1.2: leer profile (BD) en vez de user_metadata (Supabase Auth).
+  // user_metadata se queda congelado al editar el perfil hasta el siguiente
+  // login. profile se actualiza con refreshProfile() inmediatamente al guardar.
+  const { profile, user } = useAuth();
 
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
-  const displayName = user?.user_metadata?.full_name ?? "Administrador";
-  const displayRole = user?.user_metadata?.role ?? "Staff";
+  const fullName =
+    profile?.first_name || profile?.last_name
+      ? `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim()
+      : (user?.user_metadata?.full_name as string | undefined) ??
+        "Administrador";
+  const displayName = fullName || "Administrador";
+  const displayRole = profile?.role ? ROLE_LABELS[profile.role] ?? profile.role : "Staff";
 
   return (
     <header className="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 glass-nav border-b border-outline-variant z-40">

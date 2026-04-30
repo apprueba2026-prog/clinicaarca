@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -90,5 +91,33 @@ export async function PATCH(
       { status: 500 }
     );
   }
+
+  // CRÍTICO: sincronizar auth.users.user_metadata con los cambios.
+  // El callback de login y el middleware de Supabase leen user_metadata.role
+  // (no profiles.role), así que sin este sync el cambio no toma efecto y el
+  // usuario sigue cayendo al dashboard del rol viejo.
+  // Bug detectado en v1.1 con Aldrick (paciente→dentista) y Dina (paciente→
+  // recepcionista) que seguían viendo /mi-cuenta tras el cambio.
+  const metadataPatch: Record<string, unknown> = {};
+  if (updates.role !== undefined) metadataPatch.role = updates.role;
+  if (updates.first_name !== undefined || updates.last_name !== undefined) {
+    const first = updates.first_name ?? data.first_name ?? "";
+    const last = updates.last_name ?? data.last_name ?? "";
+    metadataPatch.first_name = first;
+    metadataPatch.last_name = last;
+    metadataPatch.full_name = `${first} ${last}`.trim();
+  }
+  if (Object.keys(metadataPatch).length > 0) {
+    const adminClient = createAdminClient();
+    const { error: metaError } =
+      await adminClient.auth.admin.updateUserById(id, {
+        user_metadata: metadataPatch,
+      });
+    if (metaError) {
+      console.error("[users PATCH] sync user_metadata failed:", metaError);
+      // No rompemos: profiles ya quedó actualizado. Solo log.
+    }
+  }
+
   return NextResponse.json({ user: data });
 }

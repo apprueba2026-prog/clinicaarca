@@ -9,6 +9,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -88,5 +89,28 @@ export async function PATCH(req: Request) {
       { status: 500 }
     );
   }
+
+  // Sync user_metadata si se cambió el nombre. El TopBar (admin-top-bar.tsx)
+  // ya prefiere profile.first_name pero hay otros lugares en el código (legacy)
+  // que aún leen user_metadata.full_name. Mantenerlos sincronizados.
+  if (updates.first_name !== undefined || updates.last_name !== undefined) {
+    const first = updates.first_name ?? data.first_name ?? "";
+    const last = updates.last_name ?? data.last_name ?? "";
+    const adminClient = createAdminClient();
+    const { error: metaError } = await adminClient.auth.admin.updateUserById(
+      user.id,
+      {
+        user_metadata: {
+          first_name: first,
+          last_name: last,
+          full_name: `${first} ${last}`.trim(),
+        },
+      }
+    );
+    if (metaError) {
+      console.error("[profile/me PATCH] sync metadata failed:", metaError);
+    }
+  }
+
   return NextResponse.json({ profile: data });
 }

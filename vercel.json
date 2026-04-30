@@ -30,7 +30,7 @@
     },
     {
       "path": "/api/cron/telegram-doctor-reports",
-      "schedule": "0 12 * * *"
+      "schedule": "0 13 * * *"
     },
     {
       "path": "/api/cron/purge-conversations",
