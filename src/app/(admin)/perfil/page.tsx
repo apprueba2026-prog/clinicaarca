@@ -26,18 +26,22 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export default function PerfilPage() {
-  const { refreshProfile } = useAuth();
+  const { refreshProfile, user } = useAuth();
   const supabase = useSupabase();
   const queryClient = useQueryClient();
 
+  // Bug fix v1.2: incluir user.id en la queryKey. Sin esto, TanStack Query
+  // reusaba el cache entre usuarios distintos en la misma pestaña, mostrando
+  // (por ejemplo) los datos de Aldrick cuando Dina iniciaba sesión.
   const { data: profile, isLoading } = useQuery({
-    queryKey: ["profile-me"],
+    queryKey: ["profile-me", user?.id],
     queryFn: async () => {
       const res = await fetch("/api/profile/me");
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Error cargando perfil");
       return json.profile as Profile;
     },
+    enabled: !!user?.id,
   });
 
   const [firstName, setFirstName] = useState("");

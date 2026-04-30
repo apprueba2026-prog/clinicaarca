@@ -18,6 +18,7 @@
  * según el step actual almacenado en telegram_link_tokens.
  */
 import { NextRequest, NextResponse } from "next/server";
+import { type Part } from "@google/generative-ai";
 import { getBot } from "@/lib/telegram/client";
 import {
   buildDoctorLinkConfirmation,
@@ -36,6 +37,79 @@ import {
 } from "@/lib/telegram/link-tokens";
 import { sendEmail } from "@/lib/email/send-email";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getAssistantModel } from "@/lib/ai/gemini-client";
+import { buildDoctorTelegramPrompt } from "@/lib/ai/prompts-telegram-doctor";
+import {
+  DOCTOR_TOOL_DECLARATIONS,
+  executeDoctorToolCall,
+  type DoctorToolContext,
+} from "@/lib/ai/tools-doctor";
+
+const MAX_DOCTOR_TURNS = 6;
+
+/**
+ * Procesa un mensaje libre de un doctor vinculado vía IA Noé Doctor.
+ * El doctorId se fija desde el chat vinculado para que el modelo NO pueda
+ * verlo manipular (privacy entre doctores).
+ *
+ * Single-turn: cada mensaje es una conversación independiente. Telegram
+ * ya muestra el historial visualmente, no necesitamos persistirlo en BD.
+ */
+async function handleDoctorAIMessage(params: {
+  doctorId: string;
+  doctorFirstName: string;
+  userMessage: string;
+}): Promise<string> {
+  const todayISO = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Lima",
+  }).format(new Date());
+  const todayFormatted = new Intl.DateTimeFormat("es-PE", {
+    timeZone: "America/Lima",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date());
+
+  const systemInstruction = buildDoctorTelegramPrompt({
+    todayFormatted,
+    todayISO,
+    doctorFirstName: params.doctorFirstName,
+  });
+
+  const model = getAssistantModel({
+    systemInstruction,
+    tools: DOCTOR_TOOL_DECLARATIONS,
+  });
+  const chat = model.startChat({ history: [] });
+
+  const ctx: DoctorToolContext = { doctorId: params.doctorId };
+  let parts: Part[] | string = params.userMessage;
+
+  for (let i = 0; i < MAX_DOCTOR_TURNS; i++) {
+    const result = await chat.sendMessage(parts);
+    const response = result.response;
+    const fnCalls = response.functionCalls();
+    const text = response.text();
+
+    if (!fnCalls || fnCalls.length === 0) {
+      return text && text.trim().length > 0
+        ? text
+        : "No pude procesar esa consulta. ¿Puedes reformularla?";
+    }
+
+    const toolResults: Part[] = [];
+    for (const call of fnCalls) {
+      const r = await executeDoctorToolCall(call.name, call.args, ctx);
+      toolResults.push({
+        functionResponse: { name: call.name, response: r as object },
+      });
+    }
+    parts = toolResults;
+  }
+
+  return "Tu consulta es muy compleja. Para detalles, ingresa al panel admin.";
+}
 
 /**
  * Si un chat_id ya está vinculado activamente (doctor o paciente),
@@ -43,14 +117,19 @@ import { createAdminClient } from "@/lib/supabase/admin";
  * a alguien que ya está vinculado (ej. la Dra. Sonia escribiendo texto
  * libre — no debe ser tratada como paciente nuevo).
  */
-async function getActiveLink(
-  chatId: number
-): Promise<{ type: "doctor" | "patient"; firstName: string | null } | null> {
+interface ActiveLink {
+  type: "doctor" | "patient";
+  firstName: string | null;
+  doctorId?: string;
+  patientId?: string;
+}
+
+async function getActiveLink(chatId: number): Promise<ActiveLink | null> {
   const supabase = createAdminClient();
   const { data } = await supabase
     .from("telegram_users")
     .select(
-      "linked_entity_type, doctor:doctors(profile:profiles(first_name)), patient:patients(first_name)"
+      "linked_entity_type, doctor_id, patient_id, doctor:doctors(profile:profiles(first_name)), patient:patients(first_name)"
     )
     .eq("telegram_chat_id", chatId)
     .eq("status", "active")
@@ -62,10 +141,18 @@ async function getActiveLink(
     const doctor = data.doctor as unknown as
       | { profile: { first_name: string } | null }
       | null;
-    return { type, firstName: doctor?.profile?.first_name ?? null };
+    return {
+      type,
+      firstName: doctor?.profile?.first_name ?? null,
+      doctorId: data.doctor_id as string,
+    };
   }
   const patient = data.patient as unknown as { first_name: string } | null;
-  return { type, firstName: patient?.first_name ?? null };
+  return {
+    type,
+    firstName: patient?.first_name ?? null,
+    patientId: data.patient_id as string,
+  };
 }
 
 export const runtime = "nodejs";
@@ -152,16 +239,35 @@ function registerHandlers() {
       // Limpieza de tokens huérfanos del flujo /vincular para que no vuelvan
       // a confundir si el usuario escribe algo en otro turno.
       await clearActiveFlowTokens(chatId);
-      const greet = existing.firstName ? `, ${existing.firstName}` : "";
-      if (existing.type === "doctor") {
-        await ctx.reply(
-          `Hola Dr(a)${greet} 👋. Por aquí solo te envío avisos de tus citas (nuevas, reprogramadas, canceladas) y tu reporte diario.\n\nNo puedo agendar citas desde el chat. Para gestionar la agenda, ingresa al panel admin.\n\nEscribe /ayuda para ver mis comandos.`
-        );
-      } else {
-        await ctx.reply(
-          `Hola${greet} 👋. Por aquí solo te envío recordatorios de tus citas en Clínica Arca.\n\nPara agendar una nueva cita, escríbenos por el chat de la web (clinicaarca.com) o llama a recepción.\n\nEscribe /ayuda para ver mis comandos.`
-        );
+
+      if (existing.type === "doctor" && existing.doctorId) {
+        // v1.2: en lugar del mensaje fijo (bloqueo), invocamos a IA Noé Doctor.
+        // Modelo de Gemini con prompt + tools de SOLO LECTURA (consulta de
+        // agenda y pacientes propios). Privacidad entre doctores garantizada
+        // porque el doctorId se fija aquí desde la tabla telegram_users.
+        try {
+          const aiText = await handleDoctorAIMessage({
+            doctorId: existing.doctorId,
+            doctorFirstName: existing.firstName ?? "doctor",
+            userMessage: text,
+          });
+          await ctx.reply(aiText);
+        } catch (err) {
+          console.error("[telegram doctor AI]", err);
+          await ctx.reply(
+            "Tuve un problema procesando tu consulta. Intenta de nuevo en un momento."
+          );
+        }
+        return;
       }
+
+      // Paciente vinculado: por ahora se mantiene el mensaje informativo.
+      // Una futura iteración podría darle también IA limitada (consultar su
+      // próxima cita, etc.) — fuera del alcance de v1.2.
+      const greet = existing.firstName ? `, ${existing.firstName}` : "";
+      await ctx.reply(
+        `Hola${greet} 👋. Por aquí solo te envío recordatorios de tus citas en Clínica Arca.\n\nPara agendar una nueva cita, escríbenos por el chat de la web (clinicaarca.com) o llama a recepción.\n\nEscribe /ayuda para ver mis comandos.`
+      );
       return;
     }
 

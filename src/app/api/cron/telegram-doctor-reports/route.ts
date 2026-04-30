@@ -27,6 +27,19 @@ export async function GET(req: NextRequest) {
   const supabase = createAdminClient();
   const today = todayLimaISO();
 
+  // La clínica está cerrada los domingos (decisión v1.2): no enviar reporte
+  // para no saturar al doctor con un mensaje "no tienes citas hoy".
+  // ISODOW: 1=lunes, 7=domingo. JS getUTCDay: 0=domingo, 6=sábado.
+  const [y, m, d] = today.split("-").map(Number);
+  const dayOfWeek = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  if (dayOfWeek === 0) {
+    return NextResponse.json({
+      ok: true,
+      skipped: "domingo",
+      date: today,
+    });
+  }
+
   // Doctores con telegram activo
   const { data: tgDoctors, error } = await supabase
     .from("telegram_users")
